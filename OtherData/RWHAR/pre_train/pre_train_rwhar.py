@@ -10,7 +10,7 @@ from torch.utils.data import DataLoader
 from tqdm import tqdm
 
 from OtherData.RWHAR.pre_train.dataset_rwhar import RWHARDataset_10s
-from OtherData.Opportunity.pre_train.pre_model_opportunity import CNN1DClassifier  # 你如果CNN1DClassifier不依赖opportunity命名，也可直接搬出来
+from pre_train.pre_model import CNN1DClassifier
 
 
 def set_seed(seed: int = 42):
@@ -194,10 +194,11 @@ def run_loso_pretrain(config: dict):
         )
 
 
+
 if __name__ == "__main__":
     config = {
         "dataset_dir": "/home/lipei/TAL_data/rwhar/",
-        "out_dir": "/home/lipei/project/WSDDN/RWHAR/pre_train",
+        "out_dir": "/home/lipei/project/WSDDN/OtherData/RWHAR/pre_train",
 
         "num_folds": 15,
         "num_classes": 8,

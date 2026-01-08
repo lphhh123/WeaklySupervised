@@ -10,7 +10,7 @@ from torch.utils.data import DataLoader
 from tqdm import tqdm
 
 from OtherData.WEAR.pre_train.dataset_wear import WearDataset_10s
-from OtherData.Opportunity.pre_train.pre_model_opportunity import CNN1DClassifier
+from pre_train.pre_model import CNN1DClassifier
 
 def set_seed(seed: int = 42):
     random.seed(seed)
@@ -196,7 +196,7 @@ def run_loso_pretrain(config: dict):
 if __name__ == "__main__":
     config = {
         "dataset_dir": "/home/lipei/TAL_data/wear/",
-        "out_dir": "/home/lipei/project/WSDDN/WEAR/pre_train",
+        "out_dir": "/home/lipei/project/WSDDN/OtherData/WEAR/pre_train",
 
         "num_folds": 18,
         "num_classes": 18,

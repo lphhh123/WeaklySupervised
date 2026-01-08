@@ -220,7 +220,7 @@ def test_wsddn_hangtime(config, checkpoint_path, fold: int, test_mode: str = "te
     """
     test_mode:
       - "test_window": 测试人也按 clip_sec 滑窗（最贴近训练）
-      - "test_full"  : 整条序列一次性跑
+      - "test_full"  : 整条序列一次性跑（需要你的 dataset 支持该 mode）
     """
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
@@ -462,6 +462,9 @@ def test_wsddn_hangtime(config, checkpoint_path, fold: int, test_mode: str = "te
 # ============================================================
 def run_loso_wsddn_hangtime(config):
     set_seed(int(config.get("seed", 2024)))
+    # --- save config snapshot ---
+    os.makedirs(config["result_root"], exist_ok=True)
+    dump_config(config, config["result_root"])
 
     num_folds = int(config.get("num_folds", 5))
     folds = config.get("folds", list(range(num_folds)))
@@ -518,9 +521,9 @@ if __name__ == "__main__":
         "exp_name": "wsddn_hangtime",
 
         "dataset_dir": "/home/lipei/TAL_data/hangtime/",
-        "pretrained_dir": "/home/lipei/project/WSDDN/HANGTIME/pre_train",
-        "checkpoint_dir": "/home/lipei/project/WSDDN/checkpoints/HANGTIME/wsddn_0105",
-        "result_root": "/home/lipei/project/WSDDN/test_results/HANGTIME/wsddn_0105",
+        "pretrained_dir": "/home/lipei/project/WSDDN/OtherData/HANGTIME/pre_train",
+        "checkpoint_dir": "/home/lipei/project/WSDDN/checkpoints/HANGTIME/wsddn_0108",
+        "result_root": "/home/lipei/project/WSDDN/test_results/HANGTIME/wsddn_0108",
 
         "num_folds": 24,
         "folds": [0, 1, 2, 3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23],  # 只跑部分折就改这里
@@ -553,9 +556,9 @@ if __name__ == "__main__":
 
 
             "base_physical_sec": 3.0,
-            "step_sec": 2.0,
+            "step_sec": 1.0,
             "min_sec": 1.0,
-            "max_sec": 30.0,
+            "max_sec": 9.0,
 
             # spatial regularizer（可为0关闭）
             "spatial_reg_weight": 1.0,
@@ -564,16 +567,16 @@ if __name__ == "__main__":
 
         "testing": {
             "test_window_proposals":300,
-            "test_full_proposals": 800,
+            "test_full_proposals": 3000,
             "conf_thresh": 0.0,
             "nms_sigma": 0.5,
             "top_k": 200,
 
             # proposal params（测试可放宽/修改）
             "base_physical_sec": 3.0,
-            "step_sec": 2.0,
+            "step_sec": 1.0,
             "min_sec": 1.0,
-            "max_sec": 30.0,
+            "max_sec": 9.0,
         }
     }
 

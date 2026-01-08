@@ -3,6 +3,7 @@ import math
 import torch
 import torch.nn as nn
 
+
 class CNN1DBackbone(nn.Module):
     def __init__(self, in_channels=30, feat_dim=512):
         super().__init__()
@@ -33,7 +34,7 @@ class CNN1DClassifier(nn.Module):
         super().__init__()
         self.task = task
         self.in_channels = in_channels
-        self.backbone = CNN1DBackbone_7s(self.in_channels,feat_dim=feat_dim)
+        self.backbone = CNN1DBackbone(self.in_channels,feat_dim=feat_dim)
         self.classifier = nn.Sequential(
             nn.AdaptiveAvgPool1d(1),  # (B,512,30)→(B,512,1)
             nn.Flatten(),  # (B,512)
@@ -45,46 +46,6 @@ class CNN1DClassifier(nn.Module):
         return self.classifier(feat)  # (B, num_classes)
 
 
-class CNN1DBackbone_7s(nn.Module):
-    def __init__(self, in_channels=30, feat_dim=512):
-        super().__init__()
-        self.layers = nn.Sequential(
-            nn.Conv1d(in_channels, 64, kernel_size=7, stride=2, padding=3),  # (30,478)→(64,239)
-            nn.BatchNorm1d(64),
-            nn.ReLU(),
-            nn.MaxPool1d(kernel_size=2, stride=2),  # (64,239)→(64,119)
-
-            nn.Conv1d(64, 128, kernel_size=5, stride=2, padding=2),  # (64,119)→(128,60)
-            nn.BatchNorm1d(128),
-            nn.ReLU(),
-
-            nn.Conv1d(128, 256, kernel_size=3, stride=2, padding=1),  # (128,60)→(256,30)
-            nn.BatchNorm1d(256),
-            nn.ReLU(),
-
-            nn.Conv1d(256, feat_dim, kernel_size=3, stride=1, padding=1),  # (256,30)→(512,30)
-            nn.BatchNorm1d(feat_dim),
-        )
-
-    def forward(self, x):
-        return self.layers(x)  # (B, 512, 30)
-
-
-class CNN1DClassifier_7s(nn.Module):
-    def __init__(self, num_classes, task='single', feat_dim=512,in_channels=30,):
-        super().__init__()
-        self.task = task
-        self.in_channels = in_channels
-        self.backbone = CNN1DBackbone_7s(self.in_channels,feat_dim=feat_dim)
-        self.classifier = nn.Sequential(
-            nn.AdaptiveAvgPool1d(1),  # (B,512,30)→(B,512,1)
-            nn.Flatten(),  # (B,512)
-            nn.Linear(feat_dim, num_classes)
-        )
-
-    def forward(self, x):
-        feat = self.backbone(x)
-        return self.classifier(feat)  # (B, num_classes)
 
 
 # 模型5：LSTM_7s（时序依赖建模）

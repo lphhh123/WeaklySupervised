@@ -12,7 +12,7 @@ from models.WSDDN_model import WSDDN
 from tool import softnms_v2, ANETdetection
 from OtherData.WEAR.dataset_wear_ws import WeaklyWearDataset
 from OtherData.utils import set_seed, _meta_get, build_gt_for_anet, featbox_to_time_seconds, \
-    ProposalWrappedDataset
+    ProposalWrappedDataset, dump_config
 from OtherData.utils import GlobalBackboneWrapper,generate_proposal_boxes
 from pre_train.pre_model import CNN1DBackbone
 
@@ -462,6 +462,9 @@ def test_wsddn_one_fold_wear(config, checkpoint_path, fold: int, test_mode: str 
 # ============================================================
 def run_loso_wsddn_wear(config):
     set_seed(int(config.get("seed", 2024)))
+    # --- save config snapshot ---
+    os.makedirs(config["result_root"], exist_ok=True)
+    dump_config(config, config["result_root"])
 
     num_folds = int(config.get("num_folds", 5))
     folds = config.get("folds", list(range(num_folds)))
@@ -517,7 +520,7 @@ if __name__ == "__main__":
         "exp_name": "wsddn_wear",
 
         "dataset_dir": "/home/lipei/TAL_data/wear/",
-        "pretrained_dir": "/home/lipei/project/WSDDN/WEAR/pre_train",
+        "pretrained_dir": "/home/lipei/project/WSDDN/OtherData/WEAR/pre_train",
         "checkpoint_dir": "/home/lipei/project/WSDDN/checkpoints/WEAR/wsddn_0105",
         "result_root": "/home/lipei/project/WSDDN/test_results/WEAR/wsddn_0105",
 

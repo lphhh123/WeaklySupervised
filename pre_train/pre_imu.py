@@ -410,7 +410,7 @@ if __name__ == '__main__':
     in_channels = 30 + (6 if config['use_airpods'] else 0)
 
     # 选择预训练模型
-    model = CNN1DClassifier_7s(num_classes=config['num_classes'], task=config['task'],in_channels=in_channels,)
+    model = CNN1DClassifier(num_classes=config['num_classes'], task=config['task'],in_channels=in_channels,)
     # model = TCNClassifier_7s(num_classes=config['num_classes'], task=config['task'])
     # model = ResTCNClassifier_7s(num_classes=config['num_classes'], task=config['task'])
     # model = MSTCNClassifier_7s(num_classes=config['num_classes'], task=config['task'])

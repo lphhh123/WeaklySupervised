@@ -415,6 +415,9 @@ def test_pcl_oicr_rwhar(config, checkpoint_path, fold: int, test_mode: str = "te
 # ============================================================
 def run_loso_pcl_oicr_rwhar(config):
     set_seed(int(config.get("seed", 2024)))
+    # --- save config snapshot ---
+    os.makedirs(config["result_root"], exist_ok=True)
+    dump_config(config, config["result_root"])
 
     num_folds = int(config.get("num_folds", 5))
     folds = config.get("folds", list(range(num_folds)))
@@ -468,12 +471,12 @@ def run_loso_pcl_oicr_rwhar(config):
 if __name__ == "__main__":
     config = {
         "seed": 2024,
-        "exp_name": "oicr",
+        "exp_name": "pcl",
 
         "dataset_dir": "/home/lipei/TAL_data/rwhar/",
-        "pretrained_dir": "/home/lipei/project/WSDDN/RWHAR/pre_train",
-        "checkpoint_dir": "/home/lipei/project/WSDDN/checkpoints/RWHAR/oicr_0106",
-        "result_root": "/home/lipei/project/WSDDN/test_results/RWHAR/oicr_0106",
+        "pretrained_dir": "/home/lipei/project/WSDDN/OtherData/RWHAR/pre_train",
+        "checkpoint_dir": "/home/lipei/project/WSDDN/checkpoints/RWHAR/pcl_0108",
+        "result_root": "/home/lipei/project/WSDDN/test_results/RWHAR/pcl_0108",
 
         "num_folds": 15,
         "folds": [0, 1, 2, 3,4,5,6,7,8,9,10,11,12,13,14],
@@ -503,17 +506,17 @@ if __name__ == "__main__":
             "weight_decay": 1e-5,
             # "grad_clip": 5.0,
 
-            "num_proposals": 60,
+            "num_proposals": 100,
 
             # proposal params
             "base_physical_sec": 100.0,
-            "step_sec": 2.0,
+            "step_sec": 1.0,
             "min_sec": 80.0,
             "max_sec": 800.0,
 
             # PCL/OICR params
             "refine_times": 3,
-            "use_pcl": False,          # True=PCL, False=OICR
+            "use_pcl": True,          # True=PCL, False=OICR
             "fg_thresh": 0.5,
             "bg_thresh": 0.1,
             "graph_iou_thresh": 0.5,
@@ -524,14 +527,14 @@ if __name__ == "__main__":
         },
 
         "testing": {
-            "test_window_proposals":70,
-            "test_full_proposals": 200,
+            "test_window_proposals":200,
+            "test_full_proposals": 2000,
             "conf_thresh": 0.0,
             "nms_sigma": 0.5,
             "top_k": 200,
 
             "base_physical_sec": 100.0,
-            "step_sec": 2.0,
+            "step_sec": 1.0,
             "min_sec": 80.0,
             "max_sec": 800.0,
         }

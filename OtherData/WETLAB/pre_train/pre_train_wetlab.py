@@ -10,8 +10,7 @@ from torch.utils.data import DataLoader
 from tqdm import tqdm
 
 from OtherData.WETLAB.pre_train.dataset_wetlab import WetlabDataset_10s
-from OtherData.Opportunity.pre_train.pre_model_opportunity import CNN1DClassifier  # 你如果CNN1DClassifier不依赖opportunity命名，也可直接搬出来
-
+from pre_train.pre_model import CNN1DClassifier
 
 def set_seed(seed: int = 42):
     random.seed(seed)
@@ -197,7 +196,7 @@ def run_loso_pretrain(config: dict):
 if __name__ == "__main__":
     config = {
         "dataset_dir": "/home/lipei/TAL_data/wetlab/",
-        "out_dir": "/home/lipei/project/WSDDN/WETLAB/pre_train",
+        "out_dir": "/home/lipei/project/WSDDN/OtherData/WETLAB/pre_train",
 
         "num_folds": 22,
         "num_classes": 8,

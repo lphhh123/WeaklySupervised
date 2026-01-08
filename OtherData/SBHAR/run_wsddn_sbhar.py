@@ -1,13 +1,5 @@
-import os, json, time, math, random
-from typing import Union
 
-import numpy as np
-from typing import Optional
-
-import torch
-import torch.nn as nn
 import torch.optim as optim
-from torch.utils.data import Dataset, DataLoader
 from tqdm import tqdm
 
 from OtherData.utils import _meta_get
@@ -16,6 +8,7 @@ from tool import softnms_v2, ANETdetection
 from OtherData.SBHAR.dataset_sbhar_ws import WeaklySBHARDataset
 from OtherData.utils import *
 
+from pre_train.pre_model import CNN1DBackbone
 
 # ============================================================
 # 4) train one fold
@@ -30,7 +23,6 @@ def train_wsddn_one_fold_sbhar(config, fold: int, exp_name: str = "wsddn_opportu
     num_classes = int(config["num_classes"])
 
     # ---- load 3s backbone (fold-specific pretrain) ----
-    from OtherData.Opportunity.pre_train.pre_model_opportunity import CNN1DBackbone
     backbone = CNN1DBackbone(in_channels=in_channels, feat_dim=512).to(device)
 
     pretrain_path = os.path.join(
@@ -254,7 +246,6 @@ def test_wsddn_sbhar(config, checkpoint_path, fold: int, test_mode: str = "test_
     loader = DataLoader(ds, batch_size=1, shuffle=False, num_workers=int(config.get("num_workers", 2)))
 
     # ---- load backbone + wrapper（与训练一致）----
-    from OtherData.Opportunity.pre_train.pre_model_opportunity import CNN1DBackbone
     backbone = CNN1DBackbone(in_channels=in_channels, feat_dim=512).to(device)
 
     pretrain_path = os.path.join(
@@ -465,6 +456,9 @@ def test_wsddn_sbhar(config, checkpoint_path, fold: int, test_mode: str = "test_
 # ============================================================
 def run_loso_wsddn_sbhar(config):
     set_seed(int(config.get("seed", 2024)))
+    # --- save config snapshot ---
+    os.makedirs(config["result_root"], exist_ok=True)
+    dump_config(config, config["result_root"])
 
     num_folds = int(config.get("num_folds", 5))
     folds = config.get("folds", list(range(num_folds)))
@@ -520,9 +514,9 @@ if __name__ == "__main__":
         "exp_name": "wsddn_sbhar",
 
         "dataset_dir": "/home/lipei/TAL_data/sbhar/",
-        "pretrained_dir": "/home/lipei/project/WSDDN/SBHAR/pre_train",
-        "checkpoint_dir": "/home/lipei/project/WSDDN/checkpoints/SBHAR/wsddn_0105",
-        "result_root": "/home/lipei/project/WSDDN/test_results/SBHAR/wsddn_0105",
+        "pretrained_dir": "/home/lipei/project/WSDDN/OtherData/SBHAR/pre_train",
+        "checkpoint_dir": "/home/lipei/project/WSDDN/checkpoints/SBHAR/wsddn_0108",
+        "result_root": "/home/lipei/project/WSDDN/test_results/SBHAR/wsddn_0108",
 
         "num_folds": 30,
         "folds": [0, 1, 2, 3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29],  # 只跑部分折就改这里
@@ -551,13 +545,13 @@ if __name__ == "__main__":
             "lr_step_size": 20,
             "lr_gamma": 0.5,
 
-            "num_proposals": 50,
+            "num_proposals": 100,
 
 
             "base_physical_sec": 3.0,
-            "step_sec": 2.0,
+            "step_sec": 1.0,
             "min_sec": 1.0,
-            "max_sec": 30.0,
+            "max_sec": 42.0,
 
             # spatial regularizer（可为0关闭）
             "spatial_reg_weight": 1.0,
@@ -565,17 +559,17 @@ if __name__ == "__main__":
         },
 
         "testing": {
-            "test_window_proposals":60,
-            "test_full_proposals": 300,
+            "test_window_proposals":200,
+            "test_full_proposals": 1000,
             "conf_thresh": 0.0,
             "nms_sigma": 0.5,
             "top_k": 200,
 
             # proposal params（测试可放宽/修改）
             "base_physical_sec": 3.0,
-            "step_sec": 2.0,
+            "step_sec": 1.0,
             "min_sec": 1.0,
-            "max_sec": 30.0,
+            "max_sec": 42.0,
         }
     }
 

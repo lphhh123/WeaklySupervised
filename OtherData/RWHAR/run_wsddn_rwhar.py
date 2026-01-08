@@ -452,11 +452,16 @@ def test_wsddn_one_fold(config, checkpoint_path, fold: int, test_mode: str = "te
     return mAPs, avg_mAP, pred_path
 
 
+
 # ============================================================
 # 6) multi-fold runner
 # ============================================================
 def run_loso_wsddn(config):
     set_seed(int(config.get("seed", 2024)))
+
+    # --- save config snapshot ---
+    os.makedirs(config["result_root"], exist_ok=True)
+    dump_config(config, config["result_root"])
 
     num_folds = int(config.get("num_folds", 5))
     folds = config.get("folds", list(range(num_folds)))
@@ -516,9 +521,9 @@ if __name__ == "__main__":
         "exp_name": "wsddn_rwhar",
 
         "dataset_dir": "/home/lipei/TAL_data/rwhar/",
-        "pretrained_dir": "/home/lipei/project/WSDDN/RWHAR/pre_train",
-        "checkpoint_dir": "/home/lipei/project/WSDDN/checkpoints/RWHAR/wsddn_0105",
-        "result_root": "/home/lipei/project/WSDDN/test_results/RWHAR/wsddn_0105",
+        "pretrained_dir": "/home/lipei/project/WSDDN/OtherData/RWHAR/pre_train",
+        "checkpoint_dir": "/home/lipei/project/WSDDN/checkpoints/RWHAR/wsddn_0108",
+        "result_root": "/home/lipei/project/WSDDN/test_results/RWHAR/wsddn_0108",
 
         "num_folds": 15,
         "folds": [0, 1, 2, 3,4,5,6,7,8,9,10,11,12,13,14],  # 只跑部分折就改这里
@@ -548,13 +553,13 @@ if __name__ == "__main__":
             "lr_step_size": 20,
             "lr_gamma": 0.5,
 
-            "num_proposals": 60,
+            "num_proposals": 80,
 
 
-            "base_physical_sec": 100.0,
+            "base_physical_sec": 500.0,
             "step_sec": 2.0,
             "min_sec": 80.0,
-            "max_sec": 800.0,
+            "max_sec": 1000.0,
 
             # spatial regularizer（可为0关闭）
             "spatial_reg_weight": 1.0,
@@ -562,17 +567,17 @@ if __name__ == "__main__":
         },
 
         "testing": {
-            "test_window_proposals":70,
+            "test_window_proposals":100,
             "test_full_proposals": 200,
             "conf_thresh": 0.0,
             "nms_sigma": 0.5,
             "top_k": 200,
 
             # proposal params（测试可放宽/修改）
-            "base_physical_sec": 100.0,
+            "base_physical_sec": 500.0,
             "step_sec": 2.0,
             "min_sec": 80.0,
-            "max_sec": 800.0,
+            "max_sec": 1000.0,
         }
     }
 

@@ -8,7 +8,7 @@ from tqdm import tqdm
 
 from tool import softnms_v2, ANETdetection
 from OtherData.SBHAR.dataset_sbhar_ws import WeaklySBHARDataset
-from OtherData.Opportunity.pre_train.pre_model_opportunity import CNN1DBackbone
+from pre_train.pre_model import CNN1DBackbone
 from models.PCL_OICR_model import IMU_PCL_OICR
 from OtherData.utils import *
 from OtherData.utils import _meta_get
@@ -467,12 +467,12 @@ def run_loso_pcl_oicr_sbhar(config):
 if __name__ == "__main__":
     config = {
         "seed": 2024,
-        "exp_name": "pcl_sbhar",
+        "exp_name": "oicr_sbhar",
 
         "dataset_dir": "/home/lipei/TAL_data/sbhar/",
-        "pretrained_dir": "/home/lipei/project/WSDDN/SBHAR/pre_train",
-        "checkpoint_dir": "/home/lipei/project/WSDDN/checkpoints/SBHAR/pcl_0106",
-        "result_root": "/home/lipei/project/WSDDN/test_results/SBHAR/pcl_0106",
+        "pretrained_dir": "/home/lipei/project/WSDDN/OtherData/SBHAR/pre_train",
+        "checkpoint_dir": "/home/lipei/project/WSDDN/checkpoints/SBHAR/oicr_0108",
+        "result_root": "/home/lipei/project/WSDDN/test_results/SBHAR/oicr_0108",
 
         "num_folds": 30,
         "folds":[0, 1, 2, 3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29],
@@ -502,17 +502,17 @@ if __name__ == "__main__":
             "weight_decay": 1e-5,
             # "grad_clip": 5.0,
 
-            "num_proposals": 60,
+            "num_proposals": 100,
 
             # proposal params
             "base_physical_sec": 3.0,
-            "step_sec": 2.0,
+            "step_sec": 1.0,
             "min_sec": 1.0,
-            "max_sec": 30.0,
+            "max_sec": 40.0,
 
             # PCL/OICR params
             "refine_times": 3,
-            "use_pcl": True,          # True=PCL, False=OICR
+            "use_pcl": False,          # True=PCL, False=OICR
             "fg_thresh": 0.5,
             "bg_thresh": 0.1,
             "graph_iou_thresh": 0.5,
@@ -523,16 +523,16 @@ if __name__ == "__main__":
         },
 
         "testing": {
-            "test_window_proposals": 80,
-            "test_full_proposals": 2000,
+            "test_window_proposals": 200,
+            "test_full_proposals": 3000,
             "conf_thresh": 0.0,
             "nms_sigma": 0.5,
             "top_k": 200,
 
             "base_physical_sec": 3.0,
-            "step_sec": 2.0,
+            "step_sec": 1.0,
             "min_sec": 1.0,
-            "max_sec": 30.0,
+            "max_sec": 40.0,
         }
     }
 

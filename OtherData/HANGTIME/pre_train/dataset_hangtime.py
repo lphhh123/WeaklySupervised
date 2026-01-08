@@ -1,9 +1,11 @@
 # dataset_hangtime.py
 
-
-from OtherData.utils import *
-from OtherData.utils import _load_loso_json, _parse_fold_id_from_loso_name, _majority_label_in_window, \
-    _subjects_by_split
+import os
+import numpy as np
+import torch
+from torch.utils.data import Dataset
+from OtherData.Opportunity.pre_train.dataset_opportunity import _load_loso_json, _subjects_by_split, npy_windows_to_raw_frames, \
+    _parse_fold_id_from_loso_name, load_mean_std_from_meanvar_json, _majority_label_in_window
 
 
 # ----------------------------

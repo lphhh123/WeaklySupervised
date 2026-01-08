@@ -1,13 +1,27 @@
 
+# ------------------------------------------------------------
+# Opportunity: LOSO/KFold WSDDN
+# ------------------------------------------------------------
+
+import os, json, time
+
+import numpy as np
+
+import torch
+import torch.nn as nn
 import torch.optim as optim
+from torch.utils.data import Dataset, DataLoader
 from tqdm import tqdm
 
-from OtherData.utils import _meta_get
+from OtherData.utils import _meta_get, set_seed, featbox_to_time_seconds, build_gt_for_anet, \
+    GlobalBackboneWrapper, generate_proposal_boxes, ProposalWrappedDataset, dump_config
 from models.WSDDN_model import WSDDN
 from tool import softnms_v2, ANETdetection
 from OtherData.Opportunity.dataset_opportunity_ws import WeaklyOpportunityDataset
+
 from pre_train.pre_model import CNN1DBackbone
-from OtherData.utils import *
+
+
 
 # ============================================================
 # train one fold
@@ -455,6 +469,9 @@ def test_wsddn_opportunity(config, checkpoint_path, fold: int, test_mode: str = 
 # ============================================================
 def run_loso_wsddn_opportunity(config):
     set_seed(int(config.get("seed", 2024)))
+    # --- save config snapshot ---
+    os.makedirs(config["result_root"], exist_ok=True)
+    dump_config(config, config["result_root"])
 
     num_folds = int(config.get("num_folds", 5))
     folds = config.get("folds", list(range(num_folds)))
@@ -514,9 +531,9 @@ if __name__ == "__main__":
         "exp_name": "wsddn_opportunity",
 
         "dataset_dir": "/home/lipei/TAL_data/opportunity/",
-        "pretrained_dir": "/home/lipei/project/WSDDN/Opportunity/pre_train",
-        "checkpoint_dir": "/home/lipei/project/WSDDN/checkpoints/Opportunity/wsddn_0105",
-        "result_root": "/home/lipei/project/WSDDN/test_results/Opportunity/wsddn_0105",
+        "pretrained_dir": "/home/lipei/project/WSDDN/OtherData/Opportunity/pre_train",
+        "checkpoint_dir": "/home/lipei/project/WSDDN/checkpoints/Opportunity/wsddn_0108",
+        "result_root": "/home/lipei/project/WSDDN/test_results/Opportunity/wsddn_0108",
 
         "num_folds": 4,
         "folds": [0, 1, 2, 3],  # 只跑部分折就改这里
@@ -550,7 +567,7 @@ if __name__ == "__main__":
 
 
             "base_physical_sec": 3.0,
-            "step_sec": 2.0,
+            "step_sec": 1.0,
             "min_sec": 1.0,
             "max_sec": 17.0,
 
@@ -564,11 +581,11 @@ if __name__ == "__main__":
             "test_full_proposals": 2000,
             "conf_thresh": 0.0,
             "nms_sigma": 0.5,
-            "top_k": 200,
+            "top_k": 300,
 
             # proposal params（测试可放宽/修改）
             "base_physical_sec": 3.0,
-            "step_sec": 2.0,
+            "step_sec": 1.0,
             "min_sec": 1.0,
             "max_sec": 17.0,
         }

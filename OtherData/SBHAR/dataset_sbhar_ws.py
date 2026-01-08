@@ -65,9 +65,8 @@ class WeaklySBHARDataset(Dataset):
         self.cache_raw = bool(cache_raw)
 
         ann_path = os.path.join(dataset_dir, "annotations", loso_json) if not os.path.isabs(loso_json) else loso_json
-        loso_db, label_dict = _load_loso_json(ann_path)
+        loso_db = _load_loso_json(ann_path)
         self.loso_db = loso_db
-        self.label_dict = label_dict
 
         fold_id = _parse_fold_id_from_loso_name(loso_json)
         if fold_id is None:

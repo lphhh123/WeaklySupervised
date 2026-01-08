@@ -1,18 +1,23 @@
-# Opportunity/run_pcl_opportunity.py
+# Opportunity/run_pcl_oicr_opportunity.py
 # -*- coding: utf-8 -*-
 import torch
 torch.set_num_threads(8)
 torch.set_num_interop_threads(1)
-
+import os
+import json
+import time
+import numpy as np
+import torch
 import torch.optim as optim
+from torch.utils.data import DataLoader
 from tqdm import tqdm
 
 from tool import softnms_v2, ANETdetection
 from OtherData.Opportunity.dataset_opportunity_ws import WeaklyOpportunityDataset
 from pre_train.pre_model import CNN1DBackbone
 from models.PCL_OICR_model import IMU_PCL_OICR
-from OtherData.utils import _meta_get
-from OtherData.utils import *
+from OtherData.utils import _meta_get, set_seed, featbox_to_time_seconds, build_gt_for_anet, generate_proposal_boxes, \
+    GlobalBackboneWrapper, ProposalWrappedDataset, dump_config
 
 
 # ============================================================
@@ -415,6 +420,9 @@ def test_pcl_oicr_opportunity(config, checkpoint_path, fold: int, test_mode: str
 # ============================================================
 def run_loso_pcl_oicr_opportunity(config):
     set_seed(int(config.get("seed", 2024)))
+    # --- save config snapshot ---
+    os.makedirs(config["result_root"], exist_ok=True)
+    dump_config(config, config["result_root"])
 
     num_folds = int(config.get("num_folds", 5))
     folds = config.get("folds", list(range(num_folds)))
@@ -468,12 +476,12 @@ def run_loso_pcl_oicr_opportunity(config):
 if __name__ == "__main__":
     config = {
         "seed": 2024,
-        "exp_name": "pcl_opportunity",
+        "exp_name": "oicr_opportunity",
 
         "dataset_dir": "/home/lipei/TAL_data/opportunity/",
-        "pretrained_dir": "/home/lipei/project/WSDDN/Opportunity/pre_train",
-        "checkpoint_dir": "/home/lipei/project/WSDDN/checkpoints/Opportunity/pcl_0106",
-        "result_root": "/home/lipei/project/WSDDN/test_results/Opportunity/pcl_0106",
+        "pretrained_dir": "/home/lipei/project/WSDDN/OtherData/Opportunity/pre_train",
+        "checkpoint_dir": "/home/lipei/project/WSDDN/checkpoints/Opportunity/oicr_0108",
+        "result_root": "/home/lipei/project/WSDDN/test_results/Opportunity/oicr_0108",
 
         "num_folds": 4,
         "folds": [0, 1, 2, 3],
@@ -503,17 +511,17 @@ if __name__ == "__main__":
             "weight_decay": 1e-5,
             # "grad_clip": 5.0,
 
-            "num_proposals": 60,
+            "num_proposals": 80,
 
             # proposal params
             "base_physical_sec": 3.0,
-            "step_sec": 2.0,
+            "step_sec": 1.0,
             "min_sec": 1.0,
             "max_sec": 17.0,
 
             # PCL/OICR params
             "refine_times": 3,
-            "use_pcl": True,          # True=PCL, False=OICR
+            "use_pcl": False,          # True=PCL, False=OICR
             "fg_thresh": 0.5,
             "bg_thresh": 0.1,
             "graph_iou_thresh": 0.5,
@@ -524,14 +532,14 @@ if __name__ == "__main__":
         },
 
         "testing": {
-            "test_window_proposals": 80,
+            "test_window_proposals": 100,
             "test_full_proposals": 2000,
             "conf_thresh": 0.01,
             "nms_sigma": 0.5,
             "top_k": 200,
 
             "base_physical_sec": 3.0,
-            "step_sec": 2.0,
+            "step_sec": 1.0,
             "min_sec": 1.0,
             "max_sec": 17.0,
         }

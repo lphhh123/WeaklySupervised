@@ -2,8 +2,9 @@
 import os
 import numpy as np
 import torch
-from OtherData.utils import *
-from OtherData.utils import _load_loso_json, _parse_fold_id_from_loso_name, _clip_multihot_label, _subjects_by_subset
+from torch.utils.data import Dataset
+from OtherData.utils import load_mean_std_from_stats_json, npy_windows_to_raw_frames, _parse_fold_id_from_loso_name, \
+    _load_loso_json, _subjects_by_subset, _clip_multihot_label
 
 
 # Dataset
@@ -65,9 +66,8 @@ class WeaklyHangtimeDataset(Dataset):
         self.overlap = overlap,
 
         ann_path = os.path.join(dataset_dir, "annotations", loso_json) if not os.path.isabs(loso_json) else loso_json
-        loso_db, label_dict = _load_loso_json(ann_path)
+        loso_db = _load_loso_json(ann_path)
         self.loso_db = loso_db
-        self.label_dict = label_dict
 
         fold_id = _parse_fold_id_from_loso_name(loso_json)
         if fold_id is None:

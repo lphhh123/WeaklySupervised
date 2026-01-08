@@ -34,42 +34,12 @@ def mil_losses(cls_score, labels):
     return loss.mean()
 
 
-# class mil_outputs(nn.Module):
-#     """
-#     原始 PCL/OICR 的 MIL head：
-#       score0 在 proposal 维度 softmax
-#       score1 在类维度 softmax
-#       最后相乘
-#     """
-#     def __init__(self, dim_in, dim_out):
-#         super().__init__()
-#         self.mil_score0 = nn.Linear(dim_in, dim_out)
-#         self.mil_score1 = nn.Linear(dim_in, dim_out)
-#         self._init_weights()
-#
-#     def _init_weights(self):
-#         init.normal_(self.mil_score0.weight, std=0.01)
-#         init.constant_(self.mil_score0.bias, 0)
-#         init.normal_(self.mil_score1.weight, std=0.01)
-#         init.constant_(self.mil_score1.bias, 0)
-#
-#     def forward(self, x):
-#         # 支持 [N, D] 或 [B, P, D]
-#         if x.dim() == 3:
-#             B, P, D = x.shape
-#             x = x.view(B * P, D)
-#
-#         mil0 = self.mil_score0(x)       # [N, C]
-#         mil1 = self.mil_score1(x)       # [N, C]
-#         # 沿 proposal 维度和类别维度分别 softmax
-#         score = F.softmax(mil0, dim=0) * F.softmax(mil1, dim=1)
-#         return score
-
 class mil_outputs(nn.Module):
     """
-    MIL head：
-      - proposal 维 softmax：应该在每个视频内部做（dim=1）
-      - class   维 softmax：在类别维做（dim=2）
+    原始 PCL/OICR 的 MIL head：
+      score0 在 proposal 维度 softmax
+      score1 在类维度 softmax
+      最后相乘
     """
     def __init__(self, dim_in, dim_out):
         super().__init__()
@@ -84,20 +54,22 @@ class mil_outputs(nn.Module):
         init.constant_(self.mil_score1.bias, 0)
 
     def forward(self, x):
+        # <<< MOD: 正确处理 [B,P,D]
         if x.dim() == 3:
-            mil0 = self.mil_score0(x)              # [B,P,C]
-            mil1 = self.mil_score1(x)              # [B,P,C]
-            score0 = F.softmax(mil0, dim=1)        #  在 proposal 维 softmax（每个视频内部）
-            score1 = F.softmax(mil1, dim=2)        #  在 class 维 softmax
-            return score0 * score1                 # [B,P,C]
+            mil0 = self.mil_score0(x)  # [B,P,C]
+            mil1 = self.mil_score1(x)  # [B,P,C]
+            score0 = F.softmax(mil0, dim=1)  # <<< MOD: 在 proposal 维 softmax（每个视频内部）
+            score1 = F.softmax(mil1, dim=2)  # <<< MOD: 在 class 维 softmax
+            return score0 * score1  # [B,P,C]
 
         # 保留旧接口：单视频 [P,D] -> [P,C]
         if x.dim() == 2:
-            mil0 = self.mil_score0(x)              # [P,C]
-            mil1 = self.mil_score1(x)              # [P,C]
+            mil0 = self.mil_score0(x)  # [P,C]
+            mil1 = self.mil_score1(x)  # [P,C]
             return F.softmax(mil0, dim=0) * F.softmax(mil1, dim=1)
 
         raise ValueError(f"mil_outputs expects 2D/3D, got {x.shape}")
+
 
 class refine_outputs(nn.Module):
     """

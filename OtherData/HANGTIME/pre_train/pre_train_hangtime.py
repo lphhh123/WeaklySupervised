@@ -289,7 +289,7 @@ def run_loso_pretrain(config: dict):
 if __name__ == "__main__":
     config = {
         "dataset_dir": "/home/lipei/TAL_data/hangtime/",
-        "out_dir": "/home/lipei/project/WSDDN/HANGTIME/pre_train",
+        "out_dir": "/home/lipei/project/WSDDN/OtherData/HANGTIME/pre_train",
 
         "num_classes": 5,
         "task": "single",

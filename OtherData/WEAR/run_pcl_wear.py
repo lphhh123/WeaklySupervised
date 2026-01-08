@@ -16,7 +16,7 @@ from tool import softnms_v2, ANETdetection
 from OtherData.WEAR.dataset_wear_ws import WeaklyWearDataset
 from pre_train.pre_model import CNN1DBackbone
 from models.PCL_OICR_model import IMU_PCL_OICR
-from OtherData.utils import _meta_get,set_seed,featbox_to_time_seconds,build_gt_for_anet
+from OtherData.utils import _meta_get, set_seed, featbox_to_time_seconds, build_gt_for_anet, dump_config
 from OtherData.utils import generate_proposal_boxes,GlobalBackboneWrapper,ProposalWrappedDataset
 
 
@@ -420,6 +420,9 @@ def test_pcl_oicr_wear(config, checkpoint_path, fold: int, test_mode: str = "tes
 # ============================================================
 def run_loso_pcl_oicr_wear(config):
     set_seed(int(config.get("seed", 2024)))
+    # --- save config snapshot ---
+    os.makedirs(config["result_root"], exist_ok=True)
+    dump_config(config, config["result_root"])
 
     num_folds = int(config.get("num_folds", 5))
     folds = config.get("folds", list(range(num_folds)))
@@ -476,7 +479,7 @@ if __name__ == "__main__":
         "exp_name": "oicr",
 
         "dataset_dir": "/home/lipei/TAL_data/wear/",
-        "pretrained_dir": "/home/lipei/project/WSDDN/WEAR/pre_train",
+        "pretrained_dir": "/home/lipei/project/WSDDN/OtherData/WEAR/pre_train",
         "checkpoint_dir": "/home/lipei/project/WSDDN/checkpoints/WEAR/oicr_0106",
         "result_root": "/home/lipei/project/WSDDN/test_results/WEAR/oicr_0106",
 

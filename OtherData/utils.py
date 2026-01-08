@@ -586,3 +586,24 @@ def _clip_multihot_label(annos, clip_s, clip_e, num_classes: int, min_ov_frames:
             if 0 <= lid < num_classes:
                 y[lid] = 1.0
     return y
+
+# ---------- 保存config ----------
+def _to_jsonable(obj):
+    """把 config 里可能出现的 numpy 类型等转成可 json 序列化的 Python 内置类型。"""
+    if obj is None or isinstance(obj, (str, int, float, bool)):
+        return obj
+    if isinstance(obj, dict):
+        return {str(k): _to_jsonable(v) for k, v in obj.items()}
+    if isinstance(obj, (list, tuple)):
+        return [_to_jsonable(v) for v in obj]
+    if isinstance(obj, np.generic):  # np.int64 / np.float32 ...
+        return obj.item()
+    return str(obj)
+
+def dump_config(config: dict, out_dir: str, filename: str = "config.json"):
+    os.makedirs(out_dir, exist_ok=True)
+    out_path = os.path.join(out_dir, filename)
+    with open(out_path, "w", encoding="utf-8") as f:
+        json.dump(_to_jsonable(config), f, indent=2, ensure_ascii=False)
+    print(f"[Saved] config -> {out_path}")
+    return out_path

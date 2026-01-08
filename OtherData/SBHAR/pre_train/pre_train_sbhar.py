@@ -10,7 +10,7 @@ from torch.utils.data import DataLoader
 from tqdm import tqdm
 
 from OtherData.SBHAR.pre_train.dataset_sbhar import SBHARDataset_3s
-from OtherData.Opportunity.pre_train.pre_model_opportunity import CNN1DClassifier_3s  # 如果不通用，见文末“模型长度坑”
+from pre_train.pre_model import CNN1DClassifier
 
 
 def set_seed(seed: int = 42):
@@ -227,7 +227,7 @@ def run_loso_pretrain(config: dict):
         print(f"[Fold {fold}] train windows={len(train_ds)} | eval windows={len(eval_ds)} | test windows={len(test_ds)}")
 
         in_channels = config.get("in_channels", config.get("num_sensors", 3))
-        model = CNN1DClassifier_3s(
+        model = CNN1DClassifier(
             num_classes=config["num_classes"],      # ★12
             task=config.get("task", "single"),
             feat_dim=config.get("feat_dim", 512),
@@ -271,7 +271,7 @@ def run_loso_pretrain(config: dict):
 if __name__ == "__main__":
     config = {
         "dataset_dir": "/home/lipei/TAL_data/sbhar/",
-        "out_dir": "/home/lipei/project/WSDDN/SBHAR/pre_train",
+        "out_dir": "/home/lipei/project/WSDDN/OtherData/SBHAR/pre_train",
 
         # ★SBHAR folds
         "num_folds": 30,

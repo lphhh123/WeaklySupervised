@@ -10,10 +10,10 @@ import numpy as np
 import torch
 import torch.nn as nn
 import torch.optim as optim
-from torch.utils.data import DataLoader, random_split
+from torch.utils.data import DataLoader
 from tqdm import tqdm
 
-from dataset_opportunity import OpportunityDataset_3s
+from OtherData.Opportunity.pre_train.dataset_opportunity import OpportunityDataset_3s
 from pre_train.pre_model import CNN1DClassifier
 
 
@@ -290,7 +290,7 @@ def run_loso_pretrain(config: dict):
 if __name__ == "__main__":
     config = {
         "dataset_dir": "/home/lipei/TAL_data/opportunity/",
-        "out_dir": "/home/lipei/project/WSDDN/Opportunity/pre_train",
+        "out_dir": "/home/lipei/project/WSDDN/OtherData/Opportunity/pre_train",
 
         "num_classes": 17,
         "task": "single",
