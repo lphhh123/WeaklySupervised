@@ -108,16 +108,15 @@ class IMU_PCL_OICR(nn.Module):
 
         # 1) SPP pooling
         proposal_feats = self.pool_proposals_1d_spp(feat, proposal_boxes)  # [B, P, C']
-        _, _, D = proposal_feats.shape
-        x = proposal_feats.view(B * P, D)  # [B*P, C']
 
         # 2) MLP
-        x = F.relu(self.fc1(x), inplace=True)
-        x = F.relu(self.fc2(x), inplace=True)
+        x = F.relu(self.fc1(proposal_feats), inplace=True)  # [B,P,H]
+        x = F.relu(self.fc2(x), inplace=True)  # [B,P,H]
 
         # 3) MIL + refine
-        mil_score = self.mil_head(x)             # [B*P, num_classes]
-        refine_scores_flat = self.refine_head(x) # list of [B*P, num_classes+1]
+        mil_score = self.mil_head(x)  #  [B,P,C]（会走 3D 分支）
+        refine_scores_flat = self.refine_head(x)  # 把 refine_outputs 改成输出 [B,P,C+1]
+
 
         device = x.device
         output = {}
@@ -190,6 +189,8 @@ class IMU_PCL_OICR(nn.Module):
         output["refine_scores"] = [
             rs.view(B, P, self.num_classes + 1) for rs in refine_scores_flat
         ]
+        refine_fg_list = [rs[..., 1:] for rs in output["refine_scores"]]  # list([B,P,C])
+        output["joint_prob"] = torch.stack(refine_fg_list, dim=0).mean(dim=0)  # [B,P,C]
 
         return output
 

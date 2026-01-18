@@ -4,18 +4,63 @@ from typing import Type, Tuple
 
 from torch.nn import init
 
+from pre_train.pre_mamba_model_7s import MambaBackbone_7s
 from pre_train.pre_model import *
+from pre_train.pre_tsse_mamba_model_7s import TSSE_MambaBackbone_7s, TSSE_7s
 
 # 建立「预训练权重文件名关键词」与「backbone类」的映射：名字 -> (类, ckpt, feat_dim, input_length)
 PRETRAINED_ZOO = {
     "CNN1D": {
-        "cls": CNN1DBackbone_7s,
+        "cls": CNN1DBackbone,
         "ckpt": "/home/lipei/project/WSDDN/pre_train/XRFV2_all_CNN1DClassifier_7s_pretrain_best.pth",
         # "ckpt": "/home/lipei/WSDDN/pre_train/XRFV2_all_CNN1DClassifier_7s_pretrain_best.pth",
         "feat_dim": 512,
         "input_length": 2048,
     },
+    "VGG1D_BUAA": {
+        "cls": VGG1DBackboneBUAA,
+        "ckpt": "/home/lipei/project/WSDDN/pre_train/XRFV2_all_VGG1DClassifier_pretrain_best.pth",
+        "feat_dim": 512,
+        "input_length": 2048,
+    },
+    "VGG1D": {
+        "cls": VGG1DBackbone,
+        "ckpt": "/home/lipei/project/WSDDN/pre_train/XRFV2_all_VGG1DClassifier_pretrain_best.pth",
+        "feat_dim": 512,
+        "input_length": 2048,
+    },
+    "Mamba": {
+        "cls": MambaBackbone_7s,
+        # "ckpt": "/home/lipei/project/WSDDN/pre_train/XRFV2_all_mamba_pretrain_best.pth",
+        "ckpt": "/home/lipei/WSDDN/pre_train/XRFV2_all_mamba_pretrain_best.pth",
+        "feat_dim": 512,
+        "input_length": 2048,
+    },
+    #  TSSE + Mamba
+    "TSSE_Mamba": {
+    "cls": TSSE_MambaBackbone_7s,
+    # "ckpt": "/home/lipei/project/WSDDN/pre_train/XRFV2_all_TSSEMambaClassifier_7s_pretrain_best.pth",
+    "ckpt": "/home/lipei/WSDDN/pre_train/XRFV2_all_TSSEMambaClassifier_7s_pretrain_best.pth",
+    "feat_dim": 512,
+    "input_length": 2048,
+    "allow_random_init": False,
+    },
+    # TSSE
+    "TSSE": {
+    "cls": TSSE_7s,
+    # "ckpt": "/home/lipei/project/WSDDN/pre_train/XRFV2_all_TSSEClassifier_7s_pretrain_best.pth",
+    "ckpt": "/home/lipei/WSDDN/pre_train/XRFV2_all_TSSEClassifier_7s_pretrain_best.pth",
+    "feat_dim": 512,
+    "input_length": 2048,
+    "allow_random_init": False,
+    },
 
+    "TCN": TCNBackbone_7s,
+    "ResTCN": ResTCNBackbone_7s,
+    "MSTCN": MSTCNBackbone_7s,
+    "LSTM": LSTMBackbone_7s,
+    "Transformer": TransformerBackbone_7s,
+    "ActionFormer": ActionFormerBackbone_7s,
 }
 
 def _clean_state_dict(state):

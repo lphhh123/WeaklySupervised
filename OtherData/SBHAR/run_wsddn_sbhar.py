@@ -26,8 +26,8 @@ def train_wsddn_one_fold_sbhar(config, fold: int, exp_name: str = "wsddn_opportu
     backbone = CNN1DBackbone(in_channels=in_channels, feat_dim=512).to(device)
 
     pretrain_path = os.path.join(
-        config["pretrained_dir"],
-        f"sbhar_{config.get('pretrained_model_name','CNN1D')}_pretrained_loso_sbj_{fold}.pth"
+        config["pretrained_dir"], config["pretrained_model_name"],
+        f"sbhar_{config.get('pretrained_model_name', 'CNN1D')}_pretrained_loso_sbj_{fold}.pth"
     )
     backbone.load_state_dict(torch.load(pretrain_path, map_location=device))
     backbone.eval()
@@ -249,8 +249,8 @@ def test_wsddn_sbhar(config, checkpoint_path, fold: int, test_mode: str = "test_
     backbone = CNN1DBackbone(in_channels=in_channels, feat_dim=512).to(device)
 
     pretrain_path = os.path.join(
-        config["pretrained_dir"],
-        f"sbhar_{config.get('pretrained_model_name','CNN1D')}_pretrained_loso_sbj_{fold}.pth"
+        config["pretrained_dir"], config["pretrained_model_name"],
+        f"sbhar_{config.get('pretrained_model_name', 'CNN1D')}_pretrained_loso_sbj_{fold}.pth"
     )
     backbone.load_state_dict(torch.load(pretrain_path, map_location=device))
     backbone.eval()

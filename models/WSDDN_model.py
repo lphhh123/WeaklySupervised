@@ -1,6 +1,7 @@
 import torch
 import torch.nn as nn
 import torch.optim as optim
+import math
 from torch.utils.data import Dataset, DataLoader
 import numpy as np
 import h5py
@@ -366,66 +367,237 @@ class WSDDNTransformerIMU(nn.Module):
             "feat_fc7": feat_fc7_reshaped,
         }
 
+
+# 定长版
+# def generate_proposal_boxes(
+#     T_global=30,          # 特征提取后的时序维度
+#     num_proposals=50,     # 候选总数
+#     raw_data_length=1500, # 原始数据总长度（30s*50=1500）
+#     base_physical_sec=7,  # 候选对象的实际物理时长（秒）7s
+#     total_physical_sec=30,# 片段的总物理时长（秒）30s
+#     step_raw=2,         # 滑动步长的实际物理时长（秒）2s
+#     min_raw_length=5,   # 最短候选的实际物理时长（秒）5s
+#     max_raw_length=15   # 最长候选的实际物理时长（秒）15s
+# ):
+#     """
+#     生成候选片段（特征维度的start_idx和end_idx）
+#     核心：基于原始数据尺度转换到特征尺度（T_global）
+#     """
+#     proposal_boxes = []
+#
+#     # 转换系数：原始数据的1个点 → 特征维度的比例
+#     # 原来是30*50=1500，转为2048，再转为T_global,所以绝对=相对*（2048/1500）*（T_global/2048）=相对*（T_global/1500）
+#     raw_to_feat = T_global / raw_data_length
+#
+#     # -------------------------- 1. 滑动窗口基础候选（基于物理时长） --------------------------
+#     base_raw_length = int((base_physical_sec / total_physical_sec) * raw_data_length) #7*（30/1500）
+#
+#     # 基础候选长度转换到特征尺度
+#     base_feat_length = max(1, int(base_raw_length * raw_to_feat))
+#
+#     # 滑动步长（原始数据→特征尺度）
+#     step_feat = max(1, int(step_raw * 50 * raw_to_feat))  # 50是采样率
+#
+#     # 生成滑动窗口候选
+#     start_feat = 0
+#     while start_feat + base_feat_length <= T_global:
+#         end_feat = start_feat + base_feat_length
+#         proposal_boxes.append([start_feat, end_feat])
+#         start_feat += step_feat  # 按特征步长滑动
+#
+#
+#     # -------------------------- 2. 随机长度候选补充（基于原始数据长度范围） --------------------------
+#     # 补充候选至num_proposals
+#     while len(proposal_boxes) < num_proposals:
+#         # 随机生成原始数据时长（在[min_raw_length, max_raw_length]范围内，即5-15s）
+#         raw_length = random.randint(min_raw_length, max_raw_length)
+#         # 转换到特征尺度
+#         feat_length = max(1, int(raw_length * 50 * raw_to_feat))
+#
+#         # 随机生成起始位置（原始数据→特征尺度）
+#         max_raw_start = total_physical_sec - raw_length  # 原始数据最大起始点（总时长-候选对象时长）
+#         if max_raw_start <= 0:
+#             raw_start = 0
+#         else:
+#             raw_start = random.randint(0, max_raw_start)
+#         feat_start = int(raw_start * 50 * raw_to_feat)
+#
+#         # 计算结束位置（确保不超过特征长度）
+#         feat_end = min(feat_start + feat_length, T_global)
+#         proposal_boxes.append([feat_start, feat_end])
+#
+#
+#     # 截断至num_proposals并返回
+#     return torch.tensor(proposal_boxes[:num_proposals], dtype=torch.long)
+
+
+
+
+# 非定长版
 def generate_proposal_boxes(
-    T_global=30,          # 特征提取后的时序维度
-    num_proposals=50,     # 候选总数
-    raw_data_length=1500, # 原始数据总长度（30s*50=1500）
-    base_physical_sec=7,  # 候选对象的实际物理时长（秒）7s
-    total_physical_sec=30,# 片段的总物理时长（秒）30s
-    step_raw=2,         # 滑动步长的实际物理时长（秒）2s
-    min_raw_length=5,   # 最短候选的实际物理时长（秒）5s
-    max_raw_length=15   # 最长候选的实际物理时长（秒）15s
+    T_global: int,
+    num_proposals: int,
+    fps: int = 30,
+
+    clip_sec: float = 30.0,
+    raw_frames: Optional[int] = None,
+
+    base_physical_sec: float = 7.0,   # 仍保留，但不再“只生成这一种长度”
+    step_sec: float = 1.0, # 滑窗步长在特征域的步长
+    min_sec: float = 5.0,
+    max_sec: float = 15.0,
+
+    seed: int = 2024,
+
+    # --- 自动尺度生成控制 ---
+    sec_resolution: float = 1.0,      # 尺度步长，默认 1s；想更细可设 0.5
+    fixed_keep_ratio: float = 0.7,    # 最终 proposals 中“固定窗口”占比
+    fixed_per_scale_min: int = 2,     # 每个尺度至少保留多少（尽量保证多尺度）
 ):
     """
-    生成候选片段（特征维度的start_idx和end_idx）
-    核心：基于原始数据尺度转换到特征尺度（T_global）
+    输出特征索引空间 proposals: Tensor[P,2]，每行 [start,end)。
+    多尺度固定窗口：尺度来自 [min_sec, max_sec] 的离散集合（sec_resolution 控制）
     """
-    proposal_boxes = []
 
-    # 转换系数：原始数据的1个点 → 特征维度的比例
-    # 原来是30*50=1500，转为2048，再转为T_global,所以绝对=相对*（2048/1500）*（T_global/2048）=相对*（T_global/1500）
-    raw_to_feat = T_global / raw_data_length
+    rng = random.Random(int(seed))
 
-    # -------------------------- 1. 滑动窗口基础候选（基于物理时长） --------------------------
-    base_raw_length = int((base_physical_sec / total_physical_sec) * raw_data_length) #7*（30/1500）
+    if raw_frames is None:
+        raw_frames = int(round(float(clip_sec) * float(fps)))
+    else:
+        raw_frames = int(raw_frames)
+        clip_sec = float(raw_frames) / float(fps)
 
-    # 基础候选长度转换到特征尺度
-    base_feat_length = max(1, int(base_raw_length * raw_to_feat))
+    assert T_global >= 1 and raw_frames >= 1
+    raw_to_feat = float(T_global) / float(raw_frames)
 
-    # 滑动步长（原始数据→特征尺度）
-    step_feat = max(1, int(step_raw * 50 * raw_to_feat))  # 50是采样率
+    # -------- 0) 自动生成“固定窗口尺度集合” --------
+    # 注意：尺度不应超过 clip_sec
+    lo = max(1e-6, float(min_sec))
+    hi = min(float(max_sec), float(clip_sec))
+    if hi < lo:
+        hi = lo
 
-    # 生成滑动窗口候选
-    start_feat = 0
-    while start_feat + base_feat_length <= T_global:
-        end_feat = start_feat + base_feat_length
-        proposal_boxes.append([start_feat, end_feat])
-        start_feat += step_feat  # 按特征步长滑动
+    # 生成 [lo, hi] 的离散尺度（按 sec_resolution）
+    step = max(1e-6, float(sec_resolution))
+    n_scales = int(math.floor((hi - lo) / step)) + 1
+    scales = [lo + i * step for i in range(n_scales)]
+
+    # 把 base_physical_sec 确保放进去（避免你想强调某个基准尺度）
+    if float(base_physical_sec) >= lo and float(base_physical_sec) <= hi:
+        scales.append(float(base_physical_sec))
+
+    # 去重并排序（用 round 抑制浮点误差）
+    scales = sorted(set([round(s, 6) for s in scales]))
+
+    # -------- 1) 生成多尺度固定滑窗 proposal 池（按尺度分桶）--------
+    step_feat = max(1, int(round(float(step_sec) * float(fps) * raw_to_feat)))
+
+    pool_by_scale = {}  # scale_sec -> list[[s,e],...]
+    for sec in scales:
+        raw_len = int(round(sec * fps))
+        feat_len = max(1, int(round(raw_len * raw_to_feat)))
+
+        boxes = []
+        s = 0
+        while s + feat_len <= T_global:
+            boxes.append([s, s + feat_len])
+            s += step_feat
+
+        if len(boxes) > 0:
+            pool_by_scale[sec] = boxes
+
+    # 如果某些尺度因为太长/太短导致没有 box，就自动忽略
+    valid_scales = list(pool_by_scale.keys())
+    if len(valid_scales) == 0:
+        # 兜底：至少给一个全局 box
+        return torch.tensor([[0, T_global]], dtype=torch.long)[:num_proposals]
+
+    # -------- 2) 固定窗口阶段：按尺度“分层采样”，保证多尺度 --------
+    num_fixed = int(round(num_proposals * float(fixed_keep_ratio)))
+    num_fixed = max(0, min(num_fixed, num_proposals))
+    num_rand  = num_proposals - num_fixed
+
+    fixed_props = []
+
+    if num_fixed > 0:
+        # 2.1 先给每个尺度一个“最低配额”
+        base_quota = min(fixed_per_scale_min, max(1, num_fixed // len(valid_scales)))  # 尽量保证每尺度都有
+        quotas = {s: 0 for s in valid_scales}
+
+        # 先分配最低配额
+        used = 0
+        for s in valid_scales:
+            q = min(base_quota, len(pool_by_scale[s]))
+            quotas[s] = q
+            used += q
+            if used >= num_fixed:
+                break
+
+        # 2.2 剩余配额按“均匀轮询”补上（避免偏向 3s）
+        remaining = num_fixed - used
+        if remaining > 0:
+            # 轮询加 1，直到用完 or 该尺度没得加
+            idx = 0
+            scales_cycle = valid_scales[:]  # 固定顺序即可
+            while remaining > 0:
+                s = scales_cycle[idx % len(scales_cycle)]
+                if quotas[s] < len(pool_by_scale[s]):
+                    quotas[s] += 1
+                    remaining -= 1
+                idx += 1
+                # 防止所有尺度都满了导致死循环
+                if idx > 10 * (remaining + 1) * len(scales_cycle):
+                    break
+
+        # 2.3 对每个尺度内部做“覆盖采样”（不是取前面那一截）
+        for s in valid_scales:
+            q = quotas[s]
+            if q <= 0:
+                continue
+            boxes = pool_by_scale[s]
+            pick = _uniform_pick_indices(len(boxes), q)
+            fixed_props.extend([boxes[i] for i in pick])
+
+        # 如果因为“尺度满了”导致 fixed_props < num_fixed，就从所有 fixed_pool 再补齐
+        if len(fixed_props) < num_fixed:
+            all_fixed = []
+            for s in valid_scales:
+                all_fixed.extend(pool_by_scale[s])
+            # 去重
+            all_fixed = list({(a,b) for a,b in all_fixed})
+            all_fixed.sort(key=lambda x: (x[0], x[1]))
+            need = num_fixed - len(fixed_props)
+            pick = _uniform_pick_indices(len(all_fixed), need)
+            fixed_props.extend([list(all_fixed[i]) for i in pick])
+
+    props = fixed_props[:num_fixed]
+
+    # -------- 3) 随机长度补齐（也在 min~max 内随机）--------
+    while len(props) < num_proposals:
+        dur_sec = rng.uniform(lo, hi)  # 用 uniform 而不是 randint，尺度更丰富
+        raw_len = int(round(dur_sec * fps))
+        feat_len = max(1, int(round(raw_len * raw_to_feat)))
+
+        max_start_sec = max(0.0, clip_sec - float(dur_sec))
+        start_sec = 0.0 if max_start_sec <= 0 else rng.uniform(0.0, max_start_sec)
+
+        feat_start = int(round(start_sec * fps * raw_to_feat))
+        feat_end = min(feat_start + feat_len, T_global)
+        if feat_end <= feat_start:
+            feat_end = min(feat_start + 1, T_global)
+
+        props.append([feat_start, feat_end])
+
+    return torch.tensor(props[:num_proposals], dtype=torch.long)
 
 
-    # -------------------------- 2. 随机长度候选补充（基于原始数据长度范围） --------------------------
-    # 补充候选至num_proposals
-    while len(proposal_boxes) < num_proposals:
-        # 随机生成原始数据时长（在[min_raw_length, max_raw_length]范围内，即5-15s）
-        raw_length = random.randint(min_raw_length, max_raw_length)
-        # 转换到特征尺度
-        feat_length = max(1, int(raw_length * 50 * raw_to_feat))
-
-        # 随机生成起始位置（原始数据→特征尺度）
-        max_raw_start = total_physical_sec - raw_length  # 原始数据最大起始点（总时长-候选对象时长）
-        if max_raw_start <= 0:
-            raw_start = 0
-        else:
-            raw_start = random.randint(0, max_raw_start)
-        feat_start = int(raw_start * 50 * raw_to_feat)
-
-        # 计算结束位置（确保不超过特征长度）
-        feat_end = min(feat_start + feat_length, T_global)
-        proposal_boxes.append([feat_start, feat_end])
-
-
-    # 截断至num_proposals并返回
-    return torch.tensor(proposal_boxes[:num_proposals], dtype=torch.long)
+def _uniform_pick_indices(n: int, k: int):
+    """从长度 n 的序列里均匀取 k 个 index（覆盖全域）"""
+    if k <= 0 or n <= 0:
+        return []
+    if k >= n:
+        return list(range(n))
+    return np.linspace(0, n - 1, k).astype(int).tolist()
 
 # -------------------------- 3. 候选生成（滑动窗口+随机长度） --------------------------
 def generate_proposals(imu_data, num_proposals=50, base_len=476, step=256, min_len=340, max_len=884):

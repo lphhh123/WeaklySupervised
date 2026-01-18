@@ -35,7 +35,7 @@ def train_pcl_oicr_one_fold_wear(config, fold: int, exp_name: str = "pcl_oicr_rw
     # ---- load backbone (fold-specific pretrain) ----
     backbone = CNN1DBackbone(in_channels=in_channels, feat_dim=512).to(device)
     pretrain_path = os.path.join(
-        config["pretrained_dir"],
+        config["pretrained_dir"],config["pretrained_model_name"],
         f"wear_{config.get('pretrained_model_name','CNN1D')}_pretrained_loso_sbj_{fold}.pth"
     )
     if not os.path.isfile(pretrain_path):
@@ -233,7 +233,7 @@ def test_pcl_oicr_wear(config, checkpoint_path, fold: int, test_mode: str = "tes
     # backbone + wrapper
     backbone = CNN1DBackbone(in_channels=in_channels, feat_dim=512).to(device)
     pretrain_path = os.path.join(
-        config["pretrained_dir"],
+        config["pretrained_dir"],config["pretrained_model_name"],
         f"wear_{config.get('pretrained_model_name','CNN1D')}_pretrained_loso_sbj_{fold}.pth"
     )
     if not os.path.isfile(pretrain_path):

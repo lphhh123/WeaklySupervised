@@ -1,23 +1,31 @@
+# run_oicrBUAA_hangtime.py
+# -*- coding: utf-8 -*-
 import torch
+
+from metrics_utils import evaluate_extra_metrics_and_plots
+from models.oicr_paloss_model import IMU_OICR_PALoss
+
 torch.set_num_threads(8)
 torch.set_num_interop_threads(1)
-
-
+import os
+import json
+import time
+import numpy as np
+import torch
 import torch.optim as optim
+from torch.utils.data import DataLoader
 from tqdm import tqdm
 
 from tool import softnms_v2, ANETdetection
-from OtherData.SBHAR.dataset_sbhar_ws import WeaklySBHARDataset
-from pre_train.pre_model import CNN1DBackbone
-from models.PCL_OICR_model import IMU_PCL_OICR
-from OtherData.utils import *
-from OtherData.utils import _meta_get
+from OtherData.HANGTIME.dataset_hangtime_ws import WeaklyHangtimeDataset
+from OtherData.utils import _meta_get, set_seed, featbox_to_time_seconds, build_gt_for_anet, generate_proposal_boxes, \
+    GlobalBackboneWrapper, ProposalWrappedDataset, dump_config, build_backbone
 
 
 # ============================================================
 # 3) train one fold
 # ============================================================
-def train_pcl_oicr_one_fold_sbhar(config, fold: int, exp_name: str = "pcl_oicr_opportunity"):
+def train_oicrBUAA_one_fold_hangtime(config, fold: int, exp_name: str = "pcl_oicr_hangtime"):
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
     dataset_dir = config["dataset_dir"]
@@ -27,10 +35,12 @@ def train_pcl_oicr_one_fold_sbhar(config, fold: int, exp_name: str = "pcl_oicr_o
     num_classes = int(config["num_classes"])
 
     # ---- load 3s backbone (fold-specific pretrain) ----
-    backbone = CNN1DBackbone(in_channels=in_channels, feat_dim=512).to(device)
+    pretrain_name = config.get("pretrained_model_name", "CNN1D")
+    backbone = build_backbone(pretrain_name, in_channels=in_channels, feat_dim=512).to(device)
+
     pretrain_path = os.path.join(
-        config["pretrained_dir"],config["pretrained_model_name"],
-        f"sbhar_{config.get('pretrained_model_name','CNN1D')}_pretrained_loso_sbj_{fold}.pth"
+        config["pretrained_dir"], "VGG1D",
+        f"hangtime_VGG1D_pretrained_loso_sbj_{fold}.pth"
     )
     if not os.path.isfile(pretrain_path):
         raise FileNotFoundError(f"pretrain_path not found: {pretrain_path}")
@@ -47,24 +57,23 @@ def train_pcl_oicr_one_fold_sbhar(config, fold: int, exp_name: str = "pcl_oicr_o
     ).to(device)
     pretrained_backbone.eval()
 
-    # ---- PCL/OICR model ----
-    model = IMU_PCL_OICR(
+    # ---- oicrBUAA model ----
+    model = IMU_OICR_PALoss(
         feat_dim=512,
         num_classes=num_classes,
         refine_times=int(config["training"].get("refine_times", 3)),
-        use_pcl=bool(config["training"].get("use_pcl", False)),
         fg_thresh=float(config["training"].get("fg_thresh", 0.5)),
         bg_thresh=float(config["training"].get("bg_thresh", 0.1)),
-        graph_iou_thresh=float(config["training"].get("graph_iou_thresh", 0.5)),
-        max_pc_num=int(config["training"].get("max_pc_num", 3)),
-        hidden_dim=int(config["training"].get("hidden_dim", 4096)),
         spp_levels=tuple(config["training"].get("spp_levels", (1, 2, 4))),
         pool_type=str(config["training"].get("pool_type", "avg")),
+        stage0_boost=float(config["training"].get("stage0_boost", 3.0)),
+        pa_mode=str(config["training"].get("pa_mode", "sigmoid")),
+        enhance_weight=bool(config["training"].get("enhance_weight", False)),
     ).to(device)
 
     # ---- dataset ----
     loso_json = f"loso_sbj_{fold}.json"
-    base_train_ds = WeaklySBHARDataset(
+    base_train_ds = WeaklyHangtimeDataset(
         dataset_dir=dataset_dir,
         loso_json=loso_json,
         mode="train",
@@ -128,7 +137,7 @@ def train_pcl_oicr_one_fold_sbhar(config, fold: int, exp_name: str = "pcl_oicr_o
     num_epochs = int(config["training"]["num_epochs"])
 
     print("\n" + "=" * 80)
-    print(f"[Train PCL/OICR] fold={fold} | device={device}")
+    print(f"[Train oicrBUAA] fold={fold} | device={device}")
     print(f"  pretrain_backbone: {pretrain_path}")
     print(f"  train windows: {len(train_dataset)} | batch={bs}")
     print("=" * 80)
@@ -181,7 +190,7 @@ def train_pcl_oicr_one_fold_sbhar(config, fold: int, exp_name: str = "pcl_oicr_o
         if avg_loss < best_loss:
             best_loss = avg_loss
             torch.save({"model_state_dict": model.state_dict(), "best_loss": best_loss, "epoch": epoch + 1}, ckpt_path)
-            print(f"  >>> saved best pcl/oicr -> {ckpt_path} (best_loss={best_loss:.6f})")
+            print(f"  >>> saved best oicrBUAA -> {ckpt_path} (best_loss={best_loss:.6f})")
 
         scheduler.step()
 
@@ -192,7 +201,7 @@ def train_pcl_oicr_one_fold_sbhar(config, fold: int, exp_name: str = "pcl_oicr_o
 # 4) test one fold
 # ============================================================
 @torch.no_grad()
-def test_pcl_oicr_sbhar(config, checkpoint_path, fold: int, test_mode: str = "test_window"):
+def test_oicrBUAA_hangtime(config, checkpoint_path, fold: int, test_mode: str = "test_window"):
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
     dataset_dir = config["dataset_dir"]
@@ -207,7 +216,7 @@ def test_pcl_oicr_sbhar(config, checkpoint_path, fold: int, test_mode: str = "te
         raise FileNotFoundError(f"annotation json not found: {ann_path}")
 
     # dataset
-    ds = WeaklySBHARDataset(
+    ds = WeaklyHangtimeDataset(
         dataset_dir=dataset_dir,
         loso_json=loso_json,
         mode=test_mode,
@@ -225,10 +234,11 @@ def test_pcl_oicr_sbhar(config, checkpoint_path, fold: int, test_mode: str = "te
     loader = DataLoader(ds, batch_size=1, shuffle=False, num_workers=int(config.get("num_workers", 2)))
 
     # backbone + wrapper
-    backbone = CNN1DBackbone(in_channels=in_channels, feat_dim=512).to(device)
+    pretrain_name = config.get("pretrained_model_name", "CNN1D")
+    backbone = build_backbone(pretrain_name, in_channels=in_channels, feat_dim=512).to(device)
     pretrain_path = os.path.join(
-        config["pretrained_dir"], config["pretrained_model_name"],
-        f"sbhar_{config.get('pretrained_model_name', 'CNN1D')}_pretrained_loso_sbj_{fold}.pth"
+        config["pretrained_dir"], "VGG1D",
+        f"hangtime_VGG1D_pretrained_loso_sbj_{fold}.pth"
     )
     if not os.path.isfile(pretrain_path):
         raise FileNotFoundError(f"pretrain_path not found: {pretrain_path}")
@@ -246,19 +256,19 @@ def test_pcl_oicr_sbhar(config, checkpoint_path, fold: int, test_mode: str = "te
     wrapper.eval()
 
     # model
-    model = IMU_PCL_OICR(
+    model = IMU_OICR_PALoss(
         feat_dim=512,
         num_classes=num_classes,
         refine_times=int(config["training"].get("refine_times", 3)),
-        use_pcl=bool(config["training"].get("use_pcl", False)),
         fg_thresh=float(config["training"].get("fg_thresh", 0.5)),
         bg_thresh=float(config["training"].get("bg_thresh", 0.1)),
-        graph_iou_thresh=float(config["training"].get("graph_iou_thresh", 0.5)),
-        max_pc_num=int(config["training"].get("max_pc_num", 3)),
-        hidden_dim=int(config["training"].get("hidden_dim", 4096)),
         spp_levels=tuple(config["training"].get("spp_levels", (1, 2, 4))),
         pool_type=str(config["training"].get("pool_type", "avg")),
+        stage0_boost=float(config["training"].get("stage0_boost", 3.0)),
+        pa_mode=str(config["training"].get("pa_mode", "sigmoid")),
+        enhance_weight=bool(config["training"].get("enhance_weight", False)),
     ).to(device)
+
     ckpt = torch.load(checkpoint_path, map_location=device)
     if isinstance(ckpt, dict) and "model_state_dict" in ckpt:
         model.load_state_dict(ckpt["model_state_dict"])
@@ -276,7 +286,7 @@ def test_pcl_oicr_sbhar(config, checkpoint_path, fold: int, test_mode: str = "te
     conf_thresh = float(config["testing"]["conf_thresh"])
     nms_sigma = float(config["testing"]["nms_sigma"])
     top_k = int(config["testing"]["top_k"])
-    if test_mode == "test_window_proposals":
+    if test_mode == "test_window":
         num_props = int(config["testing"]["test_window_proposals"])
     else:
         num_props = int(config["testing"]["test_full_proposals"])
@@ -287,7 +297,7 @@ def test_pcl_oicr_sbhar(config, checkpoint_path, fold: int, test_mode: str = "te
     results_cache = {}
     inf_time_list, gpu_mem_list = [], []
 
-    for x, y, meta in tqdm(loader, desc=f"[Test PCL/OICR] fold{fold} {test_mode}"):
+    for x, y, meta in tqdm(loader, desc=f"[Test oicrBUAA] fold{fold} {test_mode}"):
         sbj = str(_meta_get(meta, "sbj"))
         cs = int(_meta_get(meta, "start"))
         ce = int(_meta_get(meta, "end"))
@@ -327,8 +337,9 @@ def test_pcl_oicr_sbhar(config, checkpoint_path, fold: int, test_mode: str = "te
         inf_time_list.append((time.time() - t0) * 1000.0)
 
         # 用最后一层 refine（去掉背景列0）
-        refine_scores = out["refine_scores"]  # list of [1,P,C+1]
-        final_prob = refine_scores[-1][0, :, 1:]  # [P,C]
+        # refine_scores = out["refine_scores"]  # list of [1,P,C+1]
+        # final_prob = refine_scores[-1][0, :, 1:]  # [P,C]
+        final_prob = out["joint_prob"][0]  # [P,C]
 
         # proposal -> absolute time(sec)
         for p in range(props.shape[0]):
@@ -369,7 +380,7 @@ def test_pcl_oicr_sbhar(config, checkpoint_path, fold: int, test_mode: str = "te
 
     pred_path = os.path.join(fold_dir, f"predictions_{test_mode}.json")
     with open(pred_path, "w", encoding="utf-8") as f:
-        json.dump({"version": "PCL-OICR-Opportunity-v1.0", "results": results, "external_data": {}},
+        json.dump({"version": "OICRBUAA-hangtime-v1.0", "results": results, "external_data": {}},
                   f, indent=2, ensure_ascii=False)
     print(f"[Saved] {pred_path}")
 
@@ -406,14 +417,43 @@ def test_pcl_oicr_sbhar(config, checkpoint_path, fold: int, test_mode: str = "te
     for tiou, m in zip(tious, mAPs):
         print(f"  tIoU={tiou:.2f} -> mAP={m:.4f}")
 
+    # ===== extra metrics & plots =====
+    # class_names 要和输出label一致：用 id2label（k -> name）
+    class_names = [id2label.get(k, f"class_{k}") for k in range(num_classes)]
+
+    extra_lines, artifacts = evaluate_extra_metrics_and_plots(
+        gt_path=gt_path,
+        pred_path=pred_path,
+        class_names=class_names,
+        tious=tious,
+        result_dir=fold_dir,
+        test_mode=test_mode,
+        subset_name="test",
+        confusion_tiou=float(config["testing"].get("confusion_tiou", 0.5)),
+        include_bg=True,
+        uodifm_unit="sec",
+        seconds_per_unit=1.0,
+    )
+
+    report_path = os.path.join(fold_dir, f"report_{test_mode}.txt")
+    with open(report_path, "w", encoding="utf-8") as f:
+        f.write(f"[ANET] fold={fold} mode={test_mode} avg_mAP={avg_mAP:.4f}\n")
+        for tiou, m in zip(tious, mAPs):
+            f.write(f"  tIoU={tiou:.2f} -> mAP={m:.4f}\n")
+        f.write("\n".join(extra_lines) + "\n")
+    print(f"[Saved] {report_path}")
+
     return mAPs, avg_mAP, pred_path
 
 
 # ============================================================
 # 5) multi-fold runner
 # ============================================================
-def run_loso_pcl_oicr_sbhar(config):
+def run_loso_oicrBUAA_hangtime(config):
     set_seed(int(config.get("seed", 2024)))
+    # --- save config snapshot ---
+    os.makedirs(config["result_root"], exist_ok=True)
+    dump_config(config, config["result_root"])
 
     num_folds = int(config.get("num_folds", 5))
     folds = config.get("folds", list(range(num_folds)))
@@ -427,12 +467,12 @@ def run_loso_pcl_oicr_sbhar(config):
         print(f"[LOSO/KFold] fold={fold} ({i+1}/{len(folds)})")
         print("=" * 90)
 
-        ckpt = train_pcl_oicr_one_fold_sbhar(
-            config, fold, exp_name=config.get("exp_name", "pcl_oicr_opportunity")
+        ckpt = train_oicrBUAA_one_fold_hangtime(
+            config, fold, exp_name=config.get("exp_name", "pcl_oicr_hangtime")
         )
 
-        mAPs_w, avg_w, pred_w = test_pcl_oicr_sbhar(config, ckpt, fold=fold, test_mode="test_window")
-        mAPs_f, avg_f, pred_f = test_pcl_oicr_sbhar(config, ckpt, fold=fold, test_mode="test_full")
+        mAPs_w, avg_w, pred_w = test_oicrBUAA_hangtime(config, ckpt, fold=fold, test_mode="test_window")
+        mAPs_f, avg_f, pred_f = test_oicrBUAA_hangtime(config, ckpt, fold=fold, test_mode="test_full")
 
         all_reports.append({
             "fold": int(fold),
@@ -467,28 +507,28 @@ def run_loso_pcl_oicr_sbhar(config):
 if __name__ == "__main__":
     config = {
         "seed": 2024,
-        "exp_name": "oicr_sbhar",
+        "exp_name": "oicrBUAA_opportunity",
 
-        "dataset_dir": "/home/lipei/TAL_data/sbhar/",
-        "pretrained_dir": "/home/lipei/project/WSDDN/OtherData/SBHAR/pre_train",
-        "checkpoint_dir": "/home/lipei/project/WSDDN/checkpoints/SBHAR/oicr_0108",
-        "result_root": "/home/lipei/project/WSDDN/test_results/SBHAR/oicr_0108",
+        "dataset_dir": "/home/lipei/TAL_data/hangtime/",
+        "pretrained_dir": "/home/lipei/project/WSDDN/OtherData/HANGTIME/pre_train",
+        "checkpoint_dir": "/home/lipei/project/WSDDN/checkpoints/HANGTIME/oicrBUAA_0112",
+        "result_root": "/home/lipei/project/WSDDN/test_results/HANGTIME/oicrBUAA_0112",
 
-        "num_folds": 30,
-        "folds":[0, 1, 2, 3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29],
+        "num_folds": 24,
+        "folds": [0, 1, 2, 3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23],
 
-        "fps": 30,
+        "fps": 50,
         "clip_sec": 30.0,
         "clip_overlap": 0.5,
         "in_channels": 3,
-        "num_classes": 12,
+        "num_classes": 5,
         "stats_dirname": "loso_norm_stats_json",
 
         "seg_win_len": 90,
         "seg_stride": 45,
         "wrapper_chunk": 256,
 
-        "pretrained_model_name": "CNN1D",
+        "pretrained_model_name": "VGG1DBUAA",
 
         "num_workers": 4,
         "neg_keep_ratio": 0.2,
@@ -502,38 +542,39 @@ if __name__ == "__main__":
             "weight_decay": 1e-5,
             # "grad_clip": 5.0,
 
-            "num_proposals": 100,
+            "num_proposals": 200,
 
             # proposal params
             "base_physical_sec": 3.0,
-            "step_sec": 1.0,
-            "min_sec": 1.0,
-            "max_sec": 40.0,
+            "step_sec": 0.5,
+            "min_sec": 0.5,
+            "max_sec": 15.0,
 
-            # PCL/OICR params
+            # OICR params
             "refine_times": 3,
-            "use_pcl": False,          # True=PCL, False=OICR
             "fg_thresh": 0.5,
             "bg_thresh": 0.1,
-            "graph_iou_thresh": 0.5,
-            "max_pc_num": 3,
-            "hidden_dim": 4096,
             "spp_levels": (1, 2, 4),
             "pool_type": "avg",
+            "stage0_boost": 3.0,
+            "pa_mode": "sigmoid",
+            "enhance_weight": True,  # 是否做 w = w * exp(w)（强化高分pseudo GT）
         },
 
         "testing": {
-            "test_window_proposals": 200,
+            "test_window_proposals": 300,
             "test_full_proposals": 3000,
             "conf_thresh": 0.0,
             "nms_sigma": 0.5,
             "top_k": 200,
 
             "base_physical_sec": 3.0,
-            "step_sec": 1.0,
-            "min_sec": 1.0,
-            "max_sec": 40.0,
+            "step_sec": 0.5,
+            "min_sec": 0.5,
+            "max_sec": 15.0,
+
+            "confusion_tiou": 0.5  # 评价指标混淆矩阵依托的tIoU
         }
     }
 
-    run_loso_pcl_oicr_sbhar(config)
+    run_loso_oicrBUAA_hangtime(config)

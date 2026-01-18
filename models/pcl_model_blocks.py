@@ -72,21 +72,10 @@ class mil_outputs(nn.Module):
 
 
 class refine_outputs(nn.Module):
-    """
-    原始 PCL/OICR 的 refine head：
-      共有 refine_times 个线性层，每个输出 [N, C+1]，按类别 softmax。
-    """
     def __init__(self, dim_in, dim_out, refine_times):
-        """
-        dim_in:  输入特征维度（例如 hidden_dim 4096）
-        dim_out: 输出通道数（C+1，含背景）
-        refine_times: refine 的 stage 数 K
-        """
         super().__init__()
         self.refine_times = refine_times
-        self.refine_score = nn.ModuleList(
-            [nn.Linear(dim_in, dim_out) for _ in range(refine_times)]
-        )
+        self.refine_score = nn.ModuleList([nn.Linear(dim_in, dim_out) for _ in range(refine_times)])
         self._init_weights()
 
     def _init_weights(self):
@@ -95,13 +84,18 @@ class refine_outputs(nn.Module):
             init.constant_(layer.bias, 0)
 
     def forward(self, x):
-        if x.dim() == 3:
-            B, P, D = x.shape
-            x = x.view(B * P, D)
-
         outputs = []
+        if x.dim() == 3:
+            # x: [B,P,D]
+            for layer in self.refine_score:
+                logits = layer(x)               # [B,P,C+1]
+                prob = F.softmax(logits, dim=2) # 按类别 softmax
+                outputs.append(prob)
+            return outputs
+
+        # 兼容旧：x: [N,D]
         for layer in self.refine_score:
-            logits = layer(x)
-            prob = F.softmax(logits, dim=1)  # 按类别 softmax
+            logits = layer(x)               # [N,C+1]
+            prob = F.softmax(logits, dim=1) # 按类别 softmax
             outputs.append(prob)
         return outputs

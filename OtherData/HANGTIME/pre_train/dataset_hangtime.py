@@ -31,7 +31,7 @@ class HangtimeDataset_3s(Dataset):
 
         normalize: bool = True,
         stats_dirname: str = "loso_norm_stats_json",
-        ignore_zeros_in_stats: bool = False,  # 需要与 stats json 里的字段一致
+        ignore_zeros_in_stats: bool = False,
         eps: float = 1e-6,
         cache_raw: bool = True,
         return_meta: bool = False,

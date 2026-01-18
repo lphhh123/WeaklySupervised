@@ -8,7 +8,7 @@ from torch.utils.data import DataLoader
 from tqdm import tqdm
 
 from OtherData.HANGTIME.dataset_hangtime_ws import WeaklyHangtimeDataset
-from OtherData.utils import _meta_get, set_seed,featbox_to_time_seconds,build_gt_for_anet
+from OtherData.utils import _meta_get, set_seed, featbox_to_time_seconds, build_gt_for_anet, dump_config
 from models.WSDDN_model import WSDDN
 from tool import softnms_v2, ANETdetection
 from OtherData.utils import generate_proposal_boxes,GlobalBackboneWrapper,ProposalWrappedDataset
@@ -32,8 +32,8 @@ def train_wsddn_one_fold_hangtime(config, fold: int, exp_name: str = "wsddn_oppo
     backbone = CNN1DBackbone(in_channels=in_channels, feat_dim=512).to(device)
 
     pretrain_path = os.path.join(
-        config["pretrained_dir"],
-        f"hangtime_{config.get('pretrained_model_name','CNN1D')}_pretrained_loso_sbj_{fold}.pth"
+        config["pretrained_dir"], config["pretrained_model_name"],
+        f"opportunity_{config.get('pretrained_model_name', 'CNN1D')}_pretrained_loso_sbj_{fold}.pth"
     )
     backbone.load_state_dict(torch.load(pretrain_path, map_location=device))
     backbone.eval()
@@ -255,8 +255,8 @@ def test_wsddn_hangtime(config, checkpoint_path, fold: int, test_mode: str = "te
     backbone = CNN1DBackbone(in_channels=in_channels, feat_dim=512).to(device)
 
     pretrain_path = os.path.join(
-        config["pretrained_dir"],
-        f"hangtime_{config.get('pretrained_model_name','CNN1D')}_pretrained_loso_sbj_{fold}.pth"
+        config["pretrained_dir"], config["pretrained_model_name"],
+        f"opportunity_{config.get('pretrained_model_name', 'CNN1D')}_pretrained_loso_sbj_{fold}.pth"
     )
     backbone.load_state_dict(torch.load(pretrain_path, map_location=device))
     backbone.eval()

@@ -8,6 +8,8 @@ import numpy as np
 import torch
 import re
 
+from pre_train.pre_model import VGG1DBackboneBUAA, VGG1DBackbone, CNN1DBackbone
+
 
 # ============================
 # 预训练
@@ -161,6 +163,17 @@ def load_mean_std_from_meanvar_json(
     std = np.sqrt(np.maximum(var, 0.0) + float(eps)).astype(np.float32)
     return mean, std
 # ===============================
+# 加载预训练模型
+def build_backbone(pretrained_model_name: str, in_channels: int, feat_dim: int = 512):
+    name = str(pretrained_model_name).lower()
+    if "vgg" in name and "buaa" in name:
+        return VGG1DBackboneBUAA(in_channels=in_channels, feat_dim=feat_dim)
+    if "vgg" in name:
+        return VGG1DBackbone(in_channels=in_channels, feat_dim=feat_dim)
+    return CNN1DBackbone(in_channels=in_channels, feat_dim=feat_dim)
+
+
+# ================================
 
 def set_seed(seed: int = 2024):
     random.seed(seed)
@@ -243,7 +256,7 @@ def generate_proposal_boxes(
     raw_frames: Optional[int] = None,
 
     base_physical_sec: float = 7.0,   # 仍保留，但不再“只生成这一种长度”
-    step_sec: float = 2.0,
+    step_sec: float = 2.0, # 滑窗步长在特征域的步长
     min_sec: float = 5.0,
     max_sec: float = 15.0,
 

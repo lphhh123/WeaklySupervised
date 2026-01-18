@@ -32,7 +32,7 @@ def train_wsddn_one_fold_wear(config, fold: int, exp_name: str = "wsddn_opportun
     backbone = CNN1DBackbone(in_channels=in_channels, feat_dim=512).to(device)
 
     pretrain_path = os.path.join(
-        config["pretrained_dir"],
+        config["pretrained_dir"],config["pretrained_model_name"],
         f"wear_{config.get('pretrained_model_name','CNN1D')}_pretrained_loso_sbj_{fold}.pth"
     )
     backbone.load_state_dict(torch.load(pretrain_path, map_location=device))
@@ -255,7 +255,7 @@ def test_wsddn_one_fold_wear(config, checkpoint_path, fold: int, test_mode: str 
     backbone = CNN1DBackbone(in_channels=in_channels, feat_dim=512).to(device)
 
     pretrain_path = os.path.join(
-        config["pretrained_dir"],
+        config["pretrained_dir"],config["pretrained_model_name"],
         f"wear_{config.get('pretrained_model_name','CNN1D')}_pretrained_loso_sbj_{fold}.pth"
     )
     backbone.load_state_dict(torch.load(pretrain_path, map_location=device))

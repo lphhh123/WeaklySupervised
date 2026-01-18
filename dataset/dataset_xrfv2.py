@@ -1,7 +1,8 @@
 from scipy.interpolate import interp1d
 import numpy as np
 from models.WSDDN_model import *
-
+import os, json,random
+import math
 
 class WeaklySupervisedXRFV2DatasetTrain(Dataset):
     def __init__(
@@ -10,7 +11,6 @@ class WeaklySupervisedXRFV2DatasetTrain(Dataset):
         mapping_path,
         split="train",
         num_proposals=50,
-        merge_proposals=False,
         T_global=30,
         use_airpods=True,     # ★ 是否使用 airpods
     ):
@@ -20,7 +20,6 @@ class WeaklySupervisedXRFV2DatasetTrain(Dataset):
         self.dataset_dir = dataset_dir
         self.split = split
         self.num_proposals = num_proposals
-        self.merge_proposals = merge_proposals
         self.modality = "imu"
         self.T_global = T_global
         self.use_airpods = use_airpods
@@ -117,9 +116,6 @@ class WeaklySupervisedXRFV2DatasetTrain(Dataset):
             num_proposals=self.num_proposals
         )
 
-        if self.merge_proposals:
-            dummy_scores = torch.rand(self.num_proposals, 30)  # TODO
-            proposal_boxes = merge_overlapping_proposals(proposal_boxes, dummy_scores)
 
         # 4. 视频级标签
         video_label = self._get_video_level_label(idx)
@@ -144,7 +140,6 @@ class WeaklySupervisedXRFV2DatasetTrain(Dataset):
         return sample_30s, proposal_boxes, video_label
 
 class WWADLDatasetTestSingle():
-
     def __init__(self, config, modality=None, device_keep_list=None):
         self._debug_print = False  # True：只打印一次，False：不打印输出
 
@@ -262,6 +257,33 @@ class WWADLDatasetTestSingle():
 
             yield data, [offset, offset + self.clip_length]
 
+    def get_data_full(self, file_path): # 用于test_full
+        sample = self.modality_dataset(file_path,
+                                       receivers_to_keep=None,
+                                       new_mapping=self.new_mapping)
+        sample_count = len(sample.data)
+        if sample_count <= 0:
+            return
+
+        clip = sample.data[:]  # 整条序列
+        # 复用已有的 NaN/插值逻辑：把 clip_length 改成 sample_count
+        clip = handle_nan_and_interpolate(clip, sample_count, self.target_len)
+        assert not np.any(np.isnan(clip)), "Data contains NaN values!"
+
+        clip = torch.tensor(clip, dtype=torch.float32)
+
+        if self.modality == 'imu':
+            clip = self.process_imu(clip)  # -> [C, T]
+        elif self.modality == 'airpods':
+            clip = self.process_airpods(clip)  # -> [C, T]
+
+        data = {self.modality: clip}
+        yield data, [0, sample_count]
+
+    def dataset_full(self):
+        for file_path, file_name in zip(self.file_path_list, self.test_file_list):
+            yield file_name, self.get_data_full(file_path)
+
     def process_imu(self, sample):
         sample = sample.permute(1, 2, 0)  # [5, 6, 2048]
         device_num = sample.shape[0]
@@ -308,10 +330,13 @@ class WeaklySupervisedXRFV2DatasetTest:
                  config,
                  modality: str = 'imu',
                  device_keep_list=None,
-                 use_airpods: bool = False):
+                 use_airpods: bool = False,
+                 mode: str = "test_window"):
         assert modality == 'imu', "WeaklySupervisedXRFV2DatasetTest 目前只支持 imu 作为主模态"
+        assert mode in ["test_window", "test_full"]
         self.modality = modality
         self._debug_print = False
+        self.mode = mode
 
         # 1) IMU 测试数据集
         self.imu_dataset = WWADLDatasetTestSingle(
@@ -339,32 +364,45 @@ class WeaklySupervisedXRFV2DatasetTest:
         self.normalize = True
 
     def dataset(self):
-        # 情况一：只用 IMU（不拼 AirPods）
+         # ========== 1) IMU only ==========
         if not self.use_airpods or self.airpods_dataset is None:
-            for file_name, imu_iter in self.imu_dataset.dataset():
-                # ★ 调试：只看第一个文件的第一段
-                if self._debug_print:
-                    print("====== [WeakIMUDatasetTest] IMU only debug ======")
-                    print(f"file_name: {file_name}")
-                    # imu_iter 是一个 generator，我们手动取一段看看
-                    first_clip, first_seg = next(imu_iter)
-                    print(f"first segment index range: {first_seg}")
-                    print(f"first clip keys          : {first_clip.keys()}")
-                    print(f"first clip['imu'].shape  : {first_clip['imu'].shape}")  # [30, T]
-                    print("==================================================")
-                    self._debug_print = False
+            # for file_name, imu_iter in self.imu_dataset.dataset():
+            #     # ★ 调试：只看第一个文件的第一段
+            #     if self._debug_print:
+            #         print("====== [WeakIMUDatasetTest] IMU only debug ======")
+            #         print(f"file_name: {file_name}")
+            #         # imu_iter 是一个 generator，我们手动取一段看看
+            #         first_clip, first_seg = next(imu_iter)
+            #         print(f"first segment index range: {first_seg}")
+            #         print(f"first clip keys          : {first_clip.keys()}")
+            #         print(f"first clip['imu'].shape  : {first_clip['imu'].shape}")  # [30, T]
+            #         print("==================================================")
+            #         self._debug_print = False
+            #
+            #         # 把刚刚消耗的这个 clip 再包回一个新的 generator
+            #         def regen():
+            #             yield first_clip, first_seg
+            #             for item in imu_iter:
+            #                 yield item
+            #         yield file_name, regen()
+            #     else:
+            #         yield file_name, imu_iter
 
-                    # 把刚刚消耗的这个 clip 再包回一个新的 generator
-                    def regen():
-                        yield first_clip, first_seg
-                        for item in imu_iter:
-                            yield item
-                    yield file_name, regen()
-                else:
+            if self.mode == "test_full":
+                for file_name, imu_iter in self.imu_dataset.dataset_full():
                     yield file_name, imu_iter
+            else:
+                for file_name, imu_iter in self.imu_dataset.dataset():
+                    yield file_name, imu_iter
+            return
+        # ========== 2) IMU + AirPods ==========
         else:
-            imu_files = self.imu_dataset.dataset()
-            air_files = self.airpods_dataset.dataset()
+            if self.mode == "test_full":
+                imu_files = self.imu_dataset.dataset_full()
+                air_files = self.airpods_dataset.dataset_full()
+            else:
+                imu_files = self.imu_dataset.dataset()
+                air_files = self.airpods_dataset.dataset()
 
             for (imu_name, imu_iter), (air_name, air_iter) in zip(imu_files, air_files):
                 assert imu_name == air_name, f"IMU/AirPods 文件名不一致: {imu_name} vs {air_name}"
@@ -495,6 +533,88 @@ class WWADL_airpods(WWADLBase):
         self.label = data['label']
         self.duration = data['duration']
 
+def load_h5(filepath):
+    def recursively_load_group_to_dict(h5file, path):
+        """
+        递归加载 HDF5 文件中的组和数据集为嵌套字典
+        """
+        result = {}
+        group = h5file[path]
+
+        for key, item in group.items():
+            if isinstance(item, h5py.Group):
+                # 如果是组，则递归加载
+                result[key] = recursively_load_group_to_dict(h5file, f"{path}/{key}")
+            elif isinstance(item, h5py.Dataset):
+                # 如果是数据集，则加载为 NumPy 数组
+                result[key] = item[()]
+
+        return result
+
+    with h5py.File(filepath, 'r') as h5file:
+        return recursively_load_group_to_dict(h5file, '/')
+
+def handle_nan_and_interpolate(data, window_len, target_len):
+    """
+    插值并在插值前处理 NaN 值的通用函数。
+    Args:
+        data (np.ndarray): 输入数据，维度为 (window_len, ...)
+        window_len (int): 原始时序长度。
+        target_len (int): 目标时序长度。
+    Returns:
+        np.ndarray: 插值后的数据，时间维度变为 target_len，其他维度保持不变。
+    """
+    original_shape = data.shape  # 获取原始形状
+    flattened_data = data.reshape(window_len, -1)  # 展平除时间维度以外的所有维度
+
+    # 定义插值函数
+    def interpolate_channel(channel_data):
+        original_indices = np.linspace(0, window_len - 1, window_len)
+        target_indices = np.linspace(0, window_len - 1, target_len)
+
+        # 检查 NaN 并处理
+        nan_mask = np.isnan(channel_data)
+        if np.any(nan_mask):  # 如果存在 NaN 值
+            valid_indices = np.where(~nan_mask)[0]
+            valid_values = channel_data[~nan_mask]
+
+            if len(valid_indices) > 1:  # 至少两个有效值
+                interp_func = interp1d(valid_indices, valid_values, kind='linear', bounds_error=False, fill_value="extrapolate")
+                channel_data = interp_func(np.arange(window_len))
+            else:
+                # 如果有效值不足，填充为 0
+                channel_data = np.zeros_like(channel_data)
+
+        # 插值到目标长度
+        interp_func = interp1d(original_indices, channel_data, kind='linear', bounds_error=False, fill_value="extrapolate")
+        return interp_func(target_indices)
+
+    # 对所有通道进行插值处理
+    interpolated_flattened_data = np.array([
+        interpolate_channel(flattened_data[:, i])
+        for i in range(flattened_data.shape[1])
+    ]).T  # 转置回时间维度在前
+
+    # 恢复原始形状，时间维度替换为 target_len
+    reshaped_interpolated_data = interpolated_flattened_data.reshape(target_len, *original_shape[1:])
+    return reshaped_interpolated_data
+
+def load_file_list(dataset_path):
+    # 读取 test.csv
+    test_csv_path = os.path.join(dataset_path, 'test.csv')
+    if not os.path.exists(test_csv_path):
+        raise FileNotFoundError(f"{test_csv_path} does not exist.")
+
+    print("Loading test.csv...")
+    test_df = pd.read_csv(test_csv_path)
+    file_name_list = test_df['file_name'].tolist()
+    print(f"Loaded {len(file_name_list)} file names from test.csv.")
+
+    return file_name_list
+
+import torch
+import torch.nn as nn
+
 class FullBackboneWrapper1D(nn.Module):
     """
     把只能吃固定长度 window 的 backbone，扩展到支持整条序列：
@@ -610,84 +730,6 @@ class FullBackboneWrapper1D(nn.Module):
         }
         return (global_feat, info) if return_info else global_feat
 
-def load_h5(filepath):
-    def recursively_load_group_to_dict(h5file, path):
-        """
-        递归加载 HDF5 文件中的组和数据集为嵌套字典
-        """
-        result = {}
-        group = h5file[path]
-
-        for key, item in group.items():
-            if isinstance(item, h5py.Group):
-                # 如果是组，则递归加载
-                result[key] = recursively_load_group_to_dict(h5file, f"{path}/{key}")
-            elif isinstance(item, h5py.Dataset):
-                # 如果是数据集，则加载为 NumPy 数组
-                result[key] = item[()]
-
-        return result
-
-    with h5py.File(filepath, 'r') as h5file:
-        return recursively_load_group_to_dict(h5file, '/')
-
-def handle_nan_and_interpolate(data, window_len, target_len):
-    """
-    插值并在插值前处理 NaN 值的通用函数。
-    Args:
-        data (np.ndarray): 输入数据，维度为 (window_len, ...)
-        window_len (int): 原始时序长度。
-        target_len (int): 目标时序长度。
-    Returns:
-        np.ndarray: 插值后的数据，时间维度变为 target_len，其他维度保持不变。
-    """
-    original_shape = data.shape  # 获取原始形状
-    flattened_data = data.reshape(window_len, -1)  # 展平除时间维度以外的所有维度
-
-    # 定义插值函数
-    def interpolate_channel(channel_data):
-        original_indices = np.linspace(0, window_len - 1, window_len)
-        target_indices = np.linspace(0, window_len - 1, target_len)
-
-        # 检查 NaN 并处理
-        nan_mask = np.isnan(channel_data)
-        if np.any(nan_mask):  # 如果存在 NaN 值
-            valid_indices = np.where(~nan_mask)[0]
-            valid_values = channel_data[~nan_mask]
-
-            if len(valid_indices) > 1:  # 至少两个有效值
-                interp_func = interp1d(valid_indices, valid_values, kind='linear', bounds_error=False, fill_value="extrapolate")
-                channel_data = interp_func(np.arange(window_len))
-            else:
-                # 如果有效值不足，填充为 0
-                channel_data = np.zeros_like(channel_data)
-
-        # 插值到目标长度
-        interp_func = interp1d(original_indices, channel_data, kind='linear', bounds_error=False, fill_value="extrapolate")
-        return interp_func(target_indices)
-
-    # 对所有通道进行插值处理
-    interpolated_flattened_data = np.array([
-        interpolate_channel(flattened_data[:, i])
-        for i in range(flattened_data.shape[1])
-    ]).T  # 转置回时间维度在前
-
-    # 恢复原始形状，时间维度替换为 target_len
-    reshaped_interpolated_data = interpolated_flattened_data.reshape(target_len, *original_shape[1:])
-    return reshaped_interpolated_data
-
-def load_file_list(dataset_path):
-    # 读取 test.csv
-    test_csv_path = os.path.join(dataset_path, 'test.csv')
-    if not os.path.exists(test_csv_path):
-        raise FileNotFoundError(f"{test_csv_path} does not exist.")
-
-    print("Loading test.csv...")
-    test_df = pd.read_csv(test_csv_path)
-    file_name_list = test_df['file_name'].tolist()
-    print(f"Loaded {len(file_name_list)} file names from test.csv.")
-
-    return file_name_list
 
 
 if __name__ == "__main__":

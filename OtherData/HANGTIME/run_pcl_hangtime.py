@@ -35,8 +35,8 @@ def train_pcl_oicr_one_fold_hangtime(config, fold: int, exp_name: str = "pcl_oic
     # ---- load 3s backbone (fold-specific pretrain) ----
     backbone = CNN1DBackbone(in_channels=in_channels, feat_dim=512).to(device)
     pretrain_path = os.path.join(
-        config["pretrained_dir"],
-        f"hangtime_{config.get('pretrained_model_name','CNN1D')}_pretrained_loso_sbj_{fold}.pth"
+        config["pretrained_dir"], config["pretrained_model_name"],
+        f"opportunity_{config.get('pretrained_model_name', 'CNN1D')}_pretrained_loso_sbj_{fold}.pth"
     )
     if not os.path.isfile(pretrain_path):
         raise FileNotFoundError(f"pretrain_path not found: {pretrain_path}")
@@ -233,8 +233,8 @@ def test_pcl_oicr_hangtime(config, checkpoint_path, fold: int, test_mode: str = 
     # backbone + wrapper
     backbone = CNN1DBackbone(in_channels=in_channels, feat_dim=512).to(device)
     pretrain_path = os.path.join(
-        config["pretrained_dir"],
-        f"hangtime_{config.get('pretrained_model_name','CNN1D')}_pretrained_loso_sbj_{fold}.pth"
+        config["pretrained_dir"], config["pretrained_model_name"],
+        f"opportunity_{config.get('pretrained_model_name', 'CNN1D')}_pretrained_loso_sbj_{fold}.pth"
     )
     if not os.path.isfile(pretrain_path):
         raise FileNotFoundError(f"pretrain_path not found: {pretrain_path}")

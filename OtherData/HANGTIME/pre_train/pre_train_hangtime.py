@@ -13,7 +13,7 @@ from torch.utils.data import DataLoader
 from tqdm import tqdm
 
 from OtherData.HANGTIME.pre_train.dataset_hangtime import HangtimeDataset_3s
-from pre_train.pre_model import CNN1DClassifier
+from pre_train.pre_model import CNN1DClassifier, VGG1DClassifier
 
 
 def set_seed(seed: int = 42):
@@ -243,12 +243,31 @@ def run_loso_pretrain(config: dict):
 
         # -------- 5) Build model --------
         in_channels = config.get("in_channels", config.get("num_sensors", 113))
-        model = CNN1DClassifier(
-            num_classes=config["num_classes"],
-            task=config.get("task", "single"),
-            feat_dim=config.get("feat_dim", 512),
-            in_channels=in_channels,
-        )
+        model_name = str(config.get("model_name", "CNN1D"))
+
+        if model_name == "CNN1D":
+            model = CNN1DClassifier(
+                num_classes=config["num_classes"],
+                task=config.get("task", "single"),
+                feat_dim=config.get("feat_dim", 512),
+                in_channels=in_channels,
+            )
+        elif model_name == "VGG1D":
+            model = VGG1DClassifier(
+                num_classes=config["num_classes"],
+                task=config.get("task", "single"),
+                feat_dim=config.get("feat_dim", 512),
+                in_channels=in_channels,
+            )
+        elif model_name == "VGG1D_BUAA":
+            model = VGG1DClassifier(
+                num_classes=config["num_classes"],
+                task=config.get("task", "single"),
+                feat_dim=config.get("feat_dim", 512),
+                in_channels=in_channels,
+            )
+        else:
+            raise ValueError(f"Unknown model_name={model_name}, choose from: CNN1D / VGG1D / VGG1D_BUAA")
 
         model_name = config.get("model_name", "CNN1D")
         save_backbone_path = os.path.join(out_dir, f"hangtime_{model_name}_pretrained_loso_sbj_{fold}.pth")
@@ -293,7 +312,7 @@ if __name__ == "__main__":
 
         "num_classes": 5,
         "task": "single",
-        "model_name": "CNN1D",
+        "model_name": "VGG1D",
 
         # 数据参数
         "fps": 50,
