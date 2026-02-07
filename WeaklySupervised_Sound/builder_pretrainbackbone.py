@@ -6,7 +6,7 @@ from torch.nn import init
 
 from pre_train.pre_model import *
 
-# 建立「预训练权重文件名关键词」与「backbone类」的映射：名字 -> (类, ckpt, feat_dim, input_length)
+
 PRETRAINED_ZOO = {
     "CNN1D": {
         "cls": CNN1DBackbone,
@@ -20,11 +20,11 @@ PRETRAINED_ZOO = {
 
 def _clean_state_dict(state):
     """
-    兼容：
-      - 直接 state_dict
+    Message：
+      - Message state_dict
       - {"model_state_dict": ...}
       - {"state_dict": ...}
-      - DDP "module." 前缀
+      - DDP "module." Message
     """
     if isinstance(state, dict) and "model_state_dict" in state:
         state = state["model_state_dict"]
@@ -59,7 +59,7 @@ def _infer_T_global(backbone: nn.Module, in_channels: int, device, input_length:
 
 def _init_backbone_weights(m: nn.Module):
     """
-    一个通用初始化：Conv/Linear 用 kaiming，Norm 类 weight=1 bias=0
+    Message：Conv/Linear Message kaiming，Norm Message weight=1 bias=0
     """
     if isinstance(m, nn.Conv1d):
         init.kaiming_normal_(m.weight, mode="fan_out", nonlinearity="relu")
@@ -101,13 +101,13 @@ def load_pretrained_backbone(pretrained_name: str, in_channels: int = 30, device
         state = torch.load(ckpt_path, map_location="cpu")
         state_dict = _clean_state_dict(state)
         missing, unexpected = backbone.load_state_dict(state_dict, strict=False)
-        print(f"[Backbone] 使用预训练模型")
+        print(f"[Backbone] Message")
         print(f"[Backbone] name={pretrained_name}")
         print(f"  ckpt={ckpt_path}")
         print(f"  missing={missing}")
         print(f"  unexpected={unexpected}")
     else:
-        print(f"[Backbone] 使用随机初始化模型（未加载ckpt）")
+        print(f"[Backbone] Message（Messageckpt）")
         print(f"[Backbone] name={pretrained_name}")
 
 

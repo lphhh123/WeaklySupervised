@@ -5,7 +5,7 @@ import numpy as np
 import json
 from terminaltables import AsciiTable
 
-# 引入核心模块
+
 import core.utils as utils
 from core.model import CoLA
 from core.config_xrfv2 import cfg
@@ -14,10 +14,10 @@ from main_cola import test_all
 
 
 def run_inference():
-    print("======== 重新推理 (Re-Inference) ========")
+    print("======== Message (Re-Inference) ========")
 
-    # 1. 强制覆盖 CLASS_DICT (确保万无一失)
-    # 必须是: "动作名称": ID (train_label.json 里的 ID)
+
+
     CORRECT_DICT = {
         "Stretching": 0,
         "Pouring Water": 1,
@@ -53,27 +53,27 @@ def run_inference():
     cfg.CLASS_DICT = CORRECT_DICT
     cfg.NUM_CLASSES = len(CORRECT_DICT)
 
-    # 2. 设置环境
+
     os.environ['CUDA_VISIBLE_DEVICES'] = cfg.GPU_ID
 
-    # 3. 寻找最佳模型权重
-    # 假设你的权重在 output_ddp/checkpoints/model_best.pth
+
+
     ckpt_path = os.path.join('output_ddp', 'cnn1d_0124_1710', 'checkpoints', 'model_best.pth')
     if not os.path.exists(ckpt_path):
-        print(f"❌ 找不到模型权重: {ckpt_path}")
-        # 尝试找找最后的权重
+        print(f"❌ Message: {ckpt_path}")
+
         # ckpt_path = ...
         return
 
     print(f"Loading Model from: {ckpt_path}")
 
-    # 4. 构建模型
+
     net = CoLA(cfg)
     net = net.cuda()
-    # 加载权重 (注意: 如果是 DDP 训练保存的，key 可能带有 'module.')
+
     state_dict = torch.load(ckpt_path)
 
-    # 修正 DDP 权重的 key
+
     new_state_dict = {}
     for k, v in state_dict.items():
         if k.startswith('module.'):
@@ -81,9 +81,9 @@ def run_inference():
         else:
             new_state_dict[k] = v
     net.load_state_dict(new_state_dict)
-    print("✅ 模型加载成功")
+    print("✅ Message")
 
-    # 5. 加载测试集
+
     test_loader = torch.utils.data.DataLoader(
         XRFV2Dataset(
             mode='test',
@@ -97,19 +97,19 @@ def run_inference():
         shuffle=False, num_workers=4
     )
 
-    # 6. 运行测试并生成 JSON
+
     print("Running Inference...")
     test_info = {"step": [], "test_acc": [], "average_mAP": []}
     for i in cfg.TIOU_THRESH:
         test_info[f"mAP@{i:.1f}"] = []
 
-    # 调用 test_all (会自动保存 result.json 到 cfg.OUTPUT_PATH)
-    # 我们临时修改 OUTPUT_PATH 以免覆盖之前的，或者直接用 output_ddp
+
+
     cfg.OUTUT_PATH = 'output_ddp'
 
     mAP_50, mAP_AVG = test_all(net, cfg, test_loader, test_info, 0, None)
 
-    print(f"\n======== 重新评估结果 ========")
+    print(f"\n======== Message ========")
     print(utils.table_format(test_info, cfg.TIOU_THRESH, '[CoLA] XRFV2 Re-Inference'))
     print(f"Results saved to: {os.path.join(cfg.OUTPUT_PATH, 'result.json')}")
 

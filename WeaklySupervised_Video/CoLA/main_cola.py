@@ -162,13 +162,13 @@ def test_all(net, cfg, test_loader, test_info, step, writter=None, model_file=No
 
         score_np = video_scores[0].cpu().data.numpy()  # [30,]
 
-        # [修改开始] 动态确定 pred 类别
 
-        # 1. 找到最大置信度
+
+
         max_score = np.max(score_np)
 
-        # 2. 设定相对阈值：只要大于 最大分数的 40% 且 大于 绝对底线 0.01
-        # 0.4 这个系数可以微调，XRFV2 这种密集数据建议低一点 (0.3-0.5)
+
+
         dynamic_thresh = max(max_score * 0.4, 0.01)
 
         pred = np.where(score_np >= dynamic_thresh)[0]

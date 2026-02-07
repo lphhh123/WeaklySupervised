@@ -15,20 +15,20 @@ from tqdm import tqdm
 from easydict import EasyDict as edict
 
 # ============================================================
-# 引入依赖
+
 # ============================================================
 sys.path.append(os.getcwd())
 from core.model import CoLA
 from core.loss import TotalLoss
 from core import utils
-# [适配] 引入 Opportunity 数据集
+
 from WSDDN.Opportunity.dataset_opportunity_ws import WeaklyOpportunityDataset
 from WSDDN.utils import set_seed, build_gt_for_anet
 from WSDDN.tool import ANETdetection
 
 
 # ============================================================
-# DDP 基础设置
+
 # ============================================================
 def setup_ddp():
     if 'RANK' in os.environ and 'WORLD_SIZE' in os.environ:
@@ -49,18 +49,18 @@ def cleanup_ddp():
 
 
 # ============================================================
-# [新逻辑] CoLA Full Wrapper (对齐学姐的特征拼接)
+
 # ============================================================
 class CoLA_FullWrapper(nn.Module):
     def __init__(self, cola_model, win_len, stride):
         super().__init__()
-        # 直接获取子模块，绕过 Actionness_Module.forward 中的强制插值
+
         self.backbone = cola_model.actionness_module.backbone
         self.adapter = cola_model.actionness_module.adapter
         self.f_cls = cola_model.actionness_module.f_cls
         self.dropout = cola_model.actionness_module.dropout
 
-        # 引用 CoLA 的属性
+
         self.r_easy = cola_model.r_easy
         self.get_video_cls_scores = cola_model.get_video_cls_scores
 
@@ -70,13 +70,13 @@ class CoLA_FullWrapper(nn.Module):
     @torch.no_grad()
     def forward(self, x):
         """
-        x: [1, T_total, C] (原始长视频，未缩放)
+        x: [1, T_total, C] (Message，Message)
         """
-        # 1. 调整输入维度适配 Conv1d: [B, T, C] -> [B, C, T]
+
         x = x.permute(0, 2, 1)
         B, C, T_total = x.shape
 
-        # 2. 滑窗提取特征
+
         offsets = list(range(0, T_total - self.win_len + 1, self.stride))
         if not offsets or offsets[-1] != T_total - self.win_len:
             if T_total >= self.win_len:
@@ -86,12 +86,12 @@ class CoLA_FullWrapper(nn.Module):
                 pad_len = self.win_len - T_total
                 x = torch.nn.functional.pad(x, (0, pad_len))
 
-        # 预计算输出特征维度
+
         dummy_out = self.adapter(self.backbone(x[:, :, :self.win_len]))
         feat_dim = dummy_out.shape[1]  # 2048
-        out_win_len = dummy_out.shape[2]  # CNN下采样后的长度
+        out_win_len = dummy_out.shape[2]
 
-        # 计算采样率 (input / feature)
+
         rate = self.win_len / out_win_len
         T_out_total = int(T_total / rate) + 1
 
@@ -102,7 +102,7 @@ class CoLA_FullWrapper(nn.Module):
             end = start + self.win_len
             chunk = x[:, :, start:end]
 
-            # 只跑特征提取
+
             feat = self.backbone(chunk)
             feat = self.adapter(feat)
 
@@ -116,7 +116,7 @@ class CoLA_FullWrapper(nn.Module):
 
         global_feat /= count_map.clamp(min=1.0)
 
-        # 3. 全局分类
+
         out = self.dropout(global_feat)
         out = self.f_cls(out)  # [B, Classes, T]
 
@@ -130,7 +130,7 @@ class CoLA_FullWrapper(nn.Module):
 
 
 # ============================================================
-# 配置映射 (适配 Opportunity 参数)
+
 # ============================================================
 def map_config_to_cola_cfg(user_config, fold):
     c = edict()
@@ -140,11 +140,11 @@ def map_config_to_cola_cfg(user_config, fold):
     c.FEATS_DIM = user_config['in_channels']  # 113
     c.NUM_CLASSES = user_config['num_classes']  # 17
 
-    # [关键] 30s * 30Hz = 900
+
     c.NUM_SEGMENTS = int(user_config['clip_sec'] * c.FEATS_FPS)
     c.UP_SCALE = 1
 
-    # 预训练权重路径 (Opportunity 命名规则)
+
     ckpt_name = f"opportunity_{user_config['pretrained_model_name']}_pretrained_loso_sbj_{fold}.pth"
     c.PRETRAINED_PATH = os.path.join(user_config['pretrained_dir'], ckpt_name)
     c.BACKBONE_TYPE = 'cnn1d'
@@ -159,12 +159,12 @@ def map_config_to_cola_cfg(user_config, fold):
     c.CLASS_THRESH = cola['class_thresh']
     c.NMS_THRESH = cola['nms_thresh']
 
-    # 阈值设置
+
     c.TIOU_THRESH = np.linspace(0.3, 0.7, 5)
     c.CAS_THRESH = np.arange(0.1, 0.5, 0.05)
     c.ANESS_THRESH = np.arange(0.1, 0.9, 0.05)
 
-    # 17类字典
+
     c.CLASS_DICT = {
         "open_door_1": 0,
         "open_door_2": 1,
@@ -188,7 +188,7 @@ def map_config_to_cola_cfg(user_config, fold):
 
 
 # ============================================================
-# 推理数据生成器
+
 # ============================================================
 def get_inference_data(dataset, mode, win_size, stride):
     for sbj in dataset.subjects:
@@ -213,7 +213,7 @@ def get_inference_data(dataset, mode, win_size, stride):
 
             yield sbj, window_iter(), t_origin
         else:
-            # test_full: 直接返回全长 Raw Tensor，交给 Wrapper 处理
+
             def single_iter():
                 yield torch.from_numpy(raw).float().unsqueeze(0), 0
 
@@ -221,7 +221,7 @@ def get_inference_data(dataset, mode, win_size, stride):
 
 
 # ============================================================
-# 训练函数 (DDP)
+
 # ============================================================
 def train_fold_ddp(config, fold, rank, local_rank, world_size):
     if rank == 0: print(f"\n>>> [Train DDP] Starting Fold {fold}...")
@@ -229,7 +229,7 @@ def train_fold_ddp(config, fold, rank, local_rank, world_size):
     cola_cfg = map_config_to_cola_cfg(config, fold)
     net = CoLA(cola_cfg).to(local_rank)
 
-    # 冻结/解冻
+
     if not cola_cfg.TRAIN_BACKBONE:
         for p in net.actionness_module.backbone.parameters(): p.requires_grad = False
         net.actionness_module.backbone.eval()
@@ -293,41 +293,41 @@ def train_fold_ddp(config, fold, rank, local_rank, world_size):
 
 
 # ============================================================
-# 推理与后处理 (Rank 0 Only)
+
 # ============================================================
 def process_outputs(video_scores, actionness, cas, video_props, start_f, t_origin, win_size, mode, config, cola_cfg):
-    # 1. 概率化
+
     cas_p = torch.sigmoid(cas[0])  # [T, C]
     aness_p = torch.sigmoid(actionness[0])  # [T]
     vid_p = torch.sigmoid(video_scores[0]).cpu().numpy()  # [C]
 
-    # 2. [新逻辑] 类别筛选
+
     if mode == "test_full":
-        # test_full 依据时序峰值判断
+
         cas_max_val, _ = torch.max(cas_p, dim=0)
         pred_cats = np.where(cas_max_val.cpu().numpy() >= cola_cfg.CLASS_THRESH)[0]
     else:
-        # test_window 依据 Video-level Score
+
         pred_cats = np.where(vid_p >= cola_cfg.CLASS_THRESH)[0]
 
     if len(pred_cats) == 0: pred_cats = np.array([np.argmax(vid_p)])
 
-    # 3. 抑制背景
+
     cas_supp = cas_p * aness_p.unsqueeze(1)
 
-    # 4. Numpy 转换
+
     cas_np = np.expand_dims(cas_supp.cpu().numpy(), axis=2)
     aness_np = np.tile(aness_p.cpu().numpy().reshape(-1, 1, 1), (1, cola_cfg.NUM_CLASSES, 1))
 
-    # 5. 生成 Proposals (win_size 传入当前特征长度即可)
+
     T_current = cas_p.shape[0]
     prop_dict = utils.get_proposal_dict(cas_np, aness_np, pred_cats, vid_p, T_current, cola_cfg)
 
-    # 6. 坐标转换
+
     for cls_id, props in prop_dict.items():
         for p in props:
-            # test_full 下 scale = T_origin / T_feat
-            # test_window 下 scale = 1.0 (因为我们没插值), start_f 是 offset
+
+
             if mode == "test_full":
                 scale = t_origin / T_current
                 global_start = p[2] * scale
@@ -344,19 +344,19 @@ def eval_fold_dual_mode_rank0(config, fold, ckpt_path, save_dir, device):
     print(f"\n>>> [Eval] Inferencing Fold {fold}...")
     cola_cfg = map_config_to_cola_cfg(config, fold)
 
-    # 1. 初始化模型
+
     net = CoLA(cola_cfg).to(device)
 
-    # 2. [关键修改] 健壮的权重加载逻辑
+
     print(f"   -> Loading weights from {ckpt_path}...")
     checkpoint = torch.load(ckpt_path, map_location=device)
 
     new_state_dict = {}
     for k, v in checkpoint.items():
-        # a. 去除 DDP 训练产生的 'module.' 前缀
+
         name = k.replace('module.', '')
 
-        # b. 修复可能存在的旧键名格式 (兼容性保护)
+
         if name.startswith('actionness_backbone'):
             name = name.replace('actionness_backbone', 'actionness_module.backbone')
         elif name.startswith('actionness_adapter'):
@@ -366,17 +366,17 @@ def eval_fold_dual_mode_rank0(config, fold, ckpt_path, save_dir, device):
 
         new_state_dict[name] = v
     net.load_state_dict(new_state_dict, strict=False)
-    # strict=False 允许忽略一些无关紧要的差异，但如果有重大缺失会警告
+
     msg = net.load_state_dict(new_state_dict, strict=False)
     if len(msg.missing_keys) > 0:
         print(f"   ⚠️ Warning: Missing keys: {msg.missing_keys[:3]}...")
 
     net.eval()
 
-    # 3. 初始化 Wrapper (用于 test_full)
+
     full_wrapper = CoLA_FullWrapper(net, win_len=cola_cfg.NUM_SEGMENTS, stride=cola_cfg.NUM_SEGMENTS // 2)
 
-    # 4. 准备数据集
+
     test_ds = WeaklyOpportunityDataset(
         dataset_dir=config["dataset_dir"], loso_json=f"loso_sbj_{fold}.json", mode="test_window",
         fps=config["fps"], num_sensors=config["in_channels"], clip_sec=config["clip_sec"], normalize=True
@@ -384,20 +384,20 @@ def eval_fold_dual_mode_rank0(config, fold, ckpt_path, save_dir, device):
 
     id2name = {v: k for k, v in cola_cfg.CLASS_DICT.items()}
 
-    # 5. 准备 GT
+
     gt_path = os.path.join(save_dir, "gt_for_anet.json")
     if not os.path.exists(gt_path):
         print("   Generating GT...")
         build_gt_for_anet(os.path.join(config["dataset_dir"], "annotations", f"loso_sbj_{fold}.json"), gt_path)
 
-    # 6. 双模式推理循环
+
     for mode in ["test_window", "test_full"]:
         final_res = {'version': 'VERSION 1.3', 'results': {}, 'external_data': {}}
         win_size = cola_cfg.NUM_SEGMENTS
         stride = win_size // 2
         inf_time_list = []
         gpu_mem_list = []
-        # 选择迭代器
+
         if mode == "test_window":
             iterator = get_inference_data(test_ds, mode, win_size, stride)
         else:
@@ -425,11 +425,11 @@ def eval_fold_dual_mode_rank0(config, fold, ckpt_path, save_dir, device):
 
                 end_t = time.time()
 
-                # 4. 记录数据
-                # 时间转为 ms
+
+
                 inf_time_list.append((end_t - start_t) * 1000.0)
 
-                # 显存转为 MB
+
                 if torch.cuda.is_available():
                     peak_mem = torch.cuda.max_memory_allocated() / 1024 / 1024
                     gpu_mem_list.append(peak_mem)
@@ -455,7 +455,7 @@ def eval_fold_dual_mode_rank0(config, fold, ckpt_path, save_dir, device):
                         })
             final_res['results'][sbj] = sbj_list
 
-        # 保存与评估
+
         pred_path = os.path.join(save_dir, f"predictions_{mode}.json")
         with open(pred_path, 'w') as f:
             json.dump(final_res, f, indent=2)
@@ -468,10 +468,10 @@ def eval_fold_dual_mode_rank0(config, fold, ckpt_path, save_dir, device):
             stats_info = {
                 "test_mode": mode,
                 "num_samples": len(inf_time_list),
-                # 格式化为学姐脚本喜欢的字符串格式 "Mean ± Std"
+
                 "avg_inference_time_ms": f"{avg_time:.2f} ± {std_time:.2f}",
                 "avg_gpu_memory_mb": f"{avg_mem:.2f} ± {std_mem:.2f}",
-                "raw_time_list": inf_time_list,  # 可选：保留原始数据以便后续合并
+                "raw_time_list": inf_time_list,
                 "raw_mem_list": gpu_mem_list
             }
 
@@ -488,12 +488,12 @@ def eval_fold_dual_mode_rank0(config, fold, ckpt_path, save_dir, device):
 
 
 # ============================================================
-# 主入口
+
 # ============================================================
 def main():
     rank, local_rank, world_size = setup_ddp()
 
-    # Opportunity 配置
+
     base_config = {
         "dataset_dir": "/home/lipei/TAL_data/opportunity/",
         "pretrained_dir": "/home/lipei/project/WSDDN/OtherData/Opportunity/pre_train/CNN1D",
@@ -509,7 +509,7 @@ def main():
         "pretrained_model_name": "CNN1D",
 
         "training": {
-            "batch_size": 16,  # 总 Batch = 16 * 显卡数
+            "batch_size": 16,
             "num_epochs": 80,
             "lr": 1e-4,
             "lr_step_size": 10,

@@ -4,7 +4,7 @@ from OtherData.utils import _load_loso_json, _parse_fold_id_from_loso_name, _cli
 
 class WeaklyRWHARDataset(Dataset):
     """
-    弱监督dataset：返回 raw clip + clip级 multi-hot label
+    Messagedataset：Message raw clip + clipMessage multi-hot label
     Return:
       x: FloatTensor [C, T]
       y: FloatTensor [num_classes]
@@ -36,7 +36,7 @@ class WeaklyRWHARDataset(Dataset):
         stats_dirname: str = "loso_norm_stats_json",
         eps: float = 1e-6,
 
-        cache_raw: bool = False,   # ★RWHAR长序列建议 False
+        cache_raw: bool = False,
         return_meta: bool = False,
     ):
         super().__init__()

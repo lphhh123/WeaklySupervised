@@ -16,7 +16,7 @@ from utils import compute_misalignment_measures
 from utils import ANETdetection, convert_segments_to_samples
 from sklearn.exceptions import UndefinedMetricWarning
 
-# 其实使用来看每个数据集有什么不同的配置
+
 
 def warn(*args, **kwargs):
     pass

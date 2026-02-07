@@ -20,14 +20,14 @@ def _get_feat_dim_from_pretrained_name(config) -> int:
 
 def build_wsddn_imu_model(config, num_classes, device):
     """
-    根据 config 构建 WSDDN 系列模型（带有 Transformer / SPP / SegEnc）
+    Message config Message WSDDN Message（Message Transformer / SPP / SegEnc）
     """
     model_cfg = config["model"]
     model_type = model_cfg.get("type", "wsddn")
-    # 从 pretrained_name 对应 spec 里读
+
     feat_dim = _get_feat_dim_from_pretrained_name(config)
 
-    # 所有 WSDDN 家族共享的子 config
+
     wsddn_cfg = model_cfg.get("wsddn", {})
 
     if model_type == "wsddn_avg":
@@ -72,7 +72,7 @@ def build_wsddn_imu_model(config, num_classes, device):
 
 def build_pcl_oicr_imu_model(config, num_classes, device):
     mcfg = config["model"]
-    # 从 pretrained_name 对应 spec 里读
+
     feat_dim = _get_feat_dim_from_pretrained_name(config)
 
 

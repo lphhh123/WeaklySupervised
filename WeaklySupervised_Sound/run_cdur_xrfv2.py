@@ -18,7 +18,7 @@ os.environ["CUDA_VISIBLE_DEVICES"] = "4"
 
 
 # ============================================================
-# 1) 损失函数
+
 # ============================================================
 class RobustBCELoss(torch.nn.Module):
     def __init__(self, label_smoothing=0.1):
@@ -31,7 +31,7 @@ class RobustBCELoss(torch.nn.Module):
 
 
 # ============================================================
-# 2) 后处理：高斯平滑 + 动作膨胀
+
 # ============================================================
 def frame_probs_to_segments_v2(probs, fps, threshold=0.1, min_duration=0.5, sigma=2.0):
     T, C = probs.shape
@@ -49,7 +49,7 @@ def frame_probs_to_segments_v2(probs, fps, threshold=0.1, min_duration=0.5, sigm
             t_start = s / fps
             t_end = e / fps
             if (t_end - t_start) >= min_duration:
-                # 补偿 0.3s 响应延迟
+
                 t_start = max(0, t_start - 0.3)
                 t_end = t_end + 0.3
                 score = np.max(smoothed_probs[s:e, c])
@@ -83,7 +83,7 @@ def soft_nms_functional(dets, sigma=0.5, thresh=0.001):
 
 
 # ============================================================
-# 3) 训练与测试
+
 # ============================================================
 def train_cdur_xrfv2(config):
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -136,15 +136,15 @@ def test_cdur_xrfv2_improved(config, checkpoint_path):
     test_ds = WeaklySupervisedXRFV2DatasetTest(config=config, use_airpods=config["training"]["use_airpods"])
     id2label = test_ds.id_to_action
 
-    # 多尺度阈值，增加 Recall
+
     test_thresholds = [0.01, 0.03, 0.05, 0.1, 0.15]
     results_cache = {}
 
     for file_path_raw, data_iter in tqdm(test_ds.dataset(), desc="Inference"):
-        # --- 重要：ID 必须包含 .h5 以匹配 GT 文件 ---
+
         video_id = os.path.basename(file_path_raw)
         if not video_id.endswith(".h5"):
-            # 如果 Dataset 给的是 .npy，强行转成 GT 期待的 .h5
+
             video_id = os.path.splitext(video_id)[0] + ".h5"
 
         raw_predictions = [[] for _ in range(num_classes)]
@@ -159,9 +159,9 @@ def test_cdur_xrfv2_improved(config, checkpoint_path):
                 offset_frames = seg_range[0]
                 for cls_idx, segs in enumerate(segments):
                     for (s_sec, e_sec, score) in segs:
-                        # 转换回全局帧数 (因为 GT 里是 0, 250 这样的帧编号)
-                        # 如果评估器 ANET 内部转了秒，则这里保留秒。
-                        # 根据你的 GT，segment 是 [0, 250]，这通常代表帧。
+
+
+
                         start_f = s_sec * fps + offset_frames
                         end_f = e_sec * fps + offset_frames
                         raw_predictions[cls_idx].append([start_f, end_f, score])
@@ -185,7 +185,7 @@ def test_cdur_xrfv2_improved(config, checkpoint_path):
     with open(pred_path, 'w') as f:
         json.dump({"version": "VERSION 1.3", "results": results_cache}, f, indent=2)
 
-    # 运行评估
+
     evaluator = ANETdetection(
         ground_truth_filename=test_ds.eval_gt,
         prediction_filename=pred_path,

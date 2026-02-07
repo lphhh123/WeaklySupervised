@@ -6,17 +6,17 @@ import torch.nn.init as init
 
 class OICRLosses(nn.Module):
     """
-    和原版一样的 OICR 损失：
-      prob: [P, C+1] softmax 概率（0 是背景）
+    Message OICR Message：
+      prob: [P, C+1] softmax Message（0 Message）
       labels: [P] 0..C
       cls_loss_weights: [P]
-      gt_assignments: [P] （这里只用不到，为了接口兼容保留）
+      gt_assignments: [P] （Message，Message）
     """
     def __init__(self):
         super().__init__()
 
     def forward(self, prob, labels, cls_loss_weights, gt_assignments, eps=1e-6):
-        # 挑出每个 proposal 的当前标签的概率
+
         logp = torch.log(prob + eps)[torch.arange(prob.size(0), device=prob.device), labels]
         loss = -logp * cls_loss_weights
         return loss.mean()
@@ -24,9 +24,9 @@ class OICRLosses(nn.Module):
 
 def mil_losses(cls_score, labels):
     """
-    image-level MIL loss，与原版 pcl_heads.mil_losses 一致：
-      cls_score: [B, C]，视频级概率
-      labels:    [B, C]，0/1 多标签
+    image-level MIL loss，Message pcl_heads.mil_losses Message：
+      cls_score: [B, C]，Message
+      labels:    [B, C]，0/1 Message
     """
     cls_score = cls_score.clamp(1e-6, 1 - 1e-6)
     labels = labels.clamp(0, 1)
@@ -36,10 +36,10 @@ def mil_losses(cls_score, labels):
 
 class mil_outputs(nn.Module):
     """
-    原始 PCL/OICR 的 MIL head：
-      score0 在 proposal 维度 softmax
-      score1 在类维度 softmax
-      最后相乘
+    Message PCL/OICR Message MIL head：
+      score0 Message proposal Message softmax
+      score1 Message softmax
+      Message
     """
     def __init__(self, dim_in, dim_out):
         super().__init__()
@@ -54,15 +54,15 @@ class mil_outputs(nn.Module):
         init.constant_(self.mil_score1.bias, 0)
 
     def forward(self, x):
-        # <<< MOD: 正确处理 [B,P,D]
+
         if x.dim() == 3:
             mil0 = self.mil_score0(x)  # [B,P,C]
             mil1 = self.mil_score1(x)  # [B,P,C]
-            score0 = F.softmax(mil0, dim=1)  # <<< MOD: 在 proposal 维 softmax（每个视频内部）
-            score1 = F.softmax(mil1, dim=2)  # <<< MOD: 在 class 维 softmax
+            score0 = F.softmax(mil0, dim=1)
+            score1 = F.softmax(mil1, dim=2)
             return score0 * score1  # [B,P,C]
 
-        # 保留旧接口：单视频 [P,D] -> [P,C]
+
         if x.dim() == 2:
             mil0 = self.mil_score0(x)  # [P,C]
             mil1 = self.mil_score1(x)  # [P,C]
@@ -73,14 +73,14 @@ class mil_outputs(nn.Module):
 
 class refine_outputs(nn.Module):
     """
-    原始 PCL/OICR 的 refine head：
-      共有 refine_times 个线性层，每个输出 [N, C+1]，按类别 softmax。
+    Message PCL/OICR Message refine head：
+      Message refine_times Message，Message [N, C+1]，Message softmax。
     """
     def __init__(self, dim_in, dim_out, refine_times):
         """
-        dim_in:  输入特征维度（例如 hidden_dim 4096）
-        dim_out: 输出通道数（C+1，含背景）
-        refine_times: refine 的 stage 数 K
+        dim_in:  Message（Message hidden_dim 4096）
+        dim_out: Message（C+1，Message）
+        refine_times: refine Message stage Message K
         """
         super().__init__()
         self.refine_times = refine_times
@@ -102,6 +102,6 @@ class refine_outputs(nn.Module):
         outputs = []
         for layer in self.refine_score:
             logits = layer(x)
-            prob = F.softmax(logits, dim=1)  # 按类别 softmax
+            prob = F.softmax(logits, dim=1)
             outputs.append(prob)
         return outputs
