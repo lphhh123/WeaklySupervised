@@ -10,10 +10,10 @@ import numpy as np
 # ============================================================
 def _load_loso_json(json_path: str):
     """
-    读取 loso_sbj_k.json
-    输出:
+    read loso_sbj_k.json
+    output:
       loso_db[sbj] = {"subset": "Training"/"Validation", "fps": 30, "annos": [(s,e,lid), ...]}
-    其中 s,e 是 frame index（int），区间按 [s, e) 使用。
+     s,e  frame index（int）， [s, e) 。
     """
     with open(json_path, "r", encoding="utf-8") as f:
         obj = json.load(f)
@@ -55,16 +55,16 @@ def npy_windows_to_raw_frames(
     dtype=np.float32,
 ):
     """
-    你的 npy: shape [N, num_sensors*win_samples]，flatten 顺序为 sensor-major:
+     npy: shape [N, num_sensors*win_samples]，flatten  sensor-major:
       sensor0(30) + sensor1(30) + ... + sensor112(30)
 
-    npy 窗口: win_samples(=30) samples，overlap(=0.5) -> stride=15 samples
+    npy window: win_samples(=30) samples，overlap(=0.5) -> stride=15 samples
 
-    还原连续 30Hz raw：
-      第一个窗口取完整 30 帧，
-      后续窗口只追加“新出现的那部分帧”（窗口后半段的 15 帧）。
+     30Hz raw：
+      window 30 ，
+      window“”（window 15 ）。
 
-    返回:
+    return:
       raw_frames: [T_frames, num_sensors]
     """
     feat = np.load(npy_path, allow_pickle=False).astype(dtype)  # [N, 3390]
@@ -94,7 +94,6 @@ def npy_windows_to_raw_frames(
 # 3) LOSO stats cache as JSON under raw/
 # ============================================================
 def _stats_dir_in_raw(dataset_dir: str, stats_dirname: str = "loso_norm_stats_json"):
-    # 存在 raw 文件夹下：raw/loso_norm_stats_json/
     return os.path.join(dataset_dir, "raw", stats_dirname)
 
 
@@ -124,11 +123,11 @@ def _compute_mean_var_across_subjects(
     ignore_zeros_in_stats: bool,
 ):
     """
-    基于还原后的连续 raw 序列（30Hz）统计每个通道的 mean/var。
+     raw （30Hz） mean/var。
     """
     sum_ = np.zeros((num_sensors,), dtype=np.float64)
     sumsq = np.zeros((num_sensors,), dtype=np.float64)
-    count = np.zeros((num_sensors,), dtype=np.float64)  # per-channel count（为 ignore_zeros 做准备）
+    count = np.zeros((num_sensors,), dtype=np.float64)
 
     npy_dir = os.path.join(dataset_dir, npy_rel_dir)
 
@@ -151,22 +150,17 @@ def _compute_mean_var_across_subjects(
             sumsq += (x * x).sum(axis=0)
             count += x.shape[0]
         else:
-            # 仅统计非 0 的样本（如果 0 代表无效填充）
             m = (x != 0.0)  # [T,C]
-            # 对每通道分开计数，避免把 0 当有效值
             count += m.sum(axis=0)
             x_nz = np.where(m, x, 0.0)
             sum_ += x_nz.sum(axis=0)
             sumsq += (x_nz * x_nz).sum(axis=0)
 
-    # 防止除零
     safe_count = np.maximum(count, 1.0)
     mean = sum_ / safe_count
     var = (sumsq / safe_count) - (mean * mean)
     var = np.maximum(var, 0.0)
 
-    # 如果 ignore_zeros 且某通道几乎全 0，count 可能很小，var/mean 可能不稳，这里给个兜底
-    # （你也可以删掉这段，完全按统计结果走）
     for c in range(num_sensors):
         if count[c] < 2:
             mean[c] = 0.0
@@ -188,10 +182,10 @@ def ensure_all_loso_stats_json(
     ignore_zeros_in_stats: bool = False,
 ):
     """
-    按留一法一次性确保 4 个 fold 的 stats 都存在：
+     4  fold  stats ：
       raw/loso_norm_stats_json/loso_sbj_k_stats.json
 
-    若 stats 目录或某 fold 的 json 不存在 -> 自动计算并写入。
+     stats  fold  json  -> compute。
     """
     for k in folds:
         stats_path = _stats_json_path(dataset_dir, k, stats_dirname)
@@ -227,10 +221,8 @@ def ensure_all_loso_stats_json(
             "overlap": float(overlap),
             "ignore_zeros_in_stats": bool(ignore_zeros_in_stats),
             "train_subjects": train_subjects,
-            # 保存均值与方差（你要求“均值和方差”）
             "mean": mean.tolist(),
             "var": var.tolist(),
-            # 可选：也保存每通道有效样本数，方便你排查 0/缺失问题
             "count_per_channel": count.tolist(),
         }
         _json_dump(stats_path, payload)
@@ -244,7 +236,7 @@ def load_fold_mean_std_from_json(
     expect: dict,
 ):
     """
-    读取 fold 的 stats json，返回 mean/std，并校验关键元信息避免误用。
+    read fold  stats json，return mean/std，。
     """
     stats_path = _stats_json_path(dataset_dir, fold_id, stats_dirname)
     if not os.path.exists(stats_path):
@@ -252,7 +244,6 @@ def load_fold_mean_std_from_json(
 
     obj = _json_load(stats_path)
 
-    # 校验关键元信息（不匹配就报错，避免拿错 fold/参数）
     for k, v in expect.items():
         if k not in obj:
             raise RuntimeError(f"Stats json missing key='{k}': {stats_path}")
@@ -271,7 +262,6 @@ def load_fold_mean_std_from_json(
 # 5) Optional: a tiny CLI to precompute stats once
 # ============================================================
 if __name__ == "__main__":
-    # 可以直接跑这个文件来预先把 4 个 fold 的均值/方差都算出来
     dataset_dir = "/home/lipei/TAL_data/opportunity/"
     ensure_all_loso_stats_json(
         dataset_dir=dataset_dir,
@@ -322,7 +312,6 @@ if __name__ == "__main__":
 #     dataset_dir = "/data/bx_data/TAL_data/sbhar/"
 #     ensure_all_loso_stats_json(
 #         dataset_dir=dataset_dir,
-#         folds=None,  # ★自动扫描 annotations/loso_sbj_*.json
 #         stats_dirname="loso_norm_stats_json",
 #         fps=50,
 #         num_sensors=3,

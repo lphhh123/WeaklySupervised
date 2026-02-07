@@ -31,7 +31,7 @@ def segment_iou_1d_torch(boxes_a: torch.Tensor, boxes_b: torch.Tensor, eps: floa
 @torch.no_grad()
 def oicr_pseudo_labels_1d(
     boxes: torch.Tensor,        # [P,2] float
-    cls_prob: torch.Tensor,     # [P,C] float (不含背景列)
+    cls_prob: torch.Tensor,
     im_labels: torch.Tensor,    # [C] 0/1
     fg_thresh: float = 0.5,
     bg_thresh: float = 0.1,
@@ -39,8 +39,8 @@ def oicr_pseudo_labels_1d(
 ):
     """
     OICR 1D pseudo label：
-      - 对每个正类 c：取 score最高的 proposal 作为 pseudo GT
-      - 用 IoU 将所有 proposals 分配给某个 pseudo GT，得到 label / weight / gt_assignment
+      -  c： score proposal  pseudo GT
+      -  IoU  proposals  pseudo GT， label / weight / gt_assignment
 
     return:
       labels: [P]  (0..C) 0=bg
@@ -58,7 +58,6 @@ def oicr_pseudo_labels_1d(
         gt_assignment = torch.full((P,), -1, dtype=torch.long, device=device)
         return labels, weights, gt_assignment
 
-    # 选 pseudo GT（每个正类一个）
     cls_tmp = cls_prob.clone()
     gt_boxes = []
     gt_classes = []
@@ -70,7 +69,6 @@ def oicr_pseudo_labels_1d(
         gt_boxes.append(boxes[p_star].view(1, 2))
         gt_classes.append(torch.tensor([c + 1], device=device, dtype=torch.long))      # 1..C
         gt_scores.append(scores_c[p_star].clamp(min=eps, max=1.0).view(1))            # [1]
-        # 防止同一proposal被多个类重复选中（原始实现是置0，这里置-1更稳）
         cls_tmp[p_star, :] = -1.0
 
     gt_boxes = torch.cat(gt_boxes, dim=0)      # [G,2]
@@ -78,10 +76,8 @@ def oicr_pseudo_labels_1d(
     gt_scores = torch.cat(gt_scores, dim=0)    # [G]
     G = gt_boxes.shape[0]
 
-    # 计算 IoU: [P,G]
     overlaps = segment_iou_1d_torch(boxes.float(), gt_boxes.float())
 
-    # 每个 proposal 分配到 IoU 最大的 gt
     max_overlaps, gt_assignment = overlaps.max(dim=1)     # [P], [P]
     labels = gt_classes[gt_assignment]                    # [P] in 1..C
     weights = gt_scores[gt_assignment].float()            # [P]
@@ -115,10 +111,10 @@ def mil_losses_per_sample(cls_score: torch.Tensor, labels: torch.Tensor) -> torc
 
 class IMU_OICR_PALoss(nn.Module):
     """
-    OICR + PA-Loss（无 PCL）
+    OICR + PA-Loss（ PCL）
     - global_feat: [B,C,T]
     - proposal_boxes: [B,P,2]
-    - labels: [B,C]  (训练必传)
+    - labels: [B,C]  (training)
     """
 
     def __init__(
@@ -131,9 +127,9 @@ class IMU_OICR_PALoss(nn.Module):
         pool_type="avg",
         fg_thresh: float = 0.5,
         bg_thresh: float = 0.1,
-        stage0_boost: float = 3.0,     # 原来用的“stage0 * 3”
-        pa_mode: str = "sigmoid",      # "sigmoid" 或 "exp"
-        enhance_weight: bool = False,  # 是否做 w = w*exp(w)
+        stage0_boost: float = 3.0,
+        pa_mode: str = "sigmoid",
+        enhance_weight: bool = False,
     ):
         super().__init__()
         self.feat_dim = feat_dim
@@ -187,13 +183,11 @@ class IMU_OICR_PALoss(nn.Module):
 
     def _make_w_pa(self, loss_im_cls_per: torch.Tensor) -> torch.Tensor:
         """
-        loss_im_cls_per: [B]  (detach外面做)
+        loss_im_cls_per: [B]  (detach)
         return w_pa: [B]
         """
         if self.pa_mode == "exp":
-            # 变体：1 + exp(-L0)
             return 1.0 + torch.exp(-loss_im_cls_per)
-        # 默认：论文更常见/更稳：1 + sigmoid(-L0)
         return 1.0 + torch.sigmoid(-loss_im_cls_per)
 
     def forward(self, global_feat, proposal_boxes, labels=None):
@@ -221,13 +215,12 @@ class IMU_OICR_PALoss(nn.Module):
 
         # ========== Inference ==========
         if not self.training:
-            # 平均所有 refine stage 的 foreground scores（去掉背景列0）
             final = refine_scores[0][:, :, 1:]
             for k in range(1, self.refine_times):
                 final = final + refine_scores[k][:, :, 1:]
             final = final / float(self.refine_times)
 
-            out["joint_prob"] = final               # [B,P,C]  你测试时可直接用它
+            out["joint_prob"] = final
             out["mil_score"] = mil_score            # [B,P,C]
             out["refine_scores"] = refine_scores    # list([B,P,C+1])
             return out
@@ -268,12 +261,11 @@ class IMU_OICR_PALoss(nn.Module):
                 )  # [P], [P], [P]
 
                 if self.enhance_weight:
-                    w = w * torch.exp(w)   # 可选增强（高质量监督更大权重）
+                    w = w * torch.exp(w)
 
                 prob_b = refine_scores[k][b]  # [P,C+1]
                 loss_b = self.refine_losses[k](prob_b, lbl.long(), w.float(), gt_assign)
 
-                # ---- PA-Loss：乘 per-sample 权重 ----
                 loss_b = loss_b * w_pa[b]
                 loss_k = loss_k + loss_b
 

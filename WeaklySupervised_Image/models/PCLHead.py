@@ -15,10 +15,10 @@ from .pcl_model_blocks import mil_outputs, mil_losses, OICRLosses, refine_output
 
 class Head_PCL(nn.Module):
     """
-    Head_PCL只有adapter+pcl/oicr，预训练模型是TSSE+Mamba
+    Head_PCLadapter+pcl/oicr，pretrainingmodelTSSE+Mamba
     """
     def __init__(self,
-                 feat_dim,         # backbone 输出的通道数 C
+                 feat_dim,
                  num_classes,
                  refine_times=3,
                  use_pcl=True,
@@ -29,7 +29,7 @@ class Head_PCL(nn.Module):
                  hidden_dim=4096,
                  spp_levels=(1, 2, 4),
                  pool_type="avg",
-                 adapter_cfg=None,   # ★ 新增,控制是否有适配器
+                 adapter_cfg=None,
                  ):
         super().__init__()
         self.feat_dim = feat_dim
@@ -41,11 +41,9 @@ class Head_PCL(nn.Module):
         self.graph_iou_thresh = graph_iou_thresh
         self.max_pc_num = max_pc_num
 
-        # -------- 1D SPP 模块 --------
         self.spp = TemporalSPP1D(levels=spp_levels, pool_type=pool_type)
         self.spp_out_dim = feat_dim * self.spp.out_mul  # C * sum(levels)
 
-        # 相当于 roi_2mlp_head：对 pooled feature 做两层 MLP
         self.fc1 = nn.Linear(self.spp_out_dim, hidden_dim)
         self.fc2 = nn.Linear(hidden_dim, hidden_dim)
 
@@ -56,7 +54,6 @@ class Head_PCL(nn.Module):
             [OICRLosses() for _ in range(refine_times)]
         )
 
-        # ============ Adapter（可选）===========
         adapter_cfg = adapter_cfg or {}
         adapter_enable = bool(adapter_cfg.get("enable", False))
         if adapter_enable:
@@ -73,10 +70,10 @@ class Head_PCL(nn.Module):
 
     def pool_proposals_1d_spp(self, global_feat, proposal_boxes):
         """
-        使用 1D SPP 的 proposal pooling
+         1D SPP  proposal pooling
         global_feat:    [B, C, T]
         proposal_boxes: [B, P, 2] (start, end)
-        返回:           [B, P, C * sum(levels)]
+        return:           [B, P, C * sum(levels)]
         """
         B, C, T = global_feat.shape
         B2, P, _ = proposal_boxes.shape
@@ -105,24 +102,22 @@ class Head_PCL(nn.Module):
 
     def forward(self, global_feat, proposal_boxes, labels=None):
         """
-        global_feat: [B, C, T] 或 [B, T, C]
+        global_feat: [B, C, T]  [B, T, C]
         proposal_boxes: [B, P, 2]
-        labels: [B, num_classes] (0/1)，训练必传
+        labels: [B, num_classes] (0/1)，training
         """
         if global_feat.dim() != 3:
-            raise ValueError("global_feat 应该是 [B, C, T] 或 [B, T, C]")
+            raise ValueError("global_feat  [B, C, T]  [B, T, C]")
 
-        # 标准化为 [B, C, T]
         if global_feat.size(1) == self.feat_dim:
             feat = global_feat
         elif global_feat.size(2) == self.feat_dim:
             feat = global_feat.transpose(1, 2)
         else:
             raise ValueError(
-                f"global_feat 形状不匹配 feat_dim={self.feat_dim}, got {global_feat.shape}"
+                f"global_feat  feat_dim={self.feat_dim}, got {global_feat.shape}"
             )
 
-        # 做特征适配（冻结 backbone 时，这里是主要可学习部分之一）
         feat = self.adapter(feat)  # [B, C, T]
 
         B, C, T = feat.shape
@@ -141,23 +136,21 @@ class Head_PCL(nn.Module):
         # 3) MIL + refine
         # mil_score = self.mil_head(x)             # [B*P, num_classes]
         # refine_scores_flat = self.refine_head(x) # list of [B*P, num_classes+1]
-        x_bp = x.view(B, P, -1)  # ★恢复 [B,P,D]
-        mil_score = self.mil_head(x_bp)  # ★mil_head 要按 [B,P,D] 计算
+        x_bp = x.view(B, P, -1)
+        mil_score = self.mil_head(x_bp)
 
         device = x.device
         output = {}
 
-        # 4) 训练：计算 loss
         if self.training:
             if labels is None:
-                raise ValueError("训练模式下必须传入 labels")
+                raise ValueError("training labels")
 
             # image-level MIL loss
             mil_score_vid = mil_score.view(B, P, self.num_classes).sum(dim=1)  # [B, C]
             loss_im_cls = mil_losses(mil_score_vid, labels.float())
             output["losses"] = {"loss_im_cls": loss_im_cls}
 
-            # numpy 版数据，用于生成 pseudo labels
             boxes_np = proposal_boxes.detach().cpu().numpy()           # [B, P, 2]
             labels_np = labels.detach().cpu().numpy()                  # [B, C]
             mil_np = mil_score.detach().cpu().numpy().reshape(B, P, self.num_classes)
@@ -166,7 +159,6 @@ class Head_PCL(nn.Module):
                 for rs in refine_scores_flat
             ]
 
-            # 逐个 refine 分支
             for i_refine in range(self.refine_times):
                 loss_refine_all = 0.0
 
@@ -206,11 +198,10 @@ class Head_PCL(nn.Module):
 
                 loss_refine_avg = loss_refine_all / B
                 if i_refine == 0:
-                    loss_refine_avg = loss_refine_avg * 3.0  # 论文里的 trick
+                    loss_refine_avg = loss_refine_avg * 3.0
 
                 output["losses"][f"refine_loss{i_refine}"] = loss_refine_avg
 
-        # 5) 无论 train / eval，都返回 score 方便调试和测试
         output["mil_score"] = mil_score.view(B, P, self.num_classes)
         output["refine_scores"] = [
             rs.view(B, P, self.num_classes + 1) for rs in refine_scores_flat
@@ -221,8 +212,8 @@ class Head_PCL(nn.Module):
 
 def map_boxes_input_to_feat(boxes: torch.Tensor, T_in: int, T_feat: int) -> torch.Tensor:
     """
-    把原始序列坐标 (0..T_in) 映射到 feature 坐标 (0..T_feat)
-    boxes: [B,P,2]，end 为 exclusive（和你 pooling 里的写法一致）
+     (0..T_in) mapping feature  (0..T_feat)
+    boxes: [B,P,2]，end  exclusive（ pooling ）
     return: LongTensor [B,P,2] in [0..T_feat]
     """
     if boxes.dtype.is_floating_point:
@@ -235,7 +226,6 @@ def map_boxes_input_to_feat(boxes: torch.Tensor, T_in: int, T_feat: int) -> torc
     s = s.clamp(min=0, max=T_feat - 1)
     e = e.clamp(min=1, max=T_feat)
 
-    # 保证 e > s
     e = torch.maximum(e, s + 1)
 
     return torch.stack([s.long(), e.long()], dim=-1)
@@ -243,13 +233,13 @@ def map_boxes_input_to_feat(boxes: torch.Tensor, T_in: int, T_feat: int) -> torc
 
 class Change_Block_PCL_Model(nn.Module):
     """
-    整体模型：
+    model：
       x:[B,C_in,T_in] -> backbone -> feat:[B,512,T_feat]
-      proposals(输入轴 or feat轴) -> head -> losses/scores
+      proposals(input or feat) -> head -> losses/scores
     """
 
     def __init__(self,
-                 feat_dim,  # backbone 输出的通道数 C
+                 feat_dim,
                  num_classes,
                  refine_times=3,
                  use_pcl=False,
@@ -271,7 +261,6 @@ class Change_Block_PCL_Model(nn.Module):
         self.graph_iou_thresh = graph_iou_thresh
         self.max_pc_num = max_pc_num
 
-        # -------- 1D SPP 模块 --------
         self.spp = TemporalSPP1D(levels=spp_levels, pool_type=pool_type)
         self.spp_out_dim = feat_dim * self.spp.out_mul  # C * sum(levels)
 
@@ -283,7 +272,6 @@ class Change_Block_PCL_Model(nn.Module):
             [OICRLosses() for _ in range(refine_times)]
         )
 
-        # 可切换模块
         self.roi_head_name = roi_head
         self.roi_head = _build_roi_head(
             self.roi_head_name,
@@ -294,10 +282,10 @@ class Change_Block_PCL_Model(nn.Module):
 
     def pool_proposals_1d_spp(self, global_feat, proposal_boxes):
         """
-        使用 1D SPP 的 proposal pooling
+         1D SPP  proposal pooling
         global_feat:    [B, C, T]
         proposal_boxes: [B, P, 2] (start, end)
-        返回:           [B, P, C * sum(levels)]
+        return:           [B, P, C * sum(levels)]
         """
         B, C, T = global_feat.shape
         B2, P, _ = proposal_boxes.shape
@@ -326,21 +314,20 @@ class Change_Block_PCL_Model(nn.Module):
 
     def forward(self, global_feat, proposal_boxes, labels=None):
         """
-        global_feat: [B, C, T] 或 [B, T, C]
+        global_feat: [B, C, T]  [B, T, C]
         proposal_boxes: [B, P, 2]
-        labels: [B, num_classes] (0/1)，训练必传
+        labels: [B, num_classes] (0/1)，training
         """
         if global_feat.dim() != 3:
-            raise ValueError("global_feat 应该是 [B, C, T] 或 [B, T, C]")
+            raise ValueError("global_feat  [B, C, T]  [B, T, C]")
 
-        # 标准化为 [B, C, T]
         if global_feat.size(1) == self.feat_dim:
             feat = global_feat
         elif global_feat.size(2) == self.feat_dim:
             feat = global_feat.transpose(1, 2)
         else:
             raise ValueError(
-                f"global_feat 形状不匹配 feat_dim={self.feat_dim}, got {global_feat.shape}"
+                f"global_feat  feat_dim={self.feat_dim}, got {global_feat.shape}"
             )
 
         B, C, T = feat.shape
@@ -352,7 +339,6 @@ class Change_Block_PCL_Model(nn.Module):
         _, _, D = proposal_feats.shape
         x = proposal_feats.view(B * P, D)  # [B*P, C']
 
-        # 2) 可切换模块（替代原来的2*fc）
         x = self.roi_head(x)  # [B*P, hidden_dim]
 
         # 3) MIL + refine
@@ -362,17 +348,15 @@ class Change_Block_PCL_Model(nn.Module):
         device = x.device
         output = {}
 
-        # 4) 训练：计算 loss
         if self.training:
             if labels is None:
-                raise ValueError("训练模式下必须传入 labels")
+                raise ValueError("training labels")
 
             # image-level MIL loss
             mil_score_vid = mil_score.view(B, P, self.num_classes).sum(dim=1)  # [B, C]
             loss_im_cls = mil_losses(mil_score_vid, labels.float())
             output["losses"] = {"loss_im_cls": loss_im_cls}
 
-            # numpy 版数据，用于生成 pseudo labels
             boxes_np = proposal_boxes.detach().cpu().numpy()  # [B, P, 2]
             labels_np = labels.detach().cpu().numpy()  # [B, C]
             mil_np = mil_score.detach().cpu().numpy().reshape(B, P, self.num_classes)
@@ -381,7 +365,6 @@ class Change_Block_PCL_Model(nn.Module):
                 for rs in refine_scores_flat
             ]
 
-            # 逐个 refine 分支
             for i_refine in range(self.refine_times):
                 loss_refine_all = 0.0
 
@@ -421,11 +404,10 @@ class Change_Block_PCL_Model(nn.Module):
 
                 loss_refine_avg = loss_refine_all / B
                 if i_refine == 0:
-                    loss_refine_avg = loss_refine_avg * 3.0  # 论文里的 trick
+                    loss_refine_avg = loss_refine_avg * 3.0
 
                 output["losses"][f"refine_loss{i_refine}"] = loss_refine_avg
 
-        # 5) 无论 train / eval，都返回 score 方便调试和测试
         output["mil_score"] = mil_score.view(B, P, self.num_classes)
         output["refine_scores"] = [
             rs.view(B, P, self.num_classes + 1) for rs in refine_scores_flat
@@ -447,7 +429,7 @@ def _ceil_div(a: int, b: int) -> int:
 
 
 class ROIHead_FC(nn.Module):
-    """原版 2*FC 的等价实现（默认就用这个）"""
+    """ 2*FC （default）"""
     def __init__(self, in_dim: int, hidden_dim: int):
         super().__init__()
         self.fc1 = nn.Linear(in_dim, hidden_dim)
@@ -460,26 +442,22 @@ class ROIHead_FC(nn.Module):
 
 class ROIHead_TSSELite(nn.Module):
     """
-    默认只用 1 个 TSSE（因为 Lspp=7，再堆会很快变 1）
+    default 1  TSSE（ Lspp=7， 1）
     """
     def __init__(self, feat_dim: int, Lspp: int, hidden_dim: int = 4096):
         super().__init__()
         self.feat_dim = int(feat_dim)
         self.Lspp = int(Lspp)
 
-        # 原版 TSSE 内部写死 512 通道，所以这里保证进 TSSE 之前是 512
         if self.feat_dim != 512:
             self.to512 = nn.Conv1d(self.feat_dim, 512, kernel_size=1, bias=False)
         else:
             self.to512 = nn.Identity()
 
-        # TSSE 的 length 参数：应当是 Downscale 之后的长度
-        # TADEmbedding 里 length=(input_length//2)//(2**i) 就是在传 downscale 后的长度
         length_down = _ceil_div(self.Lspp, 2)  # L=7 -> 4
 
         self.tsse = TSSE(in_channels=512, out_channels=256, length=length_down, kernel_size=3, stride=2)
 
-        # 输出到 4096（相当于替代原来的 fc1+fc2 的表征升维）
         self.proj = nn.Sequential(
             nn.Linear(512, hidden_dim),
             nn.ReLU(inplace=True),
@@ -502,27 +480,25 @@ class ROIHead_TSSELite(nn.Module):
 
 class ROIHead_MambaLite(nn.Module):
     """
-    用你现有的 MambaBackbone 做 ROI encoder（不下采样，避免 Lspp 太短出问题）
-    默认参数都写在这里，不从 config 读。
+     MambaBackbone  ROI encoder（， Lspp ）
+    defaultparameters， config 。
     """
     def __init__(self, feat_dim: int, Lspp: int, hidden_dim: int):
         super().__init__()
         self.feat_dim = feat_dim
         self.Lspp = Lspp
 
-        # ---- 默认超参 ----
         mamba_layers = 4
         n_embd_ks = 3
         with_ln = True
         mamba_type = "dbm"
 
-        # 关键：不下采样 / 不建金字塔
         self.mamba = MambaBackbone(
             n_in=feat_dim,
             n_embd=feat_dim,
             n_embd_ks=n_embd_ks,
-            arch=(0, int(mamba_layers), 0),   # 不做前后降采样
-            scale_factor=1,                   # 不缩短长度
+            arch=(0, int(mamba_layers), 0),
+            scale_factor=1,
             with_ln=with_ln,
             mamba_type=mamba_type,
         )
@@ -536,7 +512,7 @@ class ROIHead_MambaLite(nn.Module):
         x = _flat_to_seq(x_flat, self.feat_dim, self.Lspp)   # [N,C,L]
         mask = torch.ones(x.size(0), 1, x.size(-1), dtype=torch.bool, device=x.device)
 
-        feats, _ = self.mamba(x, mask)  # xrfv2 风格：可能返回 list
+        feats, _ = self.mamba(x, mask)
         y = feats[0] if isinstance(feats, (list, tuple)) else feats  # [N,C,L]
         y = y.mean(dim=-1)                                          # [N,C]
         return self.proj(y)                                         # [N,H]
@@ -544,17 +520,17 @@ class ROIHead_MambaLite(nn.Module):
 
 class ROIHead_TSSEMamba(nn.Module):
     """
-    用在 PCL/OICR 的 ROI head（替代原来的 fc1+fc2）：
+     PCL/OICR  ROI head（ fc1+fc2）：
 
-    输入：
+    input：
       x_flat: [N, feat_dim * Lspp]   (N=B*P)
-        - feat_dim = backbone输出通道数（通常512）
-        - Lspp     = SPP 的总 bin 数（如 levels=(1,2,4) -> Lspp=7）
-    输出：
-      [N, hidden_dim] （默认4096），可以直接喂给 mil_head / refine_head
+        - feat_dim = backboneoutput（512）
+        - Lspp     = SPP  bin （ levels=(1,2,4) -> Lspp=7）
+    output：
+      [N, hidden_dim] （default4096）， mil_head / refine_head
 
-    结构：
-      reshape -> (可选 1x1 conv 到512) -> TSSE -> Mamba(不下采样) -> mean pool -> MLP(->4096)
+    ：
+      reshape -> ( 1x1 conv 512) -> TSSE -> Mamba() -> mean pool -> MLP(->4096)
     """
 
     def __init__(self, feat_dim: int, Lspp: int, hidden_dim: int = 4096):
@@ -564,7 +540,6 @@ class ROIHead_TSSEMamba(nn.Module):
         self.hidden_dim = int(hidden_dim)
 
         # -----------------------
-        # 0) 让 TSSE 输入满足 512 通道
         # -----------------------
         if self.feat_dim != 512:
             self.to512 = nn.Conv1d(self.feat_dim, 512, kernel_size=1, bias=False)
@@ -572,7 +547,6 @@ class ROIHead_TSSEMamba(nn.Module):
             self.to512 = nn.Identity()
 
         # -----------------------
-        # 1) TSSE（只放 1 层）
         # -----------------------
         length_down = _ceil_div(self.Lspp, 2)  # Lspp=7 -> 4
         self.tsse = TSSE(
@@ -584,7 +558,6 @@ class ROIHead_TSSEMamba(nn.Module):
         )
 
         # -----------------------
-        # 2) Mamba（ROI 内不下采样）
         # -----------------------
         mamba_layers = 2
         n_embd_ks = 3
@@ -595,14 +568,13 @@ class ROIHead_TSSEMamba(nn.Module):
             n_in=512,
             n_embd=512,
             n_embd_ks=n_embd_ks,
-            arch=(0, int(mamba_layers), 0),  # 不做前后降采样/不建金字塔
-            scale_factor=1,                  # 不缩短长度
+            arch=(0, int(mamba_layers), 0),
+            scale_factor=1,
             with_ln=with_ln,
             mamba_type=mamba_type,
         )
 
         # -----------------------
-        # 3) 输出投影到 4096（替代原 fc1+fc2 的“表征升维”）
         # -----------------------
         self.proj = nn.Sequential(
             nn.Linear(512, self.hidden_dim),
@@ -622,12 +594,10 @@ class ROIHead_TSSEMamba(nn.Module):
         # 2) -> [N, 512, Lspp]
         x = self.to512(x)
 
-        # 3) TSSE: [N,512,Lspp] -> [N,512,L2] （大概 L2=ceil(Lspp/2)）
         x = self.tsse(x)
 
-        # 4) Mamba: 不下采样，保持长度 L2
         mask = torch.ones(x.size(0), 1, x.size(-1), dtype=torch.bool, device=x.device)
-        feats, _ = self.mamba(x, mask)  # xrfv2 风格：可能返回 list
+        feats, _ = self.mamba(x, mask)
         y = feats[0] if isinstance(feats, (list, tuple)) else feats  # [N,512,L2]
 
         # 5) pool + proj -> [N,4096]
@@ -637,9 +607,9 @@ class ROIHead_TSSEMamba(nn.Module):
 
 class ROIHead_Transformer(nn.Module):
     """
-    SPP 后的 x_flat=[N, feat_dim*Lspp]
-    -> reshape 成 [N, feat_dim, Lspp] 当成 token 序列
-    -> Transformer 做 token mixing
+    SPP  x_flat=[N, feat_dim*Lspp]
+    -> reshape  [N, feat_dim, Lspp]  token 
+    -> Transformer  token mixing
     -> mean pool -> [N, d_model] -> proj -> [N, hidden_dim]
     """
     def __init__(self, feat_dim: int, Lspp: int, hidden_dim: int = 4096):
@@ -647,7 +617,6 @@ class ROIHead_Transformer(nn.Module):
         self.feat_dim = int(feat_dim)
         self.Lspp = int(Lspp)
 
-        # ===== 默认超参 =====
         d_model = 512
         nhead = 4
         num_layers = 2
@@ -657,7 +626,6 @@ class ROIHead_Transformer(nn.Module):
         # [N, feat_dim, L] -> [N, L, d_model]
         self.in_proj = nn.Linear(self.feat_dim, d_model)
 
-        # learnable positional embedding (L 很短，不用复杂 PE)
         self.pos = nn.Parameter(torch.zeros(1, self.Lspp, d_model))
 
         enc_layer = nn.TransformerEncoderLayer(
@@ -665,13 +633,12 @@ class ROIHead_Transformer(nn.Module):
             nhead=nhead,
             dim_feedforward=dim_feedforward,
             dropout=dropout,
-            batch_first=True,   # 关键：用 [N, L, d_model]
+            batch_first=True,
             activation="gelu",
             norm_first=True,
         )
         self.encoder = nn.TransformerEncoder(enc_layer, num_layers=num_layers)
 
-        # 输出到 PCL 需要的 hidden_dim（替代原 fc1+fc2）
         self.proj = nn.Sequential(
             nn.Linear(d_model, hidden_dim),
             nn.ReLU(inplace=True),
@@ -692,21 +659,20 @@ class ROIHead_Transformer(nn.Module):
         x = x + self.pos                                    # [N, L, d_model]
 
         y = self.encoder(x)                                 # [N, L, d_model]
-        y = y.mean(dim=1)                                   # [N, d_model]  (每个 proposal 一个向量)
+        y = y.mean(dim=1)
 
         return self.proj(y)                                  # [N, hidden_dim]
 
 
 class ROIHead_LSTM(nn.Module):
     """
-    把 Lspp 个 bin 当成长度为 Lspp 的序列，用 LSTM 做 token mixing。
+     Lspp  bin length Lspp ， LSTM  token mixing。
     """
     def __init__(self, feat_dim: int, Lspp: int, hidden_dim: int = 4096):
         super().__init__()
         self.feat_dim = int(feat_dim)
         self.Lspp = int(Lspp)
 
-        # ===== 默认超参 =====
         d_model = 512
         lstm_hidden = 512
         num_layers = 2
@@ -744,10 +710,8 @@ class ROIHead_LSTM(nn.Module):
 
         y, (hn, cn) = self.lstm(x)                          # y: [N, L, out_dim]
 
-        # 方案A：取最后一个 time step（更像“序列总结”）
         last = y[:, -1, :]                                  # [N, out_dim]
 
-        # 方案B：mean pool（也可以，二选一）
         # last = y.mean(dim=1)
 
         return self.proj(last)                               # [N, hidden_dim]
