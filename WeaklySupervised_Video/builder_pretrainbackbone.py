@@ -10,53 +10,43 @@ from pre_train.pre_model import *
 PRETRAINED_ZOO = {
     "CNN1D": {
         "cls": CNN1DBackbone,
-        # "ckpt": "/home/lipei/project/WSDDN/pre_train/person2_all_CNN1DClassifier_7s_pretrain_best.pth",
-        "ckpt": "/home/lipei/project/WSDDN/pre_train/XRFV2_all_CNN1DClassifier_pretrain_best.pth",
-        # "ckpt": "/home/lipei/WSDDN/pre_train/XRFV2_all_CNN1DClassifier_7s_pretrain_best.pth",
+        "ckpt": None,
         "feat_dim": 512,
         "input_length": 2048,
     },
     "VGG1D_BUAA": {
         "cls": VGG1DBackboneBUAA,
-        "ckpt": "/home/lipei/project/WSDDN/pre_train/XRFV2_all_VGG1DClassifier_pretrain_best.pth",
+        "ckpt": None,
         "feat_dim": 512,
         "input_length": 2048,
     },
     "VGG1D": {
         "cls": VGG1DBackbone,
-        "ckpt": "/home/lipei/project/WSDDN/pre_train/XRFV2_all_VGG1DClassifier_pretrain_best.pth",
+        "ckpt": None,
         "feat_dim": 512,
         "input_length": 2048,
     },
     "CNN1D_person2": {
         "cls": CNN1DBackbone,
-        # "ckpt": "/home/lipei/project/WSDDN/pre_train/person2_all_CNN1DClassifier_7s_pretrain_best.pth",
-        "ckpt": "/home/lipei/project/WSDDN/pre_train/person2/XRFV2_all_CNN1DClassifier_pretrain_best.pth",
-        # "ckpt": "/home/lipei/WSDDN/pre_train/XRFV2_all_CNN1DClassifier_7s_pretrain_best.pth",
+        "ckpt": None,
         "feat_dim": 512,
         "input_length": 2048,
     },
     "CNN1D_person4": {
         "cls": CNN1DBackbone,
-        # "ckpt": "/home/lipei/project/WSDDN/pre_train/person2_all_CNN1DClassifier_7s_pretrain_best.pth",
-        "ckpt": "/home/lipei/project/WSDDN/pre_train/person4/XRFV2_all_CNN1DClassifier_pretrain_best.pth",
-        # "ckpt": "/home/lipei/WSDDN/pre_train/XRFV2_all_CNN1DClassifier_7s_pretrain_best.pth",
+        "ckpt": None,
         "feat_dim": 512,
         "input_length": 2048,
     },
     "CNN1D_person5": {
         "cls": CNN1DBackbone,
-        # "ckpt": "/home/lipei/project/WSDDN/pre_train/person2_all_CNN1DClassifier_7s_pretrain_best.pth",
-        "ckpt": "/home/lipei/project/WSDDN/pre_train/person5/XRFV2_all_CNN1DClassifier_pretrain_best.pth",
-        # "ckpt": "/home/lipei/WSDDN/pre_train/XRFV2_all_CNN1DClassifier_7s_pretrain_best.pth",
+        "ckpt": None,
         "feat_dim": 512,
         "input_length": 2048,
     },
     "CNN1D_person6": {
         "cls": CNN1DBackbone,
-        # "ckpt": "/home/lipei/project/WSDDN/pre_train/person2_all_CNN1DClassifier_7s_pretrain_best.pth",
-        "ckpt": "/home/lipei/project/WSDDN/pre_train/person6/XRFV2_all_CNN1DClassifier_pretrain_best.pth",
-        # "ckpt": "/home/lipei/WSDDN/pre_train/XRFV2_all_CNN1DClassifier_7s_pretrain_best.pth",
+        "ckpt": None,
         "feat_dim": 512,
         "input_length": 2048,
     },
@@ -125,13 +115,19 @@ def _init_backbone_weights(m: nn.Module):
         if hasattr(m, "bias") and m.bias is not None:
             init.constant_(m.bias, 0.)
 
-def load_pretrained_backbone(pretrained_name: str, in_channels: int = 30, device=None):
+def load_pretrained_backbone(
+    pretrained_name: str,
+    in_channels: int = 30,
+    device=None,
+    ckpt_path: str | None = None,
+):
     if device is None:
         device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
     spec = get_pretrained_spec(pretrained_name)
     backbone_class = spec["cls"]
-    ckpt_path = spec.get("ckpt", None)
+    if ckpt_path is None:
+        ckpt_path = spec.get("ckpt", None)
     feat_dim = int(spec.get("feat_dim", 512))
     input_length = int(spec.get("input_length", 2048))
 

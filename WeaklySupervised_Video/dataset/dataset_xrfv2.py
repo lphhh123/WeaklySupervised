@@ -1,8 +1,15 @@
 from scipy.interpolate import interp1d
 import numpy as np
-from models.WSDDN_model import *
-import os, json,random
+import os
+import json
+import random
 import math
+import h5py
+import torch
+from torch.utils.data import Dataset
+
+from tool import load_label_mapping
+from OtherData.utils import generate_proposal_boxes
 
 class WeaklySupervisedXRFV2DatasetTrain(Dataset):
     def __init__(
@@ -733,44 +740,4 @@ class FullBackboneWrapper1D(nn.Module):
 
 
 if __name__ == "__main__":
-    config = {
-        "path": {
-            "train_dataset_path": "/home/lipei/XRFV2/",
-            "test_dataset_path": "/home/lipei/XRFV2/",
-            "dataset_root_path": "/home/lipei/WWADL/",
-            "mapping_path": "/home/lipei/project/WSDDN/label_mapping.json",
-            "checkpoint_path": "/home/lipei/project/WSDDN/checkpoints/",
-            "result_path": "/home/lipei/project/WSDDN/test_results/"
-        },
-    }
-
-                        
-    ds_train_imu = WeaklySupervisedXRFV2DatasetTrain(
-        dataset_dir=config["path"]["train_dataset_path"],
-        mapping_path=config["path"]["mapping_path"],
-        use_airpods=False,
-    )
-    x, prop, y = ds_train_imu[0]
-    print("[Train] IMU only sample_30s:", x.shape)
-
-    ds_train_imu_air = WeaklySupervisedXRFV2DatasetTrain(
-        dataset_dir=config["path"]["train_dataset_path"],
-        mapping_path=config["path"]["mapping_path"],
-        use_airpods=True,
-    )
-    x2, prop2, y2 = ds_train_imu_air[0]
-    print("[Train] IMU + AirPods sample_30s:", x2.shape)
-
-                        
-    test_ds = WeaklySupervisedXRFV2DatasetTest(
-        config=config,
-        modality='imu',
-        device_keep_list=None,
-        use_airpods=False,
-    )
-    for fname, data_iter in test_ds.dataset():
-        clip_dict, seg = next(data_iter)
-        print("[Test] first file:", fname)
-        print("      segment range:", seg)
-        print("      clip['imu'].shape:", clip_dict['imu'].shape)               
-        break
+    print("This module provides XRFV2 dataset helpers. Use scripts/run.py for execution.")

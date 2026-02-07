@@ -1,30 +1,26 @@
-import sys
 import os
 import torch
 from torch.utils.data import DataLoader
+from types import SimpleNamespace
 
-               
-sys.path.append(os.getcwd())
-from core.dataset_xrfv2 import XRFV2Dataset
-
-                       
-from core.config_xrfv2 import cfg
+from models.cola.dataset_xrfv2 import XRFV2Dataset
 
 
 def check_dataset_airpods():
     print("Starting XRFV2Dataset test (IMU + AirPods)")
 
                                  
-    data_path = '/home/lipei/XRFV2'
-    cfg.TEST_DATA_ROOT = '/home/lipei/WWADL/imu'              
-    cfg.DATA_PATH = '/home/lipei/XRFV2'
-    cfg.TRAIN_H5_PATH = os.path.join(cfg.DATA_PATH, 'train_data.h5')
-    cfg.TEST_DATA_ROOT = '/home/lipei/WWADL/imu'
-    cfg.GT_PATH = os.path.join(cfg.DATA_PATH, 'imu_annotations.json')
+    data_path = os.environ.get("XRFV2_DATA_PATH", os.path.join(os.getcwd(), "data", "XRFV2"))
+    test_root = os.environ.get("XRFV2_TEST_ROOT", os.path.join(os.getcwd(), "data", "WWADL", "imu"))
+    cfg = SimpleNamespace(
+        data_path=data_path,
+        test_data_root=test_root,
+        gt_path=os.path.join(data_path, "imu_annotations.json"),
+        use_airpods=True,
+    )
 
                           
-    cfg.USE_AIRPODS = True
-    print(f"Configuration: USE_AIRPODS = {cfg.USE_AIRPODS}")
+    print(f"Configuration: USE_AIRPODS = {cfg.use_airpods}")
 
     num_classes = 30
     class_dict = {f"Action_{i}": i for i in range(num_classes)}
@@ -38,7 +34,7 @@ def check_dataset_airpods():
                                              
     print("\n[Step 1] Test Train Mode (read IMU+AirPods from H5)...")
     try:
-        train_ds = XRFV2Dataset('train', 'imu', 2048, class_dict)
+        train_ds = XRFV2Dataset('train', 'imu', 2048, class_dict, cfg)
         t_data, t_label, _, t_vid, _ = train_ds[0]
 
               
@@ -52,7 +48,7 @@ def check_dataset_airpods():
                                          
     print("\n[Step 2] Test Test Mode (merge IMU+AirPods across folders)...")
     try:
-        test_ds = XRFV2Dataset('test', 'imu', 2048, class_dict)
+        test_ds = XRFV2Dataset('test', 'imu', 2048, class_dict, cfg)
         print(f"  => Found {len(test_ds)} test files.")
 
         target_vid = "0_1_3"
@@ -81,7 +77,7 @@ def check_dataset_airpods():
                 if airpods_part.abs().sum().item() < 1e-5:
                     print(
                         "     Warning: AirPods data is all zeros. Check that the file exists under "
-                        "/home/lipei/WWADL/AirPodsPro (or airpods)."
+                        "data/WWADL/AirPodsPro (or airpods)."
                     )
                 else:
                     print("     AirPods data is valid (non-zero).")
