@@ -216,8 +216,8 @@ def run_loso_pretrain(config: dict):
 
 if __name__ == "__main__":
     config = {
-        "dataset_dir": "/home/lipei/TAL_data/rwhar/",
-        "out_dir": "/home/lipei/project/WSDDN/OtherData/RWHAR/pre_train/",
+        "dataset_dir": "data/rwhar/",
+        "out_dir": "OtherData/RWHAR/pre_train/",
 
         "num_folds": 15,
         "num_classes": 8,

@@ -206,9 +206,9 @@ def plot_action_sequences_frameless(
 # pred_window_path = "/home/lipei/project/WSDDN/test_results/SBHAR/2026/rskp_0125/fold0/predictions_test_window.json"
 
 # Opportunity
-gt_path = "/home/lipei/project/WSDDN/test_results/Opportunity/pcl_0106/fold0/gt_for_anet.json"
-pred_full_path = "/home/lipei/project/WSDDN/test_results/Opportunity/pcl_0106/fold0/predictions_test_full.json"
-pred_window_path = "/home/lipei/project/WSDDN/test_results/Opportunity/pcl_0106/fold0/predictions_test_full.json"
+gt_path = "outputs/Opportunity/pcl/fold0/gt_for_anet.json"
+pred_full_path = "outputs/Opportunity/pcl/fold0/predictions_test_full.json"
+pred_window_path = "outputs/Opportunity/pcl/fold0/predictions_test_full.json"
 
 # RWHAR
 # gt_path = "/home/lipei/project/WSDDN/test_results/RWHAR/wsddn_0105/fold0/gt_for_anet.json"
@@ -239,7 +239,7 @@ if all_labels:
     plot_action_sequences_frameless(
         gt_segs, pred_full_segs, pred_window_segs,
         label2color, all_labels,
-        title="SBHAR--RSKP",
+        title="SBHAR",
         figsize=(20, 2.70),
         bar_height=0.6,
         legend_cols=8,

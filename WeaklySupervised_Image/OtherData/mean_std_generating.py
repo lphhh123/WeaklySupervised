@@ -262,7 +262,7 @@ def load_fold_mean_std_from_json(
 # 5) Optional: a tiny CLI to precompute stats once
 # ============================================================
 if __name__ == "__main__":
-    dataset_dir = "/home/lipei/TAL_data/opportunity/"
+    dataset_dir = "data/opportunity/"
     ensure_all_loso_stats_json(
         dataset_dir=dataset_dir,
         folds=(0, 1, 2, 3),
@@ -293,7 +293,7 @@ if __name__ == "__main__":
 
 
 # if __name__ == "__main__":
-#     dataset_dir = "/home/lipei/TAL_data/rwhar/"
+#     dataset_dir = "data/rwhar/"
 #     ensure_all_loso_stats_json(
 #         dataset_dir=dataset_dir,
 #         folds=tuple(range(15)),

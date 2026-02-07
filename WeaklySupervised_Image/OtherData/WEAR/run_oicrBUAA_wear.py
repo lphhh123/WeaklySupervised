@@ -1,3 +1,13 @@
+import argparse
+from pathlib import Path
+import sys
+
+ROOT = Path(__file__).resolve().parents[2]
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
+
+from scripts.config_utils import load_json_config
+
 # run_oicrBUAA_wear.py
 # -*- coding: utf-8 -*-
 import torch
@@ -499,77 +509,19 @@ def run_loso_oicrBUAA_wear(config):
 # ============================================================
 # 6) main
 # ============================================================
+
+
+def run_entry(config):
+    return run_loso_oicrBUAA_wear(config)
+
+
+def _parse_args():
+    parser = argparse.ArgumentParser(description="Runner for run_oicrBUAA_wear")
+    parser.add_argument("--config", default="configs/wear_oicr.json", help="Path to JSON config")
+    return parser.parse_args()
+
+
 if __name__ == "__main__":
-    config = {
-        "seed": 2024,
-        "exp_name": "oicrBUAA_opportunity",
-
-        "dataset_dir": "/home/lipei/TAL_data/wear/",
-        "pretrained_dir": "/home/lipei/project/WSDDN/OtherData/WEAR/pre_train",
-        "checkpoint_dir": "/home/lipei/project/WSDDN/checkpoints/WEAR/oicrBUAA_0112",
-        "result_root": "/home/lipei/project/WSDDN/test_results/WEAR/oicrBUAA_0112",
-
-        "num_folds": 18,
-        "folds": [0, 1, 2, 3,4,5,6,7,8,9,10,11,12,13,14,15,16,17],
-
-        "fps": 50,
-        "clip_sec": 100.0,
-        "clip_overlap": 0.5,
-        "in_channels": 12,
-        "num_classes": 18,
-        "stats_dirname": "loso_norm_stats_json",
-
-        "seg_win_len": 512,
-        "seg_stride": 256,
-        "wrapper_chunk": 256,
-
-        "pretrained_model_name": "VGG1DBUAA",
-
-        "num_workers": 4,
-        "neg_keep_ratio": 0.2,
-
-        "training": {
-            "batch_size": 16,
-            "num_epochs": 60,
-            "lr": 1e-4,
-            "lr_step_size": 20,
-            "lr_gamma": 0.5,
-            "weight_decay": 1e-5,
-            # "grad_clip": 5.0,
-
-            "num_proposals": 100,
-
-            # proposal params
-            "base_physical_sec": 60.0,
-            "step_sec": 5.0,
-            "min_sec": 1.0,
-            "max_sec": 120.0,
-
-            # OICR params
-            "refine_times": 3,
-            "fg_thresh": 0.5,
-            "bg_thresh": 0.1,
-            "spp_levels": (1, 2, 4),
-            "pool_type": "avg",
-            "stage0_boost": 3.0,
-            "pa_mode": "sigmoid",
-            "enhance_weight": True,
-        },
-
-        "testing": {
-            "test_window_proposals":200,
-            "test_full_proposals": 3000,
-            "conf_thresh": 0.0,
-            "nms_sigma": 0.5,
-            "top_k": 200,
-
-            "base_physical_sec": 60.0,
-            "step_sec": 5.0,
-            "min_sec": 1.0,
-            "max_sec": 120.0,
-
-            "confusion_tiou": 0.5
-        }
-    }
-
-    run_loso_oicrBUAA_wear(config)
+    args = _parse_args()
+    config, _ = load_json_config(args.config)
+    run_entry(config)

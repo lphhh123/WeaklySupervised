@@ -674,16 +674,9 @@ class FullBackboneWrapper1D(nn.Module):
 
 
 if __name__ == "__main__":
-    config = {
-        "path": {
-            "train_dataset_path": "/home/lipei/XRFV2/",
-            "test_dataset_path": "/home/lipei/XRFV2/",
-            "dataset_root_path": "/home/lipei/WWADL/",
-            "mapping_path": "/home/lipei/project/WSDDN/label_mapping.json",
-            "checkpoint_path": "/home/lipei/project/WSDDN/checkpoints/",
-            "result_path": "/home/lipei/project/WSDDN/test_results/"
-        },
-    }
+    from scripts.config_utils import load_json_config
+
+    config, _ = load_json_config("configs/xrfv2_wsddn.json")
 
     ds_train_imu = WeaklySupervisedXRFV2DatasetTrain(
         dataset_dir=config["path"]["train_dataset_path"],

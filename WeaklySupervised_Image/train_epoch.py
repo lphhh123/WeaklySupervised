@@ -10,7 +10,7 @@ from tqdm import tqdm
 from dataset.dataset_xrfv2 import WeaklySupervisedXRFV2DatasetTrain
 from builder_models import build_wsddn_imu_model, build_pcl_oicr_imu_model
 from tool import load_label_mapping
-from builder_pretrainbackbone import load_pretrained_backbone, get_pretrained_spec
+from builder_pretrainbackbone import load_pretrained_backbone, resolve_pretrained_ckpt
 
 
 def train_wsddn_imu(config, exp_name="wsddn"):
@@ -22,8 +22,11 @@ def train_wsddn_imu(config, exp_name="wsddn"):
     in_channels = 30 + (6 if use_airpods else 0)  # IMU:30, AirPods:6 → 36
     print(f"use_airpods = {use_airpods}, in_channels = {in_channels}")
 
-    spec = get_pretrained_spec(config["model"]["pretrained_name"])
-    pretrain_ckpt = spec.get("ckpt")
+    pretrain_ckpt = resolve_pretrained_ckpt(
+        config["model"]["pretrained_name"],
+        ckpt_root=config["model"].get("ckpt_root"),
+        ckpt_path=config["model"].get("ckpt_path"),
+    )
     backbone_loaded = (pretrain_ckpt is not None and os.path.exists(pretrain_ckpt))
     print(f"[Train] pretrained_name={config['model']['pretrained_name']}")
     print(f"[Train] backbone_ckpt={pretrain_ckpt}")
@@ -33,6 +36,8 @@ def train_wsddn_imu(config, exp_name="wsddn"):
         pretrained_name=config["model"]["pretrained_name"],
         device=device,
         in_channels=in_channels,
+        ckpt_root=config["model"].get("ckpt_root"),
+        ckpt_path=config["model"].get("ckpt_path"),
     )
 
     pretrained_backbone = pretrained_backbone.to(device)
@@ -245,8 +250,11 @@ def train_pcl_imu(config, exp_name="pcl_imu"):
     in_channels = 30 + (6 if use_airpods else 0)
     print(f"[PCL/OICR] use_airpods = {use_airpods}, in_channels = {in_channels}")
 
-    spec = get_pretrained_spec(config["model"]["pretrained_name"])
-    pretrain_ckpt = spec.get("ckpt")
+    pretrain_ckpt = resolve_pretrained_ckpt(
+        config["model"]["pretrained_name"],
+        ckpt_root=config["model"].get("ckpt_root"),
+        ckpt_path=config["model"].get("ckpt_path"),
+    )
     backbone_loaded = (pretrain_ckpt is not None and os.path.exists(pretrain_ckpt))
     print(f"[PCL/OICR-Train] pretrained_name={config['model']['pretrained_name']}")
     print(f"[PCL/OICR-Train] backbone_ckpt={pretrain_ckpt}")
@@ -256,6 +264,8 @@ def train_pcl_imu(config, exp_name="pcl_imu"):
         pretrained_name=config["model"]["pretrained_name"],
         device=device,
         in_channels=in_channels,
+        ckpt_root=config["model"].get("ckpt_root"),
+        ckpt_path=config["model"].get("ckpt_path"),
     )
     pretrained_backbone = pretrained_backbone.to(device)
 
