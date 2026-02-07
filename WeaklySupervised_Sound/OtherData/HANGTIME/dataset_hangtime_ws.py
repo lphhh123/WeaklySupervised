@@ -10,7 +10,7 @@ from OtherData.utils import load_mean_std_from_stats_json, npy_windows_to_raw_fr
 # Dataset
 class WeaklyHangtimeDataset(Dataset):
     """
-    弱监督dataset：返回 raw clip + video-level multi-hot label
+    Weak supervision dataset: return raw clip + video-level multi-hot label.
 
     Return:
       x: FloatTensor [C, T]
@@ -39,7 +39,7 @@ class WeaklyHangtimeDataset(Dataset):
         min_ov_frames: int = 1,
 
         # keep negative clips (no actions) ratio in TRAIN
-        neg_keep_ratio: float = 0.2,  # 训练建议保留一点负样本
+        neg_keep_ratio: float = 0.2,
         seed: int = 2024,
 
         # normalization stats

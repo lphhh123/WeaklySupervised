@@ -17,22 +17,18 @@ from tool import ANETdetection
 from OtherData.utils import _meta_get, set_seed, build_gt_for_anet, dump_config
 
 # ============================================================
-# [修改 1] 导入 Wetlab 数据集类
-# 请确保 OtherData/WETLAB/dataset_wetlab_ws.py 存在且类名正确
 # ============================================================
 try:
     from OtherData.WETLAB.dataset_wetlab_ws import WeaklyWetlabDataset
 except ImportError:
     print("Error: Could not import 'WeaklyWetlabDataset'. Please check the path.")
-    # from OtherData.WETLAB.dataset_wetlab_ws import WeaklyWetlabDataset # 备用
 
-# 引入 DCASE CRNN 模型 (模型本身不用变)
 try:
     from models.DCASE_CRNN import CRNN
 except ImportError:
     print("Warning: Could not import CRNN from models.DCASE_CRNN.")
 
-os.environ["CUDA_VISIBLE_DEVICES"] = "3"  # [修改] 根据显卡空闲情况设置
+os.environ["CUDA_VISIBLE_DEVICES"] = "3"
 
 
 # ============================================================
@@ -97,7 +93,7 @@ def train_dcase_one_fold_wetlab(config, fold: int, exp_name: str = "dcase_wetlab
     dataset_dir = config["dataset_dir"]
     fps = int(config.get("fps", 50))
     clip_sec = float(config.get("clip_sec", 60.0))
-    in_channels = int(config.get("in_channels", 12))  # [注意] 这里的默认值会被config覆盖
+    in_channels = int(config.get("in_channels", 12))
     num_classes = int(config["num_classes"])
 
     suffix = f"_{int(clip_sec)}s"
@@ -105,8 +101,6 @@ def train_dcase_one_fold_wetlab(config, fold: int, exp_name: str = "dcase_wetlab
     cnn_kwargs = config["model_args"].get("cnn_kwargs", {})
 
     model = CRNN(
-        # [修改] 将 1 改为 in_channels (即 3)
-        # 这样 RNN 的输入维度就会初始化为 64 * 3 = 192，与实际输出匹配
         n_in_channel=in_channels,
 
         nclass=num_classes,
@@ -124,9 +118,7 @@ def train_dcase_one_fold_wetlab(config, fold: int, exp_name: str = "dcase_wetlab
     model = model.to(device)
 
     def count_parameters(model):
-        # 统计所有参数
         total_params = sum(p.numel() for p in model.parameters())
-        # 统计可训练参数 (通常我们关心这个)
         trainable_params = sum(p.numel() for p in model.parameters() if p.requires_grad)
         return total_params, trainable_params
 
@@ -137,11 +129,9 @@ def train_dcase_one_fold_wetlab(config, fold: int, exp_name: str = "dcase_wetlab
     print(f"Trainable Parameters: {trainable:,}")
     print("-" * 30 + "\n")
 
-    # [修改 2] 实例化 Wetlab Dataset
-    # 假设你的 Wetlab split 文件命名也是 loso_sbj_{fold}.json
     loso_json = f"loso_sbj_{fold}.json"
 
-    train_ds = WeaklyWetlabDataset(  # <--- 修改类名
+    train_ds = WeaklyWetlabDataset(
         dataset_dir=dataset_dir,
         loso_json=loso_json,
         mode="train",
@@ -189,7 +179,6 @@ def train_dcase_one_fold_wetlab(config, fold: int, exp_name: str = "dcase_wetlab
             sample_clips = sample_clips.to(device)
             labels = labels.to(device).float()
 
-            # 维度适配
             if sample_clips.shape[1] > sample_clips.shape[2]:
                 inputs = sample_clips.permute(0, 2, 1)
             else:
@@ -211,7 +200,7 @@ def train_dcase_one_fold_wetlab(config, fold: int, exp_name: str = "dcase_wetlab
 
         scheduler.step()
 
-    print(f"  >>> Fold {fold} Finished. Best Loss: {best_loss:.4f} -> {ckpt_path}")
+    print(f"   Fold {fold} Finished. Best Loss: {best_loss:.4f} -> {ckpt_path}")
     return ckpt_path
 
 
@@ -231,7 +220,6 @@ def test_dcase_wetlab(config, checkpoint_path, fold: int, test_mode: str = "test
     cnn_kwargs = config["model_args"].get("cnn_kwargs", {})
 
     model = CRNN(
-        # [修改] 同样将 1 改为 in_channels
         n_in_channel=in_channels,
 
         nclass=num_classes,
@@ -257,8 +245,7 @@ def test_dcase_wetlab(config, checkpoint_path, fold: int, test_mode: str = "test
     label_dict = js.get("label_dict", {})
     id2label = {int(v): k for k, v in label_dict.items()}
 
-    # [修改 3] 实例化 Wetlab Dataset
-    ds = WeaklyWetlabDataset(  # <--- 修改类名
+    ds = WeaklyWetlabDataset(
         dataset_dir=dataset_dir,
         loso_json=loso_json,
         mode=test_mode,
@@ -290,7 +277,6 @@ def test_dcase_wetlab(config, checkpoint_path, fold: int, test_mode: str = "test
 
         frame_prob, _ = model(inputs)
 
-        # 插值回原始长度
         target_len = inputs.shape[-1]
         frame_prob = F.interpolate(frame_prob, size=target_len, mode='linear', align_corners=True)
         frame_prob = frame_prob.permute(0, 2, 1).squeeze(0).cpu().numpy()
@@ -359,7 +345,6 @@ def test_dcase_wetlab(config, checkpoint_path, fold: int, test_mode: str = "test
             best_avg_mAP = avg_mAP
             best_thresh = th
             best_mAPs = mAPs
-            # 保存最佳结果
             best_pred_path = os.path.join(fold_dir, f"best_predictions_{test_mode}{suffix}.json")
             with open(best_pred_path, "w") as f:
                 json.dump(final_results, f, indent=2)
@@ -422,29 +407,25 @@ def run_loso_dcase_wetlab(config):
 
 if __name__ == "__main__":
     # ============================================================
-    # [修改 4] 配置 Wetlab 专属参数
     # ============================================================
     config = {
         "seed": 2026,
         "exp_name": "dcase_wetlab",
         "model_type": "CRNN",
 
-        # [路径修改]
-        "dataset_dir": "/home/lipei/TAL_data/wetlab/",  # 请确认路径
+        "dataset_dir": "/home/lipei/TAL_data/wetlab/",
         "checkpoint_dir": "/home/yinjiaxi/wstal/WeaklySupervised-master/checkpoints/wetlab_dcase_10_23s_2026",
         "result_root": "/home/yinjiaxi/wstal/WeaklySupervised-master/result/wetlab_dcase_10_23s_2026/",
 
-        # [数据修改] Wetlab 的 Folds 列表（例如 0-21？）
-        "folds": list(range(22)),  # 请确认 Wetlab 有多少个受试者
+        "folds": list(range(22)),
 
         "fps": 50,
         "clip_sec": 23.0,
 
-        # [关键修改] Wetlab 的传感器维度和类别数
-        "in_channels": 3,  # Wetlab 通常是 9 (例如 Acc+Gyro+Mag?)，请确认
-        "num_classes": 8,  # Wetlab 的类别数，请确认
+        "in_channels": 3,
+        "num_classes": 8,
 
-        "stats_dirname": "loso_norm_stats_json",  # 如果文件夹名不同请修改
+        "stats_dirname": "loso_norm_stats_json",
 
         "model_args": {
             "n_RNN_cell": 128,
@@ -455,14 +436,8 @@ if __name__ == "__main__":
             "specaugm_f_l": 2,
             "cnn_integration": True,
 
-            # [新增] 针对 3 通道数据的 CNN 池化策略
-            # 格式通常为 [[Time_Pool, Freq_Pool], ...]
-            # 3 通道太小了，我们在 Freq 维度（第二个维度）只能允许一次池化 (3 -> 1)，或者完全不池化
-            # 这里的配置意图是：只在时间轴上做池化，传感器轴(Freq)保持不动或者只做极少的压缩
             "cnn_kwargs": {
                 "pooling": [[2, 1], [2, 1], [2, 1], [1, 1], [1, 1], [1, 1], [1, 1]]
-                # 注意：这个列表长度取决于 CNN 的层数，通常是 7 层
-                # [2, 1] 表示：时间维度 /2，传感器维度 /1 (不池化)
             }
         },
 

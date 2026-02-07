@@ -100,7 +100,7 @@ def train_pretrain_model(
             best_state = copy.deepcopy(model.backbone.state_dict())
             os.makedirs(os.path.dirname(save_path), exist_ok=True)
             torch.save(best_state, save_path)
-            print(f'>>> Best Eval Loss = {best_eval_loss:.4f}, saved backbone -> {save_path}')
+            print(f' Best Eval Loss = {best_eval_loss:.4f}, saved backbone -> {save_path}')
 
         scheduler.step()
 
@@ -116,7 +116,7 @@ def run_loso_pretrain(config: dict):
 
     val_mode = config.get("val_mode", "test")
 
-    for fold in range(config.get("num_folds", 15)):  # ★15 folds
+    for fold in range(config.get("num_folds", 15)):  # 15 folds
         loso_json = f"loso_sbj_{fold}.json"
         print("\n" + "=" * 80)
         print(f"[LOSO] Fold {fold} | json={loso_json} | val_mode={val_mode}")
@@ -174,10 +174,10 @@ def run_loso_pretrain(config: dict):
 
         in_channels = config.get("in_channels", config.get("num_sensors", 21))
         model = CNN1DClassifier(
-            num_classes=config["num_classes"],   # ★8
+            num_classes=config["num_classes"],   # 8
             task=config.get("task", "single"),
             feat_dim=config.get("feat_dim", 512),
-            in_channels=in_channels,             # ★21
+            in_channels=in_channels,             # 21
         )
 
         model_name = config.get("model_name", "CNN1D")
@@ -203,20 +203,17 @@ if __name__ == "__main__":
         "task": "single",
         "model_name": "CNN1D",
 
-        # 数据参数
         "fps": 50,
         "num_sensors": 12,
         "in_channels": 12,
 
 
         "win_sec": 10.0,
-        "win_overlap": 0.5,    # 10s窗口步长=5s（也可以改成0.0 -> 步长10s）
+        "win_overlap": 0.5,
 
-        # 归一化 stats json
         "stats_dirname": "loso_norm_stats_json",
         "ignore_zeros_in_stats": False,
 
-        # 训练参数
         "batch_size": 32,
         "num_epochs": 60,
         "lr": 1e-3,
@@ -224,7 +221,6 @@ if __name__ == "__main__":
         "seed": 2024,
         "feat_dim": 512,
 
-        # 序列长： False，避免一次性缓存所有 raw
         "cache_raw": False,
 
         "val_mode": "test",

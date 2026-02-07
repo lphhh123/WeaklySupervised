@@ -6,7 +6,6 @@ os.environ["CUDA_VISIBLE_DEVICES"] = "4"
 
 import torch
 
-# 限制线程数以防止CPU抢占，有助于数据加载稳定性
 torch.set_num_threads(8)
 torch.set_num_interop_threads(1)
 
@@ -21,21 +20,16 @@ from tqdm import tqdm
 
 from tool import ANETdetection
 
-# [注意] 请确保 OtherData/Opportunity/ 目录下有 dataset_opportunity_ws.py 文件
-# 并且其中包含 WeaklyOpportunityDataset 类
 from OtherData.Opportunity.dataset_opportunity_ws import WeaklyOpportunityDataset
 from OtherData.utils import _meta_get, set_seed, build_gt_for_anet, dump_config
 
-# 引入 CDur 模型
 from models.CDur_model import CDur, MilSEDCNN
 
 
-# 如果需要指定显卡，请取消下面注释
 
 
 
 # ============================================================
-# Helper: Context manager to suppress stdout (屏蔽啰嗦的输出)
 # ============================================================
 class HiddenPrints:
     def __enter__(self):
@@ -112,9 +106,7 @@ def train_cdur_one_fold_opportunity(config, fold: int, exp_name: str = "cdur_opp
     model = model.to(device)
 
     def count_parameters(model):
-        # 统计所有参数
         total_params = sum(p.numel() for p in model.parameters())
-        # 统计可训练参数 (通常我们关心这个)
         trainable_params = sum(p.numel() for p in model.parameters() if p.requires_grad)
         return total_params, trainable_params
 
@@ -125,7 +117,6 @@ def train_cdur_one_fold_opportunity(config, fold: int, exp_name: str = "cdur_opp
     print(f"Trainable Parameters: {trainable:,}")
     print("-" * 30 + "\n")
 
-    # Opportunity通常使用 loso_sbj_{fold}.json 格式
     loso_json = f"loso_sbj_{fold}.json"
 
     train_ds = WeaklyOpportunityDataset(
@@ -151,7 +142,7 @@ def train_cdur_one_fold_opportunity(config, fold: int, exp_name: str = "cdur_opp
         shuffle=True,
         num_workers=int(config["training"].get("num_workers", 4)),
         pin_memory=True,
-        drop_last=True,  # 显存保护：drop_last防止最后一个batch形状不一致导致显存波动
+        drop_last=True,
     )
 
     optimizer = optim.Adam(model.parameters(), lr=float(config["training"]["lr"]), weight_decay=1e-4)
@@ -171,7 +162,6 @@ def train_cdur_one_fold_opportunity(config, fold: int, exp_name: str = "cdur_opp
         model.train()
         epoch_loss = 0.0
 
-        # [显存优化] 每个epoch开始前清理缓存
         torch.cuda.empty_cache()
 
         pbar = tqdm(train_loader, desc=f"Fold{fold} Ep{epoch + 1}", leave=False)
@@ -198,9 +188,8 @@ def train_cdur_one_fold_opportunity(config, fold: int, exp_name: str = "cdur_opp
 
         scheduler.step()
 
-    print(f"  >>> Fold {fold} Finished. Best Loss: {best_loss:.4f} -> {ckpt_path}")
+    print(f"   Fold {fold} Finished. Best Loss: {best_loss:.4f} -> {ckpt_path}")
 
-    # [显存优化] 删除变量并清理显存
     del model, optimizer, train_loader, train_ds
     torch.cuda.empty_cache()
 
@@ -262,8 +251,6 @@ def test_cdur_opportunity(config, checkpoint_path, fold: int, test_mode: str = "
 
     results_cache = {}
 
-    # 这里的threshold仅用于生成 JSON 文件中的 segment 字段
-    # 实际评估会使用 linspace 扫描多个阈值
     default_threshold = 0.5
 
     fold_dir = os.path.join(config["result_root"], f"fold{fold}")
@@ -303,7 +290,6 @@ def test_cdur_opportunity(config, checkpoint_path, fold: int, test_mode: str = "
     gt_path = os.path.join(fold_dir, "gt_for_anet.json")
     build_gt_for_anet(ann_path, gt_path)
 
-    # [阈值配置] 0.3-0.7，每隔0.1取一个
     tious = np.linspace(0.3, 0.7, 5)
 
     evaluator = ANETdetection(
@@ -318,7 +304,6 @@ def test_cdur_opportunity(config, checkpoint_path, fold: int, test_mode: str = "
     with HiddenPrints():
         mAPs, avg_mAP, _ = evaluator.evaluate()
 
-    # [显存优化] 清理
     del model, loader, ds, x
     torch.cuda.empty_cache()
 
@@ -344,10 +329,8 @@ def run_loso_cdur_opportunity(config):
         # 1. Train
         ckpt = train_cdur_one_fold_opportunity(config, fold)
 
-        # 2. Test Window (默认模式)
         mAPs_win, avg_mAP_win = test_cdur_opportunity(config, ckpt, fold, test_mode="test_window")
 
-        # 3. Test Full (全序列模式, 视dataset是否支持)
         mAPs_full, avg_mAP_full = test_cdur_opportunity(config, ckpt, fold, test_mode="test_full")
 
         fold_result = {
@@ -364,7 +347,6 @@ def run_loso_cdur_opportunity(config):
         print(f"[Fold {fold}] Win Avg: {avg_mAP_win:.4f} | Full Avg: {avg_mAP_full:.4f}")
 
     # ============================================================
-    # 保存 JSON 文件
     # ============================================================
     final_json_path = os.path.join(config["result_root"], "all_folds_results.json")
     with open(final_json_path, "w") as f:
@@ -394,7 +376,6 @@ if __name__ == "__main__":
         "stats_dirname": "loso_norm_stats_json",
 
         "training": {
-            # 显存注意：Opportunity通道多(113)，如果32显存炸了，请改为16
             "batch_size": 32,
             "num_epochs": 80,
             "lr": 1e-4,
@@ -402,7 +383,6 @@ if __name__ == "__main__":
             "num_workers": 4,
         },
         "testing": {
-            # 阈值为0.3-0.7，每隔0.1取一个阈值 (逻辑在 test 函数中实现)
             "threshold": 0.5
         }
     }
