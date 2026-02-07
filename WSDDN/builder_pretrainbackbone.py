@@ -6,7 +6,7 @@ from torch.nn import init
 
 from pre_train.pre_model import *
 
-# 建立「预训练权重文件名关键词」与「backbone类」的映射：名字 -> (类, ckpt, feat_dim, input_length)
+                                                                        
 PRETRAINED_ZOO = {
     "CNN1D": {
         "cls": CNN1DBackbone,
@@ -69,13 +69,6 @@ PRETRAINED_ZOO = {
 }
 
 def _clean_state_dict(state):
-    """
-    兼容：
-      - 直接 state_dict
-      - {"model_state_dict": ...}
-      - {"state_dict": ...}
-      - DDP "module." 前缀
-    """
     if isinstance(state, dict) and "model_state_dict" in state:
         state = state["model_state_dict"]
     if isinstance(state, dict) and "state_dict" in state:
@@ -108,9 +101,6 @@ def _infer_T_global(backbone: nn.Module, in_channels: int, device, input_length:
 
 
 def _init_backbone_weights(m: nn.Module):
-    """
-    一个通用初始化：Conv/Linear 用 kaiming，Norm 类 weight=1 bias=0
-    """
     if isinstance(m, nn.Conv1d):
         init.kaiming_normal_(m.weight, mode="fan_out", nonlinearity="relu")
         if m.bias is not None:

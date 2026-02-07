@@ -48,19 +48,16 @@ class BCELossWithLabelSmoothing(torch.nn.Module):
 
 
 # ============================================================
-# 1) Utility: 核心生成函数
+                    
 # ============================================================
 def frame_probs_to_segments(probs, fps, threshold=0.5, min_duration=0.1):
-    """
-    将帧级概率转换为时间片段
-    """
     T, C = probs.shape
     segments = [[] for _ in range(C)]
 
     for c in range(C):
-        # 二值化
+             
         binary = probs[:, c] > threshold
-        # 寻找连续区域
+                
         diff = np.diff(np.concatenate(([0], binary.astype(int), [0])))
         starts = np.where(diff == 1)[0]
         ends = np.where(diff == -1)[0]
@@ -71,13 +68,13 @@ def frame_probs_to_segments(probs, fps, threshold=0.5, min_duration=0.1):
             duration = t_end - t_start
 
             if duration >= min_duration:
-                score = np.mean(probs[s:e, c])  # 取平均分
+                score = np.mean(probs[s:e, c])        
                 segments[c].append([t_start, t_end, score])
     return segments
 
 
 # ============================================================
-# 2) Train Function (包含自动评估)
+                            
 # ============================================================
 def train_cdur_one_fold_hangtime(config, fold: int, exp_name: str = "cdur_hangtime"):
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -88,7 +85,7 @@ def train_cdur_one_fold_hangtime(config, fold: int, exp_name: str = "cdur_hangti
     clip_sec = float(config.get("clip_sec", 3.0))
     in_channels = int(config.get("in_channels", 113))
     num_classes = int(config["num_classes"])
-    eval_interval = config["training"].get("eval_interval", 2)  # 默认每5个epoch测一次
+    eval_interval = config["training"].get("eval_interval", 2)                 
 
     # Model
     model_type = config.get("model_type", "CDur")
@@ -100,12 +97,12 @@ def train_cdur_one_fold_hangtime(config, fold: int, exp_name: str = "cdur_hangti
                           temppool=config["training"].get("pool_type", "soft"))
     model = model.to(device)
 
-    # ... 在 model = model.to(device) 之后添加 ...
+                                             
 
     def count_parameters(model):
-        # 统计所有参数
+                
         total_params = sum(p.numel() for p in model.parameters())
-        # 统计可训练参数 (通常我们关心这个)
+                            
         trainable_params = sum(p.numel() for p in model.parameters() if p.requires_grad)
         return total_params, trainable_params
 
@@ -140,7 +137,7 @@ def train_cdur_one_fold_hangtime(config, fold: int, exp_name: str = "cdur_hangti
     ckpt_dir = os.path.join(config["checkpoint_dir"], f"fold{fold}")
     os.makedirs(ckpt_dir, exist_ok=True)
 
-    # 保存最后一次和最佳mAP模型的路径
+                       
     last_ckpt_path = os.path.join(ckpt_dir, f"{exp_name}_last.pth")
     best_map_path = os.path.join(ckpt_dir, f"{exp_name}_best_map.pth")
 
@@ -177,11 +174,11 @@ def train_cdur_one_fold_hangtime(config, fold: int, exp_name: str = "cdur_hangti
         torch.save(model.state_dict(), last_ckpt_path)
 
         # ====================================================
-        # Evaluation Logic: 每隔一定 epoch 进行一次多阈值测试
+                                                
         # ====================================================
         if (epoch + 1) % eval_interval == 0:
             print(f"  >>> Evaluating at Epoch {epoch + 1}...")
-            # 这里的 test_mode 用 test_window 比较快，如果想测全长可以用 test_full
+                                                                 
             curr_avg_map, detail_maps = test_cdur_hangtime_multithresh(
                 config, last_ckpt_path, fold, verbose=False
             )
@@ -193,21 +190,21 @@ def train_cdur_one_fold_hangtime(config, fold: int, exp_name: str = "cdur_hangti
                 torch.save(model.state_dict(), best_map_path)
                 print(f"  ****** New Best mAP! Saved to {best_map_path} ******")
 
-            model.train()  # 切回训练模式
+            model.train()          
 
     print(f"\nTraining Finished. Best mAP: {best_avg_map:.4f}")
-    return best_map_path  # 返回最佳 mAP 的模型路径
+    return best_map_path                  
 
 
 # ============================================================
-# 3) Test Function (支持多阈值 + 平均计算)
+                                 
 # ============================================================
 @torch.no_grad()
 def test_cdur_hangtime_multithresh(config, checkpoint_path, fold: int, test_mode: str = "test_window",
                                    verbose: bool = True):
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-    # 1. 准备模型和数据
+                
     dataset_dir = config["dataset_dir"]
     fps = int(config.get("fps", 50))
     clip_sec = float(config.get("clip_sec", 3.0))
@@ -240,12 +237,12 @@ def test_cdur_hangtime_multithresh(config, checkpoint_path, fold: int, test_mode
     )
     loader = DataLoader(ds, batch_size=1, shuffle=False)
 
-    # 2. 定义阈值列表 (0.3 到 0.7)
+                           
     thresholds = [0.3, 0.4, 0.5, 0.6, 0.7]
     fold_dir = os.path.join(config["result_root"], f"fold{fold}")
     os.makedirs(fold_dir, exist_ok=True)
 
-    # 3. 运行推理 (Run Inference Once)
+                                  
     cached_predictions = []
     # if verbose: print(f"[Test] Inferencing on {len(ds)} samples...")
 
@@ -260,15 +257,15 @@ def test_cdur_hangtime_multithresh(config, checkpoint_path, fold: int, test_mode
             "probs": frame_prob
         })
 
-    # 4. 针对每个阈值进行评估
+                   
     map_per_threshold = []
 
-    # 准备 GT 文件
+              
     gt_path = os.path.join(fold_dir, "gt_for_anet.json")
     build_gt_for_anet(ann_path, gt_path)
     tious = np.linspace(0.3, 0.7, 5)
 
-    # 用于存储打印信息的列表
+                 
     summary_logs = []
 
     for th in thresholds:
@@ -292,9 +289,9 @@ def test_cdur_hangtime_multithresh(config, checkpoint_path, fold: int, test_mode
         with open(pred_path, "w") as f:
             json.dump({"version": "CDur", "results": results_cache, "external_data": {}}, f)
 
-        # === 修改点：同时保存指定 test_mode 名称的预测文件（使用标准阈值0.5） ===
+                                                         
         if abs(th - 0.5) < 1e-5:
-            # 这会生成 predictions_test_window.json 或 predictions_test_full.json
+                                                                            
             custom_pred_name = f"predictions_{test_mode}.json"
             custom_pred_path = os.path.join(fold_dir, custom_pred_name)
             with open(custom_pred_path, "w") as f:
@@ -302,7 +299,7 @@ def test_cdur_hangtime_multithresh(config, checkpoint_path, fold: int, test_mode
             if verbose:
                 print(f"  > Saved specific prediction file: {custom_pred_name}")
 
-        # === 核心：强制静音评估过程 ===
+                             
         with contextlib.redirect_stdout(io.StringIO()):
             evaluator = ANETdetection(ground_truth_filename=gt_path, prediction_filename=pred_path,
                                       subset="test", tiou_thresholds=tious, verbose=False)
@@ -311,7 +308,7 @@ def test_cdur_hangtime_multithresh(config, checkpoint_path, fold: int, test_mode
         map_per_threshold.append(avg_mAP)
         summary_logs.append(f"tIoU={th:.2f} -> mAP={avg_mAP:.4f}")
 
-    # 5. 打印最终整齐的 Summary
+                        
     final_avg_map = np.mean(map_per_threshold)
 
     if verbose:
@@ -326,30 +323,30 @@ def test_cdur_hangtime_multithresh(config, checkpoint_path, fold: int, test_mode
 
 
 # ============================================================
-# 4) Main Runner (修改版：支持输出结构化 JSON)
+                                   
 # ============================================================
 def run_loso_cdur_hangtime(config):
-    # 设置随机种子和目录
+               
     set_seed(int(config.get("seed", 2022)))
     os.makedirs(config["result_root"], exist_ok=True)
     dump_config(config, config["result_root"])
 
-    folds = config.get("folds", list(range(24)))  # 默认0-23
+    folds = config.get("folds", list(range(24)))          
 
-    # 用于存储所有Fold最终结果的列表
+                       
     final_results_list = []
 
-    # 结果保存路径
+            
     json_save_path = os.path.join(config["result_root"], "final_results_summary.json")
 
     for fold in folds:
         print(f"\n{'=' * 20} Start Processing Fold {fold} {'=' * 20}")
 
-        # 1. 训练 (内部会自动寻找并保存 Best mAP 模型)
+                                        
         best_ckpt = train_cdur_one_fold_hangtime(config, fold)
 
         # ------------------------------------------------------
-        # 2. 测试阶段 1: 默认模式 (对应 JSON 中的外层 mAPs)
+                                             
         # ------------------------------------------------------
         print(f"\n>>> [Fold {fold}] Running Default Test (test_window)...")
         avg_map_win, maps_win = test_cdur_hangtime_multithresh(
@@ -357,7 +354,7 @@ def run_loso_cdur_hangtime(config):
         )
 
         # ------------------------------------------------------
-        # 3. 测试阶段 2: 全长模式 (对应 JSON 中的 test_full)
+                                                
         # ------------------------------------------------------
         print(f"\n>>> [Fold {fold}] Running Full Test (test_full)...")
         avg_map_full, maps_full = test_cdur_hangtime_multithresh(
@@ -365,16 +362,16 @@ def run_loso_cdur_hangtime(config):
         )
 
         # ------------------------------------------------------
-        # 4. 组装数据结构
+                   
         # ------------------------------------------------------
-        # 注意：Numpy float 类型无法直接被 json 序列化，需要转为 python float
+                                                           
         fold_record = {
             "fold": int(fold),
-            # 基础结果 (test_window)
+                                
             "mAPs": [float(x) for x in maps_win],
             "avg_mAP": float(avg_map_win),
 
-            # 扩展结果 (test_full)
+                              
             "test_full": {
                 "mAPs": [float(x) for x in maps_full],
                 "avg_mAP": float(avg_map_full)
@@ -383,14 +380,14 @@ def run_loso_cdur_hangtime(config):
 
         final_results_list.append(fold_record)
 
-        # 实时保存（防止程序中途崩溃丢失数据）
+                            
         with open(json_save_path, "w") as f:
             json.dump(final_results_list, f, indent=2)
 
         print(f">>> Fold {fold} results saved to {json_save_path}")
 
     # ------------------------------------------------------
-    # 5. 计算并打印所有 Folds 的综合平均值
+                             
     # ------------------------------------------------------
     if len(final_results_list) > 0:
         avg_win = np.mean([item["avg_mAP"] for item in final_results_list])
@@ -428,10 +425,10 @@ if __name__ == "__main__":
             "lr": 1e-4,
             "pool_type": "linear",
             "num_workers": 4,
-            "eval_interval": 5,  # 建议：每2个epoch测一次，防止错过最佳点
+            "eval_interval": 5,                          
         },
 
-        # testing 里的 threshold 现在没用了，因为我们已经在代码里写死了多阈值
+                                                     
         "testing": {}
     }
 

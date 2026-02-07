@@ -4,7 +4,7 @@ import os
 import numpy as np
 import torch
 from torch.utils.data import Dataset
-from OtherData.Opportunity.pre_train.dataset_opportunity import _load_loso_json, _subjects_by_split, npy_windows_to_raw_frames, \
+from OtherData.Opportunity.pre_train.dataset_opportunity import _load_loso_json, _subjects_by_split, npy_windows_to_raw_frames,\
     _parse_fold_id_from_loso_name, load_mean_std_from_meanvar_json, _majority_label_in_window
 
 
@@ -59,7 +59,7 @@ class HangtimeDataset_3s(Dataset):
         # 3) window settings (frames)
         self.win_len = int(round(win_sec * self.fps))
         self.win_stride = max(1, int(round(self.win_len * (1.0 - win_overlap))))
-        # 窗口内占比阈值（默认 0.0 表示只要有 overlap 就分配 label）
+                                                 
         self.min_label_frac = 0.0
 
         # 4) load raw restored from npy
@@ -131,13 +131,13 @@ class HangtimeDataset_3s(Dataset):
             self.fold_id = None
 
         if self.normalize:
-            # 缓存成 torch tensor，避免每个 __getitem__ 重复 from_numpy
+                                                             
             self.mean_t = torch.from_numpy(self.mean).float().unsqueeze(1)  # [C,1]
             self.std_t = torch.from_numpy(self.std).float().unsqueeze(1)  # [C,1]
         else:
             self.mean_t, self.std_t = None, None
 
-        # 6) build index list: (sbj, s, e, lid) —— 去掉 clip，直接整段滑 3s window
+                                                                          
         self.index = []
         for sbj in self.subjects:
             annos = self.loso_db[sbj]["annos"]
@@ -156,7 +156,7 @@ class HangtimeDataset_3s(Dataset):
                     min_frac=getattr(self, "min_label_frac", 0.0),
                 )
                 if lid is None:
-                    continue  # 背景/占比不足 直接丢弃
+                    continue                
                 self.index.append((sbj, s, e, lid))
 
         if len(self.index) == 0:
@@ -191,7 +191,7 @@ class HangtimeDataset_3s(Dataset):
         if self.normalize:
             x = (x - self.mean_t) / self.std_t
 
-        y = torch.tensor(lid, dtype=torch.long) #动作编号
+        y = torch.tensor(lid, dtype=torch.long)      
 
         if self.return_meta:
             return x, y, {"sbj": sbj, "start": s, "end": e, "fold_id": self.fold_id}

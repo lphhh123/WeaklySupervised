@@ -5,11 +5,6 @@ import numpy as np
 
 
 def load_results(json_path_or_obj):
-    """
-    json_path_or_obj:
-      - str / Path: 指向你保存的这个大 JSON 文件
-      - list: 直接传你贴出来的 Python list 对象
-    """
     if isinstance(json_path_or_obj, (str, Path)):
         with open(json_path_or_obj, "r", encoding="utf-8") as f:
             return json.load(f)
@@ -17,15 +12,10 @@ def load_results(json_path_or_obj):
 
 
 def summarize_map_across_folds(results, splits=("test_window", "test_full")):
-    """
-    计算：
-      1) 各 split 的 avg_mAP 在 folds 维度上的均值（以及可选 std）
-      2) 各 split 的每个 tIoU 上的 mAP（mAPs）在 folds 维度上的逐元素均值
-    """
     out = {}
 
     for split in splits:
-        # 收集每个 fold 的 avg_mAP
+                             
         avg_maps = []
         per_tiou_maps = []
         tious_ref = None

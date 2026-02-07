@@ -13,8 +13,8 @@ def warn(*args, **kwargs):
 
 warnings.warn = warn
 
-# 计算弱监督的cdur和cdur预测出来的各种指标
-# ================= 配置区域 =================
+                          
+                                          
 RESULT_ROOT_PATH = "/home/yinjiaxi/wstal/WeaklySupervised-master/result//sbhar_cdur_10_15s_2022/"
 RAW_DATA_PATH = '/home/yinjiaxi/wstal/tal_for_har/data/sbhar/raw/inertial'
 SEED = '2022'
@@ -24,14 +24,14 @@ SAMPLING_RATE = 50
 INPUT_DIM = 3
 FOLDS_IDS = range(30)
 
-# 【新增】结果保存配置
+            
 RESULT_SAVE_DIR = "/home/yinjiaxi/wstal/WeaklySupervised-master/metric_result/cdur/"
-# 【新增】Seed变量 (因为文件名需要它，且原代码未定义，暂定为path中的0108或根据实际设定)
+                                                    
 
 print("dataset: sbhar")
 print("model: cdur")
 
-# 【修改点】：将原来的列表改为仅包含 [0.0]
+                         
 SCORE_THRES = [0.0]
 
 
@@ -49,9 +49,6 @@ def build_label_dict(gt_db):
 
 
 def evaluate_loso_folds(mode_suffix="window"):
-    """
-    修改后的函数：除了打印，还会返回计算好的指标列表
-    """
     task_name = f"Predictions: {mode_suffix.upper()}"
     print(f"\n{'=' * 20} Running LOSO Evaluation for: {task_name} {'=' * 20}")
 
@@ -62,7 +59,7 @@ def evaluate_loso_folds(mode_suffix="window"):
     print(header)
     print("-" * 110)
 
-    # 用于存储该模式下所有阈值结果的列表
+                       
     metrics_list = []
 
     for f in SCORE_THRES:
@@ -112,7 +109,7 @@ def evaluate_loso_folds(mode_suffix="window"):
                 all_recall = np.zeros(num_labels)
                 all_f1 = np.zeros(num_labels)
 
-            # --- 准备预测 DataFrame ---
+                                    
             if sbj_name not in pred_data['results']:
                 v_seg = pd.DataFrame(columns=['video-id', 't-start', 't-end', 'label', 'score'])
             else:
@@ -128,7 +125,7 @@ def evaluate_loso_folds(mode_suffix="window"):
                     })
                 v_seg = pd.DataFrame(df_data)
 
-            # --- 准备 Raw Data (GT) ---
+                                      
             raw_csv_path = os.path.join(RAW_DATA_PATH, f"loso_{sbj_name}.csv")
             if not os.path.exists(raw_csv_path):
                 raw_csv_path = os.path.join(RAW_DATA_PATH, f"{sbj_name}.csv")
@@ -150,12 +147,12 @@ def evaluate_loso_folds(mode_suffix="window"):
             v_seg_filtered = v_seg_filtered.rename(
                 columns={"video_id": "video-id", "t_start": "t-start", "t_end": "t-end"})
 
-            # --- 计算 mAP ---
+                            
             det_eval = ANETdetection(gt_path, 'test', tiou_thresholds=[0.3, 0.4, 0.5, 0.6, 0.7])
             v_mAP, _ = det_eval.evaluate(v_seg_filtered)
             all_mAP.append(v_mAP)
 
-            # --- 计算样本级指标 ---
+                             
             v_seg_for_samples = v_seg_filtered.copy()
             v_seg_for_samples['label'] = v_seg_for_samples['label'].map(label_dict) - 1
             v_seg_for_samples = v_seg_for_samples.dropna(subset=['label'])
@@ -184,7 +181,7 @@ def evaluate_loso_folds(mode_suffix="window"):
             print(f"No valid folds found for threshold {f}")
             continue
 
-        # --- 汇总结果 ---
+                      
         avg_mAP = np.mean(all_mAP) * 100
         avg_prec = np.mean(all_prec) / valid_fold_count * 100
         avg_rec = np.mean(all_recall) / valid_fold_count * 100
@@ -201,7 +198,7 @@ def evaluate_loso_folds(mode_suffix="window"):
                 f, avg_prec, avg_rec, avg_f1, avg_ur, avg_or, avg_dr, avg_ir, avg_fr, avg_mr, avg_mAP
             ))
 
-        # --- 添加到结果列表 (确保转换为 float) ---
+                                       
         metrics_list.append({
             "threshold": f,
             "precision": float(avg_prec),
@@ -220,15 +217,15 @@ def evaluate_loso_folds(mode_suffix="window"):
 
 
 def main():
-    # 1. 执行 Window 模式评估
+                       
     window_results = evaluate_loso_folds(mode_suffix="window")
 
     print("\n" * 2)
 
-    # 2. 执行 Full 模式评估
+                     
     full_results = evaluate_loso_folds(mode_suffix="full")
 
-    # 3. 整理 JSON 数据结构
+                     
     final_json_data = {
         "dataset": DATASET,
         "seed": SEED,
@@ -239,7 +236,7 @@ def main():
         }
     }
 
-    # 4. 保存文件
+             
     if not os.path.exists(RESULT_SAVE_DIR):
         os.makedirs(RESULT_SAVE_DIR)
         print(f"Created directory: {RESULT_SAVE_DIR}")

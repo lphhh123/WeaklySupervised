@@ -15,7 +15,7 @@ from tqdm import tqdm
 
 from tool import ANETdetection
 
-# [Modify] 修改 Dataset 引用为 SBHAR
+                               
 try:
     from OtherData.SBHAR.dataset_sbhar_ws import WeaklySBHARDataset
 except ImportError:
@@ -25,7 +25,7 @@ except ImportError:
 from OtherData.utils import _meta_get, set_seed, build_gt_for_anet, dump_config
 
 # ============================================================
-# 引入 DCASE CRNN 模型
+                  
 # ============================================================
 try:
     from models.DCASE_CRNN import CRNN
@@ -33,7 +33,7 @@ except ImportError:
     print("Warning: Could not import CRNN from models.DCASE_CRNN.")
     print("Please ensure the file exists and contains the class definition provided.")
 
-# 指定 GPU，可根据需要修改
+                
 os.environ["CUDA_VISIBLE_DEVICES"] = "0"
 
 
@@ -104,13 +104,13 @@ def train_dcase_one_fold_sbhar(config, fold: int, exp_name: str = "dcase_sbhar")
 
     suffix = f"_{int(clip_sec)}s"
 
-    # [Critical] 提取 pooling 配置以匹配维度
+                                   
     cnn_kwargs = config["model_args"].get("cnn_kwargs", {})
     pooling_config = cnn_kwargs.get("pooling", None)
 
-    # CRNN 模型初始化
+                
     model = CRNN(
-        n_in_channel=1,  # 通常保持为1，将传感器维度视为高度(Height)
+        n_in_channel=1,                             
         nclass=num_classes,
         attention=config["model_args"].get("attention", True),
         n_RNN_cell=config["model_args"].get("n_RNN_cell", 128),
@@ -119,16 +119,16 @@ def train_dcase_one_fold_sbhar(config, fold: int, exp_name: str = "dcase_sbhar")
         specaugm_t_l=config["model_args"].get("specaugm_t_l", 5),
         specaugm_f_l=config["model_args"].get("specaugm_f_l", 2),
         cnn_integration=config["model_args"].get("cnn_integration", True),
-        # [Modify] 传入 pooling 参数解决维度匹配问题
+                                        
         pooling=pooling_config,
         use_embeddings=False
     )
 
     model = model.to(device)
     def count_parameters(model):
-        # 统计所有参数
+                
         total_params = sum(p.numel() for p in model.parameters())
-        # 统计可训练参数 (通常我们关心这个)
+                            
         trainable_params = sum(p.numel() for p in model.parameters() if p.requires_grad)
         return total_params, trainable_params
 
@@ -140,7 +140,7 @@ def train_dcase_one_fold_sbhar(config, fold: int, exp_name: str = "dcase_sbhar")
     print("-" * 30 + "\n")
 
     loso_json = f"loso_sbj_{fold}.json"
-    # [Modify] 使用 WeaklySBHARDataset
+                                    
     train_ds = WeaklySBHARDataset(
         dataset_dir=dataset_dir,
         loso_json=loso_json,
@@ -189,7 +189,7 @@ def train_dcase_one_fold_sbhar(config, fold: int, exp_name: str = "dcase_sbhar")
             sample_clips = sample_clips.to(device)
             labels = labels.to(device).float()
 
-            # 维度调整: (B, T, F) -> (B, F, T) -> CRNN 内部通常处理为 (B, 1, F, T)
+                                                                       
             if sample_clips.shape[1] > sample_clips.shape[2]:
                 inputs = sample_clips.permute(0, 2, 1)
             else:
@@ -229,11 +229,11 @@ def test_dcase_sbhar(config, checkpoint_path, fold: int, test_mode: str = "test_
     num_classes = int(config["num_classes"])
     suffix = f"_{int(clip_sec)}s"
 
-    # [Critical] 提取 pooling 配置以匹配维度
+                                   
     cnn_kwargs = config["model_args"].get("cnn_kwargs", {})
     pooling_config = cnn_kwargs.get("pooling", None)
 
-    # Load Model (必须与 Train 配置一致)
+                                 
     model = CRNN(
         n_in_channel=1,
         nclass=num_classes,
@@ -243,7 +243,7 @@ def test_dcase_sbhar(config, checkpoint_path, fold: int, test_mode: str = "test_
         specaugm_t_l=config["model_args"].get("specaugm_t_l", 5),
         specaugm_f_l=config["model_args"].get("specaugm_f_l", 2),
         cnn_integration=config["model_args"].get("cnn_integration", True),
-        pooling=pooling_config,  # [Modify] 传入 pooling
+        pooling=pooling_config,                       
         use_embeddings=False
     )
 
@@ -255,7 +255,7 @@ def test_dcase_sbhar(config, checkpoint_path, fold: int, test_mode: str = "test_
     loso_json = f"loso_sbj_{fold}.json"
     ann_path = os.path.join(dataset_dir, "annotations", loso_json)
 
-    # 简单的容错处理，防止 label_dict key 类型不一致
+                                     
     with open(ann_path, "r", encoding="utf-8") as f:
         js = json.load(f)
     label_dict = js.get("label_dict", {})
@@ -296,7 +296,7 @@ def test_dcase_sbhar(config, checkpoint_path, fold: int, test_mode: str = "test_
 
         frame_prob, _ = model(inputs)
 
-        # 插值回原始长度
+                 
         target_len = inputs.shape[-1]
         frame_prob = F.interpolate(frame_prob, size=target_len, mode='linear', align_corners=True)
         # (B, C, T) -> (T, C)
@@ -428,7 +428,7 @@ def run_loso_dcase_sbhar(config):
 
 
 if __name__ == "__main__":
-    # [Modify] 替换为 SBHAR 配置
+                           
     config = {
         "seed": 2022,
         "exp_name": "dcase_sbhar",
@@ -454,7 +454,7 @@ if __name__ == "__main__":
             "specaugm_f_l": 2,
             "cnn_integration": True,
 
-            # [关键配置] 防止 RNN 维度不匹配
+                                 
             "cnn_kwargs": {
                 "pooling": [
                     [2, 3], [2, 1], [2, 1],

@@ -20,7 +20,7 @@ from tool import ANETdetection
 from OtherData.Opportunity.dataset_opportunity_ws import WeaklyOpportunityDataset
 from OtherData.utils import _meta_get, set_seed, build_gt_for_anet, dump_config
 
-# [修改] 引入修改好的 DCASE CRNN 模型
+                           
 from models.DCASE_CRNN import CRNN
 
 
@@ -31,22 +31,22 @@ from models.DCASE_CRNN import CRNN
 # ============================================================
 class AdapterCRNN(CRNN):
     def __init__(self, n_sensors=113, **kwargs):
-        # 1. 调用父类初始化
+                    
         super().__init__(**kwargs)
 
-        # 2. 自动计算实际的 CNN 输出维度
+                             
         with torch.no_grad():
-            # 假设输入 10 帧
+                       
             dummy_input = torch.zeros(1, self.n_in_channel, 10, n_sensors)
 
-            # 只运行 CNN 部分
+                        
             x = self.cnn(dummy_input)
             _, out_ch, _, out_freq = x.shape
 
-            # 实际进入 RNN 的维度
+                          
             real_rnn_input_dim = out_ch * out_freq
 
-        # 3. 检查并替换 RNN
+                      
         if real_rnn_input_dim != self.cnn.nb_filters[-1]:
             print(f"[AdapterCRNN] Auto-fixing RNN dimension: {self.cnn.nb_filters[-1]} -> {real_rnn_input_dim}")
             original_rnn = self.rnn
@@ -131,9 +131,9 @@ def train_dcase_one_fold_opportunity(config, fold: int, exp_name: str = "dcase_o
     model = model.to(device)
 
     def count_parameters(model):
-        # 统计所有参数
+                
         total_params = sum(p.numel() for p in model.parameters())
-        # 统计可训练参数 (通常我们关心这个)
+                            
         trainable_params = sum(p.numel() for p in model.parameters() if p.requires_grad)
         return total_params, trainable_params
 
@@ -286,7 +286,7 @@ def test_dcase_opportunity(config, checkpoint_path, fold: int, test_mode: str = 
         return_meta=True,
         seed=int(config.get("seed", 2026)) + fold,
     )
-    # test_full 的时候 batch_size 必须为 1
+                                    
     bs = 1
     loader = DataLoader(ds, batch_size=bs, shuffle=False)
 
@@ -294,42 +294,42 @@ def test_dcase_opportunity(config, checkpoint_path, fold: int, test_mode: str = 
     os.makedirs(fold_dir, exist_ok=True)
 
     # ------------------------------------------------------------------
-    # 第一步：推理缓存 (增加分块逻辑防止 OOM)
+                             
     # ------------------------------------------------------------------
     inference_buffer = []
     print(f"\n[Test DCASE] fold={fold} | mode={test_mode} | Running Inference...")
 
-    # 定义最大推理块长度 (帧数)
-    # 30fps * 60s = 1800帧。即每次只推1分钟的数据，显存绝对安全。
+                    
+                                             
     MAX_INFERENCE_LEN = 1800
 
     for x, _, meta in tqdm(loader, desc=f"Inference ({test_mode})"):
         # x shape: [1, 113, Time]
         total_len = x.shape[-1]
 
-        # 结果容器
+              
         full_prob_list = []
 
-        # 分块循环
+              
         for start_t in range(0, total_len, MAX_INFERENCE_LEN):
             end_t = min(start_t + MAX_INFERENCE_LEN, total_len)
 
-            # 切出一段数据 [1, 113, Chunk_Time]
+                                         
             chunk_x = x[..., start_t:end_t].to(device)
 
-            # 推理
+                
             frame_out, _ = model(chunk_x)
 
-            # 插值恢复时间维度 (恢复到 Chunk_Time)
+                                       
             frame_out = F.interpolate(frame_out, size=chunk_x.shape[-1], mode='linear', align_corners=False)
 
-            # 转为 numpy: [Chunk_Time, num_classes]
+                                                 
             # Squeeze batch dim -> permute -> cpu
             chunk_prob = frame_out.squeeze(0).permute(1, 0).cpu().numpy()
 
             full_prob_list.append(chunk_prob)
 
-        # 拼接所有块
+               
         full_prob = np.concatenate(full_prob_list, axis=0)
 
         sbj = str(_meta_get(meta, "sbj"))
@@ -342,7 +342,7 @@ def test_dcase_opportunity(config, checkpoint_path, fold: int, test_mode: str = 
         })
 
     # ------------------------------------------------------------------
-    # 第二步：多阈值计算
+               
     # ------------------------------------------------------------------
     test_thresholds = [0.3, 0.4, 0.5, 0.6, 0.7]
     threshold_maps = []
@@ -412,19 +412,19 @@ def run_loso_dcase_opportunity(config):
 
     all_reports = []
 
-    # 存储所有折的 window 结果和 full 结果
+                               
     window_results_list = []
     full_results_list = []
 
     for fold in folds:
-        # 1. 训练
+               
         ckpt = train_dcase_one_fold_opportunity(config, fold)
 
-        # 2. 测试 Window 模式
+                         
         maps_window, avg_window = test_dcase_opportunity(config, ckpt, fold, test_mode="test_window")
         window_results_list.append(maps_window)
 
-        # 3. 测试 Full 模式
+                       
         maps_full, avg_full = test_dcase_opportunity(config, ckpt, fold, test_mode="test_full")
         full_results_list.append(maps_full)
 
@@ -441,13 +441,13 @@ def run_loso_dcase_opportunity(config):
         }
         all_reports.append(report_entry)
 
-    # ---- 保存与汇总 ----
+                     
     report_path = os.path.join(config["result_root"], "loso_report.json")
     with open(report_path, "w", encoding="utf-8") as f:
         json.dump(all_reports, f, indent=2, ensure_ascii=False)
     print(f"\n[Saved] Final Report -> {report_path}")
 
-    # 计算整体平均值
+             
     window_results_np = np.array(window_results_list)
     avg_maps_window = np.mean(window_results_np, axis=0)
     final_loso_window = np.mean(avg_maps_window)
@@ -501,12 +501,12 @@ if __name__ == "__main__":
             "lr": 1e-4,
             "num_workers": 4,
 
-            # CRNN 特有参数
+                       
             "dropout": 0.5,
             "rnn_hidden": 128,
             "rnn_layers": 2,
 
-            # SpecAugment 参数 (根据 IMU 通道数调整)
+                                           
             "specaugm_t_l": 10,
             "specaugm_f_l": 2,
         },

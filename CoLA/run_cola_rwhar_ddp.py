@@ -15,20 +15,20 @@ from tqdm import tqdm
 from easydict import EasyDict as edict
 
 # ============================================================
-# 引入依赖
+      
 # ============================================================
 sys.path.append(os.getcwd())
 from core.model import CoLA
 from core.loss import TotalLoss
 from core import utils
-# [适配] 引入 RWHAR 数据集
+                   
 from WSDDN.RWHAR.dataset_rwhar_ws import WeaklyRWHARDataset
 from WSDDN.utils import set_seed, build_gt_for_anet, GlobalBackboneWrapper
 from WSDDN.tool import ANETdetection
 
 
 # ============================================================
-# DDP 基础设置
+          
 # ============================================================
 def setup_ddp():
     if 'RANK' in os.environ and 'WORLD_SIZE' in os.environ:
@@ -49,15 +49,15 @@ def cleanup_ddp():
 
 
 # ============================================================
-# CoLA Full Wrapper (保持 Opportunity 相同逻辑)
+                                         
 # ============================================================
 # ============================================================
-# CoLA Full Wrapper (适配 RWHAR 低频特征拼接)
+                                     
 # ============================================================
 class CoLA_FullWrapper(nn.Module):
     def __init__(self, cola_model):
         super().__init__()
-        # 1. 彻底分离组件
+                   
         self.backbone = cola_model.actionness_module.backbone
         self.adapter = cola_model.actionness_module.adapter
         self.f_cls = cola_model.actionness_module.f_cls
@@ -65,12 +65,12 @@ class CoLA_FullWrapper(nn.Module):
         self.r_easy = cola_model.r_easy
         self.get_video_cls_scores = cola_model.get_video_cls_scores
 
-        # 2. 定死参数
+                 
         self.win_len = 512
         self.stride = 256
 
-        # 3. [核心修正] 仅包装 backbone (输出 512 维)
-        # 这样才能匹配学姐内部的 .view(B, Tg, 512, Lout)
+                                           
+                                             
         self.global_extractor = GlobalBackboneWrapper(
             self.backbone,
             win_len=self.win_len,
@@ -84,22 +84,22 @@ class CoLA_FullWrapper(nn.Module):
         """
         x = x.permute(0, 2, 1)  # [1, 21, T_total]
 
-        # A. 借用学姐的拼接逻辑，先得到 512 维的长序列特征图
-        # info['bin_frames'] 会等于 16
+                                       
+                                   
         feat_512, info = self.global_extractor(x, return_info=True)
 
-        # B. 运行 adapter 进行升维 (512 -> 2048) 并处理时序
+                                                
         # feat_512: [1, 512, T_feat] -> feat_2048: [1, 2048, T_feat]
         feat_2048 = self.adapter(feat_512)
 
-        # C. 运行分类头
+                  
         out = self.dropout(feat_2048)
         out = self.f_cls(out)  # [1, Classes, T_feat]
 
         cas = out.permute(0, 2, 1)  # [1, T_feat, Classes]
         actionness = cas.sum(dim=2)  # [1, T_feat]
 
-        # 视频级得分
+               
         k_easy = max(1, cas.shape[1] // 2)
         video_scores = self.get_video_cls_scores(cas, k_easy)
 
@@ -108,7 +108,7 @@ class CoLA_FullWrapper(nn.Module):
 
 
 # ============================================================
-# 配置映射 (适配 RWHAR 参数)
+                    
 # ============================================================
 def map_config_to_cola_cfg(user_config, fold):
     c = edict()
@@ -121,7 +121,7 @@ def map_config_to_cola_cfg(user_config, fold):
     c.NUM_SEGMENTS = int(user_config['clip_sec'] * c.FEATS_FPS)
     c.UP_SCALE = 1
 
-    # 预训练权重路径
+             
     ckpt_name = f"rwhar_{user_config['pretrained_model_name']}_pretrained_loso_sbj_{fold}.pth"
     c.PRETRAINED_PATH = os.path.join(user_config['pretrained_dir'], ckpt_name)
     c.BACKBONE_TYPE = 'cnn1d'
@@ -140,7 +140,7 @@ def map_config_to_cola_cfg(user_config, fold):
     c.CAS_THRESH = np.arange(0.1, 0.5, 0.05)
     c.ANESS_THRESH = np.arange(0.1, 0.9, 0.05)
 
-    # RWHAR 8类字典 (按字母序)
+                       
     c.CLASS_DICT = {
         "climbingdown": 0, "climbingup": 1, "jumping": 2, "lying": 3,
         "running": 4, "sitting": 5, "standing": 6, "walking": 7
@@ -149,7 +149,7 @@ def map_config_to_cola_cfg(user_config, fold):
 
 
 # ============================================================
-# 健壮的权重加载 (复用 Opportunity 修复逻辑)
+                               
 # ============================================================
 def load_checkpoint_robust(net, ckpt_path, device):
     if not os.path.exists(ckpt_path):
@@ -169,7 +169,7 @@ def load_checkpoint_robust(net, ckpt_path, device):
 
 
 # ============================================================
-# 推理数据生成器
+         
 # ============================================================
 def get_inference_data(dataset, mode, win_size, stride):
     for sbj in dataset.subjects:
@@ -193,7 +193,7 @@ def get_inference_data(dataset, mode, win_size, stride):
 
             yield sbj, window_iter(), t_origin
         else:
-            # test_full: 直接返回全长 Raw Tensor
+                                          
             def single_iter():
                 yield torch.from_numpy(raw).float().unsqueeze(0), 0
 
@@ -207,44 +207,44 @@ def merge_segments(props, tolerance_sec, fps):
     if not props:
         return []
 
-    # 1. 按开始时间排序
+                
     props.sort(key=lambda x: x[2])
 
     tolerance_frames = tolerance_sec * fps
     merged = []
 
-    # 初始化第一个
+            
     curr_cls, curr_score, curr_start, curr_end = props[0]
 
     for i in range(1, len(props)):
         next_cls, next_score, next_start, next_end = props[i]
 
-        # 计算间隙：下一个的开始 - 当前的结束
+                             
         gap = next_start - curr_end
 
-        # [逻辑优化]
-        # 1. 只有同类才能合并 (虽然外层循环已经保证了，但这里做个保险)
-        # 2. 间隙必须小于容忍度
-        # 3. (可选) 只有当两者分数差异不大时才合并？暂时不加，避免过于复杂
+                
+                                           
+                      
+                                             
 
         if gap <= tolerance_frames:
-            # 执行合并
-            # 结束时间取最大
+                  
+                     
             curr_end = max(curr_end, next_end)
-            # 分数策略：取最大值，或者加权平均。这里取最大值保持置信度
+                                          
             curr_score = max(curr_score, next_score)
         else:
-            # 距离太远，断开，保存当前片段
+                            
             merged.append([curr_cls, curr_score, curr_start, curr_end])
-            # 开启新片段
+                   
             curr_cls, curr_score, curr_start, curr_end = next_cls, next_score, next_start, next_end
 
-    # 加入最后一个
+            
     merged.append([curr_cls, curr_score, curr_start, curr_end])
 
     return merged
 # ============================================================
-# 训练函数 (DDP)
+            
 # ============================================================
 def train_fold_ddp(config, fold, rank, local_rank, world_size):
     if rank == 0: print(f"\n>>> [Train DDP] RWHAR Fold {fold}...")
@@ -293,7 +293,7 @@ def train_fold_ddp(config, fold, rank, local_rank, world_size):
 
             cost, loss_dict = criterion(video_scores, label, contrast_pairs)
             cas_prob = torch.sigmoid(cas)
-            sparsity_loss = torch.mean(cas_prob) * 0.05  # 权重可调
+            sparsity_loss = torch.mean(cas_prob) * 0.05        
             cost += sparsity_loss
 
             cost.backward()
@@ -316,16 +316,16 @@ def train_fold_ddp(config, fold, rank, local_rank, world_size):
 
 
 # ============================================================
-# 推理与后处理 (Rank 0 Only)
+                      
 # ============================================================
 def process_outputs(video_scores, actionness, cas, video_props, start_f, win_size, mode, cola_cfg, external_scale=None):
     cas_raw = torch.sigmoid(cas[0])  # [T_feat, C]
     aness_raw = torch.sigmoid(actionness[0]).unsqueeze(1)  # [T_feat, 1]
     vid_p = torch.sigmoid(video_scores[0]).cpu().numpy()
 
-    # 2. 平滑处理 (注意：是在低频特征上平滑)
-    # RWHAR 动作长，但在低频下 (3000点)，kernel_size 不需要太大
-    # 51 (原) / 16 (下采样) ≈ 3
+                            
+                                               
+                           
     smooth_kernel = 5
 
     combined = torch.cat([cas_raw, aness_raw], dim=1)  # [T_feat, C+1]
@@ -334,14 +334,14 @@ def process_outputs(video_scores, actionness, cas, video_props, start_f, win_siz
     combined_smooth = F.avg_pool1d(combined_t, kernel_size=smooth_kernel, stride=1, padding=smooth_kernel // 2)
     combined_p = combined_smooth.squeeze(0).permute(1, 0)
 
-    # 强制对齐
+          
     if combined_p.shape[0] != cas_raw.shape[0]:
         combined_p = combined_p[:cas_raw.shape[0], :]
 
     cas_p = combined_p[:, :-1]
     aness_p = combined_p[:, -1]
     hard_thresh = cola_cfg['CLASS_THRESH']
-    # 3. 类别筛选 (保持不变)
+                    
     if mode == "test_full":
         cas_max_val, _ = torch.max(cas_p, dim=0)
         pred_cats = np.where(cas_max_val.cpu().numpy() >= hard_thresh)[0]
@@ -350,34 +350,34 @@ def process_outputs(video_scores, actionness, cas, video_props, start_f, win_siz
 
     if len(pred_cats) == 0: pred_cats = np.array([np.argmax(vid_p)])
 
-    # 4. Numpy 转换
+                 
     cas_supp = cas_p * aness_p.unsqueeze(1)
     cas_np = np.expand_dims(cas_supp.cpu().numpy(), axis=2)
     num_classes = cola_cfg['NUM_CLASSES']
     aness_np = np.tile(aness_p.cpu().numpy().reshape(-1, 1, 1), (1, num_classes, 1))
 
-    # 5. 生成 Proposal (基于低频特征)
+                             
     T_feat = cas_p.shape[0]
     prop_dict = utils.get_proposal_dict(cas_np, aness_np, pred_cats, vid_p, T_feat, cola_cfg)
 
-    # 6. [核心修改] 坐标映射
-    # test_full: scale = T_origin / T_feat (例如 50000 / 3125 = 16.0)
+                    
+                                                                   
     # test_window:
-    #   如果训练时也去掉了插值，那么 win_size(1500) 对应的 T_feat 只有 94
-    #   scale 依然是 16.0
+                                                      
+                      
 
-    # 动态计算 scale
+                
     if mode == "test_full":
         if external_scale is None:
             raise ValueError("test_full mode requires 'external_scale' (bin_frames)")
         scale = external_scale
     else:
-        # 对于 test_window，输入是 win_size，输出是 T_feat
+                                                
         scale = win_size / T_feat
 
     for cls_id, props in prop_dict.items():
         for p in props:
-            # p 是低频坐标，乘 scale 变回原始坐标
+                                    
             global_start = start_f + p[2] * scale
             global_end = start_f + p[3] * scale
             video_props.append([p[0], p[1], global_start, global_end])
@@ -395,18 +395,18 @@ def eval_fold_dual_mode_rank0(config, fold, ckpt_path, save_dir, device):
 
     test_ds = WeaklyRWHARDataset(
         dataset_dir=config["dataset_dir"], loso_json=f"loso_sbj_{fold}.json", mode="test_window",
-        fps=config["fps"], num_sensors=config["in_channels"], clip_sec=1000.0,  # 测试时读取全长
+        fps=config["fps"], num_sensors=config["in_channels"], clip_sec=1000.0,           
         normalize=True
     )
 
     id2name = {v: k for k, v in cola_cfg.CLASS_DICT.items()}
 
-    # 自动生成 GT
+             
     gt_path = os.path.join(save_dir, "gt_for_anet.json")
     if not os.path.exists(gt_path):
         build_gt_for_anet(os.path.join(config["dataset_dir"], "annotations", f"loso_sbj_{fold}.json"), gt_path)
 
-    # [新增] 读取时长过滤参数
+                   
     min_sec = config["testing"].get("min_sec", 0.0)
     max_sec = config["testing"].get("max_sec", 9999.0)
     for mode in ["test_window", "test_full"]:
@@ -441,24 +441,24 @@ def eval_fold_dual_mode_rank0(config, fold, ckpt_path, save_dir, device):
                     torch.cuda.synchronize()
 
                 end_t = time.time()
-                # 4. 记录数据
-                # 时间转为 ms
+                         
+                         
                 inf_time_list.append((end_t - start_t) * 1000.0)
 
-                # 显存转为 MB
+                         
                 if torch.cuda.is_available():
                     peak_mem = torch.cuda.max_memory_allocated() / 1024 / 1024
                     gpu_mem_list.append(peak_mem)
 
-                # [修改] 提取 bin_frames 作为 scale
+                                             
                 bin_frames = info['bin_frames']
 
-                # [修改] 传入 external_scale
+                                        
                 process_outputs(
                     video_scores, actionness, cas, video_props,
-                    0, 0,  # win_size 在 full 模式下不重要
+                    0, 0,                          
                     mode, cola_cfg,
-                    bin_frames  # 传入精确比例
+                    bin_frames          
                 )
             else:
                 for chunk, start_f in data_source:
@@ -501,10 +501,10 @@ def eval_fold_dual_mode_rank0(config, fold, ckpt_path, save_dir, device):
             stats_info = {
                 "test_mode": mode,
                 "num_samples": len(inf_time_list),
-                # 格式化为学姐脚本喜欢的字符串格式 "Mean ± Std"
+                                               
                 "avg_inference_time_ms": f"{avg_time:.2f} ± {std_time:.2f}",
                 "avg_gpu_memory_mb": f"{avg_mem:.2f} ± {std_mem:.2f}",
-                "raw_time_list": inf_time_list,  # 可选：保留原始数据以便后续合并
+                "raw_time_list": inf_time_list,                   
                 "raw_mem_list": gpu_mem_list
             }
 
@@ -531,12 +531,12 @@ def main():
         "result_root": "./output_rwhar_cola_ddp",
 
         "fps": 50,
-        "in_channels": 21,  # 21轴
-        "num_classes": 8,  # 8类
-        "clip_sec": 1000.0,  # [关键] 训练窗口设为 60s
+        "in_channels": 21,       
+        "num_classes": 8,      
+        "clip_sec": 1000.0,                   
         "clip_overlap": 0.5,
 
-        "folds": list(range(15)),  # 15折
+        "folds": list(range(15)),       
         "pretrained_model_name": "CNN1D",
 
         "training": {
@@ -552,7 +552,7 @@ def main():
             "max_sec": 1000.0
         },
         "cola": {
-            # RWHAR 动作极长，r_easy 小一点，M 大一点
+                                         
             "lambda": 0.01,
             "r_easy": 2,
             "r_hard": 20,
