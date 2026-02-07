@@ -70,13 +70,9 @@ import pandas as pd
 import numpy as np
 
 MODEL_DATA = {
-    'DCASE': 1180514,
-    'CDur': 374163,
     'WSDNN': 4226620,
     'OICR': 31907948,
     'PCL': 31907948,
-    'RSKP': 274944,
-    'CoLA': 3992454,
 }
 
 
@@ -184,15 +180,9 @@ def plot_grouped_color_lollipop_chart(
     """
 
     color_group_map = {
-        'DCASE': '#90EE90',
-        'CDur': '#90EE90',
-
         'WSDNN': '#FFC069',
         'OICR': '#FFC069',
         'PCL': '#FFC069',
-
-        'RSKP': '#FF8787',
-        'CoLA': '#FF8787',
     }
 
     df = pd.DataFrame(list(data.items()), columns=['Model', 'Parameters'])
@@ -241,4 +231,3 @@ if __name__ == "__main__":
     # plot_donut_chart(MODEL_DATA)
     #
     # plot_minimalist_barchart(MODEL_DATA)
-

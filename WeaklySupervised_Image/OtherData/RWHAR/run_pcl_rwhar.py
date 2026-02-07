@@ -1,3 +1,13 @@
+import argparse
+from pathlib import Path
+import sys
+
+ROOT = Path(__file__).resolve().parents[2]
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
+
+from scripts.config_utils import load_json_config
+
 # Opportunity/run_pcl_rwhar.py
 # -*- coding: utf-8 -*-
 import torch
@@ -464,76 +474,19 @@ def run_loso_pcl_oicr_rwhar(config):
 # ============================================================
 # 6) main
 # ============================================================
+
+
+def run_entry(config):
+    return run_loso_pcl_oicr_rwhar(config)
+
+
+def _parse_args():
+    parser = argparse.ArgumentParser(description="Runner for run_pcl_rwhar")
+    parser.add_argument("--config", default="configs/rwhar_pcl.json", help="Path to JSON config")
+    return parser.parse_args()
+
+
 if __name__ == "__main__":
-    config = {
-        "seed": 2026,
-        "exp_name": "pcl",
-
-        "dataset_dir": "/home/lipei/TAL_data/rwhar/",
-        "pretrained_dir": "/home/lipei/project/WSDDN/OtherData/RWHAR/pre_train",
-        "checkpoint_dir": "/home/lipei/project/WSDDN/checkpoints/RWHAR/2026/pcl_01",
-        "result_root": "/home/lipei/project/WSDDN/test_results/RWHAR/2026/pcl_01",
-
-        "num_folds": 15,
-        "folds": [0, 1, 2, 3,4,5,6,7,8,9,10,11,12,13,14],
-
-        "fps": 50,
-        "clip_sec": 100.0,
-        "clip_overlap": 0.5,
-        "in_channels": 21,
-        "num_classes": 8,
-        "stats_dirname": "loso_norm_stats_json",
-
-        "seg_win_len": 512,
-        "seg_stride": 256,
-        "wrapper_chunk": 256,
-
-        "pretrained_model_name": "CNN1D",
-
-        "num_workers": 4,
-        "neg_keep_ratio": 0.2,
-
-        "training": {
-            "batch_size": 16,
-            "num_epochs": 80,
-            "lr": 1e-4,
-            "lr_step_size": 10,
-            "lr_gamma": 0.9,
-            "weight_decay": 1e-5,
-            # "grad_clip": 5.0,
-
-            "num_proposals": 100,
-
-            # proposal params
-            "base_physical_sec": 100.0,
-            "step_sec": 1.0,
-            "min_sec": 80.0,
-            "max_sec": 800.0,
-
-            # PCL/OICR params
-            "refine_times": 3,
-            "use_pcl": True,          # True=PCL, False=OICR
-            "fg_thresh": 0.5,
-            "bg_thresh": 0.1,
-            "graph_iou_thresh": 0.5,
-            "max_pc_num": 3,
-            "hidden_dim": 4096,
-            "spp_levels": (1, 2, 4),
-            "pool_type": "avg",
-        },
-
-        "testing": {
-            "test_window_proposals":200,
-            "test_full_proposals": 200,
-            "conf_thresh": 0.0,
-            "nms_sigma": 0.5,
-            "top_k": 200,
-
-            "base_physical_sec": 100.0,
-            "step_sec": 1.0,
-            "min_sec": 80.0,
-            "max_sec": 800.0,
-        }
-    }
-
-    run_loso_pcl_oicr_rwhar(config)
+    args = _parse_args()
+    config, _ = load_json_config(args.config)
+    run_entry(config)

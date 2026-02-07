@@ -44,6 +44,8 @@ def test_wsddn_imu(config, checkpoint_path,test_mode: str = "test_window"):
         pretrained_name=config["model"]["pretrained_name"],
         device=device,
         in_channels=in_channels,
+        ckpt_root=config["model"].get("ckpt_root"),
+        ckpt_path=config["model"].get("ckpt_path"),
     )
     pretrained_backbone = pretrained_backbone.to(device)
     if "backbone_state_dict" in checkpoint:
@@ -345,6 +347,8 @@ def test_pcl_imu(config, checkpoint_path,test_mode: str = "test_window"):
         pretrained_name=config["model"]["pretrained_name"],
         device=device,
         in_channels=in_channels,
+        ckpt_root=config["model"].get("ckpt_root"),
+        ckpt_path=config["model"].get("ckpt_path"),
     )
     pretrained_backbone = pretrained_backbone.to(device)
     if "backbone_state_dict" in checkpoint:

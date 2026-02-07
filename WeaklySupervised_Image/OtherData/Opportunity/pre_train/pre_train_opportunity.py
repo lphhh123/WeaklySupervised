@@ -299,8 +299,8 @@ def run_loso_pretrain(config: dict):
 
 if __name__ == "__main__":
     config = {
-        "dataset_dir": "/home/lipei/TAL_data/opportunity/",
-        "out_dir": "/home/lipei/project/WSDDN/OtherData/Opportunity/pre_train/CNN1D",
+        "dataset_dir": "data/opportunity/",
+        "out_dir": "OtherData/Opportunity/pre_train/CNN1D",
 
         "num_classes": 17,
         "task": "single",

@@ -356,8 +356,8 @@ def train_pretrain_model(
 # -------------------------- 4. Pretraining entry point --------------------------
 if __name__ == '__main__':
     config = {
-        'dataset_dir': '/home/lipei/XRFV2',  # Training root (includes train_data.h5, train_label.json, info.json)
-        'pretrain_output_dir': '/home/lipei/project/WSDDN/pre_train',
+        'dataset_dir': 'data/XRFV2',  # Training root (includes train_data.h5, train_label.json, info.json)
+        'pretrain_output_dir': 'pre_train',
         'num_classes': 30,
         'batch_size': 32,
         'num_epochs': 60,

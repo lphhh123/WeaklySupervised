@@ -281,8 +281,8 @@ def run_loso_pretrain(config: dict):
 
 if __name__ == "__main__":
     config = {
-        "dataset_dir": "/home/lipei/TAL_data/sbhar/",
-        "out_dir": "/home/lipei/project/WSDDN/OtherData/SBHAR/pre_train/CNN1D",
+        "dataset_dir": "data/sbhar/",
+        "out_dir": "OtherData/SBHAR/pre_train/CNN1D",
 
         # ★SBHAR folds
         "num_folds": 30,

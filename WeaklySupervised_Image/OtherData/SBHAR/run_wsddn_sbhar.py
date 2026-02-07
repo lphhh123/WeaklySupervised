@@ -1,3 +1,13 @@
+import argparse
+from pathlib import Path
+import sys
+
+ROOT = Path(__file__).resolve().parents[2]
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
+
+from scripts.config_utils import load_json_config
+
 
 import torch.optim as optim
 from tqdm import tqdm
@@ -503,67 +513,19 @@ def run_loso_wsddn_sbhar(config):
 # ============================================================
 # 7) main
 # ============================================================
+
+
+def run_entry(config):
+    return run_loso_wsddn_sbhar(config)
+
+
+def _parse_args():
+    parser = argparse.ArgumentParser(description="Runner for run_wsddn_sbhar")
+    parser.add_argument("--config", default="configs/sbhar_wsddn.json", help="Path to JSON config")
+    return parser.parse_args()
+
+
 if __name__ == "__main__":
-    config = {
-        "seed": 2022,
-        "exp_name": "wsddn_sbhar",
-
-        "dataset_dir": "/home/lipei/TAL_data/sbhar/",
-        "pretrained_dir": "/home/lipei/project/WSDDN/OtherData/SBHAR/pre_train",
-        "checkpoint_dir": "/home/lipei/project/WSDDN/checkpoints/SBHAR/2022/wsddn_01",
-        "result_root": "/home/lipei/project/WSDDN/test_results/SBHAR/2022/wsddn_01",
-
-        "num_folds": 30,
-        "folds": [0, 1, 2, 3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29],
-
-        "fps": 50,
-        "clip_sec": 500.0,
-        "clip_overlap": 0.5,
-        "in_channels": 3,
-        "num_classes": 12,
-        "stats_dirname": "loso_norm_stats_json",
-
-        # wrapper params
-        "seg_win_len": 90,         # 3s*30
-        "seg_stride": 45,          # 1.5s*30
-
-        "pretrained_model_name": "CNN1D",
-
-        "num_workers": 4,
-
-        "neg_keep_ratio": 0.1,
-
-        "training": {
-            "batch_size": 16,
-            "num_epochs": 80,
-            "lr": 1e-4,
-            "lr_step_size": 10,
-            "lr_gamma": 0.9,
-
-            "num_proposals": 200,
-
-
-            "base_physical_sec": 10.0,
-            "step_sec": 1.0,
-            "min_sec": 1.0,
-            "max_sec": 42.0,
-
-            "spatial_reg_weight": 1.0,
-            "spatial_reg_iou": 0.8,
-        },
-
-        "testing": {
-            "test_window_proposals":200,
-            "test_full_proposals": 2000,
-            "conf_thresh": 0.0,
-            "nms_sigma": 0.5,
-            "top_k": 200,
-
-            "base_physical_sec": 10.0,
-            "step_sec": 1.0,
-            "min_sec": 1.0,
-            "max_sec": 42.0,
-        }
-    }
-
-    run_loso_wsddn_sbhar(config)
+    args = _parse_args()
+    config, _ = load_json_config(args.config)
+    run_entry(config)

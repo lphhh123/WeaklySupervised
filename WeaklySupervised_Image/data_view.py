@@ -123,7 +123,7 @@ def plot_sbj0_action_sequence(file_path, dataset_name="Opportunity"):
 
 
 if __name__ == "__main__":
-    DATA_FILE_PATH = r"/home/lipei/TAL_data/hangtime/annotations/loso_sbj_0.json"
+    DATA_FILE_PATH = r"data/hangtime/annotations/loso_sbj_0.json"
     plot_sbj0_action_sequence(DATA_FILE_PATH, dataset_name="Hang-Time")
 
 

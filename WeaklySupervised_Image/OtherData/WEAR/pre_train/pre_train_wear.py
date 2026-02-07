@@ -215,8 +215,8 @@ def run_loso_pretrain(config: dict):
 
 if __name__ == "__main__":
     config = {
-        "dataset_dir": "/home/lipei/TAL_data/wear/",
-        "out_dir": "/home/lipei/project/WSDDN/OtherData/WEAR/pre_train",
+        "dataset_dir": "data/wear/",
+        "out_dir": "OtherData/WEAR/pre_train",
 
         "num_folds": 18,
         "num_classes": 18,

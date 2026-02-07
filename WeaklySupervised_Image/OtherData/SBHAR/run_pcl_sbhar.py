@@ -1,3 +1,13 @@
+import argparse
+from pathlib import Path
+import sys
+
+ROOT = Path(__file__).resolve().parents[2]
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
+
+from scripts.config_utils import load_json_config
+
 import torch
 torch.set_num_threads(8)
 torch.set_num_interop_threads(1)
@@ -460,76 +470,19 @@ def run_loso_pcl_oicr_sbhar(config):
 # ============================================================
 # 6) main
 # ============================================================
+
+
+def run_entry(config):
+    return run_loso_pcl_oicr_sbhar(config)
+
+
+def _parse_args():
+    parser = argparse.ArgumentParser(description="Runner for run_pcl_sbhar")
+    parser.add_argument("--config", default="configs/sbhar_pcl.json", help="Path to JSON config")
+    return parser.parse_args()
+
+
 if __name__ == "__main__":
-    config = {
-        "seed": 2022,
-        "exp_name": "oicr_sbhar",
-
-        "dataset_dir": "/home/lipei/TAL_data/sbhar/",
-        "pretrained_dir": "/home/lipei/project/WSDDN/OtherData/SBHAR/pre_train",
-        "checkpoint_dir": "/home/lipei/project/WSDDN/checkpoints/SBHAR/2022/pcl_01",
-        "result_root": "/home/lipei/project/WSDDN/test_results/SBHAR/2022/pcl_01",
-
-        "num_folds": 30,
-        "folds":[0, 1, 2, 3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29],
-
-        "fps": 30,
-        "clip_sec": 500.0,
-        "clip_overlap": 0.5,
-        "in_channels": 3,
-        "num_classes": 12,
-        "stats_dirname": "loso_norm_stats_json",
-
-        "seg_win_len": 90,
-        "seg_stride": 45,
-        "wrapper_chunk": 256,
-
-        "pretrained_model_name": "CNN1D",
-
-        "num_workers": 4,
-        "neg_keep_ratio": 0.2,
-
-        "training": {
-            "batch_size": 16,
-            "num_epochs": 80,
-            "lr": 1e-4,
-            "lr_step_size": 10,
-            "lr_gamma": 0.9,
-            "weight_decay": 1e-5,
-            # "grad_clip": 5.0,
-
-            "num_proposals": 1000,
-
-            # proposal params
-            "base_physical_sec": 3.0,
-            "step_sec": 1.0,
-            "min_sec": 1.0,
-            "max_sec": 50.0,
-
-            # PCL/OICR params
-            "refine_times": 3,
-            "use_pcl": True,          # True=PCL, False=OICR
-            "fg_thresh": 0.5,
-            "bg_thresh": 0.1,
-            "graph_iou_thresh": 0.5,
-            "max_pc_num": 3,
-            "hidden_dim": 4096,
-            "spp_levels": (1, 2, 4),
-            "pool_type": "avg",
-        },
-
-        "testing": {
-            "test_window_proposals": 1000,
-            "test_full_proposals": 5000,
-            "conf_thresh": 0.0,
-            "nms_sigma": 0.5,
-            "top_k": 200,
-
-            "base_physical_sec": 3.0,
-            "step_sec": 1.0,
-            "min_sec": 1.0,
-            "max_sec": 50.0,
-        }
-    }
-
-    run_loso_pcl_oicr_sbhar(config)
+    args = _parse_args()
+    config, _ = load_json_config(args.config)
+    run_entry(config)

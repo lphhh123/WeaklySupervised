@@ -1,3 +1,13 @@
+import argparse
+from pathlib import Path
+import sys
+
+ROOT = Path(__file__).resolve().parents[2]
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
+
+from scripts.config_utils import load_json_config
+
 import os, json, time
 
 import numpy as np
@@ -509,67 +519,19 @@ def run_loso_wsddn_wear(config):
 # ============================================================
 # main
 # ============================================================
+
+
+def run_entry(config):
+    return run_loso_wsddn_wear(config)
+
+
+def _parse_args():
+    parser = argparse.ArgumentParser(description="Runner for run_wsddn_wear")
+    parser.add_argument("--config", default="configs/wear_wsddn.json", help="Path to JSON config")
+    return parser.parse_args()
+
+
 if __name__ == "__main__":
-    config = {
-        "seed": 2024,
-        "exp_name": "wsddn_wear",
-
-        "dataset_dir": "/home/lipei/TAL_data/wear/",
-        "pretrained_dir": "/home/lipei/project/WSDDN/OtherData/WEAR/pre_train",
-        "checkpoint_dir": "/home/lipei/project/WSDDN/checkpoints/WEAR/wsddn_0105",
-        "result_root": "/home/lipei/project/WSDDN/test_results/WEAR/wsddn_0105",
-
-        "num_folds": 18,
-        "folds": [0, 1, 2, 3,4,5,6,7,8,9,10,11,12,13,14,15,16,17],
-
-        "fps": 50,
-        "clip_sec": 1000.0,
-        "clip_overlap": 0.5,
-        "in_channels": 12,
-        "num_classes": 18,
-        "stats_dirname": "loso_norm_stats_json",
-
-        # wrapper params
-        "seg_win_len": 512,
-        "seg_stride": 256,
-
-        "pretrained_model_name": "CNN1D",
-
-        "num_workers": 4,
-
-        "neg_keep_ratio": 0.1,
-
-        "training": {
-            "batch_size": 16,
-            "num_epochs": 60,
-            "lr": 1e-4,
-            "lr_step_size": 20,
-            "lr_gamma": 0.5,
-
-            "num_proposals": 100,
-
-
-            "base_physical_sec": 50.0,
-            "step_sec": 5.0,
-            "min_sec": 1.0,
-            "max_sec": 200.0,
-
-            "spatial_reg_weight": 1.0,
-            "spatial_reg_iou": 0.8,
-        },
-
-        "testing": {
-            "test_window_proposals":200,
-            "test_full_proposals": 3000,
-            "conf_thresh": 0.0,
-            "nms_sigma": 0.5,
-            "top_k": 200,
-
-            "base_physical_sec": 50.0,
-            "step_sec": 5.0,
-            "min_sec": 1.0,
-            "max_sec": 200.0,
-        }
-    }
-
-    run_loso_wsddn_wear(config)
+    args = _parse_args()
+    config, _ = load_json_config(args.config)
+    run_entry(config)

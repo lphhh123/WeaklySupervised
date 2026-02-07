@@ -1,0 +1,60 @@
+{
+  "exp_name": "xrfv2_wsddn",
+  "path": {
+    "train_dataset_path": "data/XRFV2",
+    "test_dataset_path": "data/XRFV2",
+    "dataset_root_path": "data/WWADL",
+    "mapping_path": "label_mapping.json",
+    "checkpoint_path": "outputs/xrfv2/checkpoints",
+    "result_path": "outputs/xrfv2/results"
+  },
+  "model": {
+    "type": "wsddn",
+    "pretrained_name": "CNN1D",
+    "ckpt_root": "pre_train",
+    "wsddn": {
+      "d_model": 512,
+      "nhead": 4,
+      "num_layers": 2,
+      "dim_feedforward": 1024,
+      "dropout": 0.1,
+      "use_positional_encoding": true,
+      "spp_levels": [
+        1,
+        2,
+        4
+      ],
+      "spp_pool": "max"
+    },
+    "refine_times": 3,
+    "fg_thresh": 0.5,
+    "bg_thresh": 0.1,
+    "use_pcl": false,
+    "graph_iou_thresh": 0.5,
+    "max_pc_num": 3
+  },
+  "training": {
+    "train_backbone": false,
+    "backbone_lr": 1e-05,
+    "num_proposals": 60,
+    "batch_size": 16,
+    "num_epochs": 80,
+    "lr": 0.0001,
+    "lr_step_size": 10,
+    "lr_gamma": 0.9,
+    "loc_loss_weight": 0.5,
+    "num_workers": 4,
+    "spatial_reg_iou": 0.8,
+    "num_classes": 30,
+    "use_airpods": true
+  },
+  "testing": {
+    "num_proposals_full": 2000,
+    "num_proposals_window": 80,
+    "conf_thresh": 0.02,
+    "nms_sigma": 0.3,
+    "top_k": 10,
+    "device_keep_list": null,
+    "confusion_tiou": 0.5
+  }
+}

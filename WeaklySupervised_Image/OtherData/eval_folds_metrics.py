@@ -662,7 +662,7 @@ def main():
     ap.add_argument(
         "--exp_dirs",
         nargs="+",
-        default=["/home/lipei/project/WSDDN/test_results/Opportunity/2022/pcl_01/"],
+        default=["outputs/Opportunity/pcl/"],
         help="List of experiment directories (each contains fold*/)."
     )
     ap.add_argument("--tiou", type=str, default="0.3,0.4,0.5,0.6,0.7")
