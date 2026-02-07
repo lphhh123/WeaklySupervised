@@ -31,8 +31,8 @@ cfg.NUM_EPOCHS = 80
 cfg.TRAIN_BACKBONE = False
 
               
-cfg.DATASET_DIR = "/home/lipei/TAL_data/hangtime/"        
-cfg.PRETRAIN_DIR = "/home/lipei/project/WSDDN/OtherData/HANGTIME/pre_train/CNN1D"          
+cfg.DATASET_DIR = os.environ.get("HANGTIME_DATA_DIR", os.path.join(os.getcwd(), "data", "HANGTIME"))
+cfg.PRETRAIN_DIR = os.environ.get("HANGTIME_PRETRAIN_DIR", os.path.join(os.getcwd(), "pre_train"))
 
                  
 cfg.LAMBDA = 0.01

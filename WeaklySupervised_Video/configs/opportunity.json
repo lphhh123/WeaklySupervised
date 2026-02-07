@@ -1,0 +1,43 @@
+{
+  "paths": {
+    "data_dir": "data/Opportunity",
+    "mapping_path": "label_mapping.json",
+    "output_dir": "outputs/opportunity",
+    "ckpt_dir": "outputs/opportunity/checkpoints"
+  },
+  "dataset": {
+    "name": "opportunity",
+    "loso_json": "loso_sbj_0.json",
+    "num_segments": 2048,
+    "dry_run_num_segments": 128,
+    "fps": 50,
+    "num_sensors": 113,
+    "num_classes": 17,
+    "clip_sec": 1000.0,
+    "clip_overlap": 0.5
+  },
+  "model": {
+    "inp_feat_num": 113,
+    "num_classes": 17,
+    "rskp": {
+      "w": 0.2,
+      "out_feat_num": 512,
+      "mu_num": 8,
+      "em_iter": 3,
+      "scale_factor": 4.0,
+      "dropout": 0.4
+    },
+    "cola": {
+      "backbone_type": "cnn1d",
+      "pretrained_path": null,
+      "train_backbone": false,
+      "r_easy": 15,
+      "r_hard": 20,
+      "m": 1,
+      "M": 10
+    }
+  },
+  "training": {
+    "batch_size": 2
+  }
+}

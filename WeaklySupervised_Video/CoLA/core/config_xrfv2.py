@@ -34,14 +34,14 @@ cfg.NUM_SEGMENTS = 2048
 cfg.UP_SCALE = 1
 
 # cfg.DATA_PATH = '/data1/WSTAL/all_6_30_3'
-cfg.DATA_PATH = '/home/lipei/XRFV2'
+cfg.DATA_PATH = os.environ.get("XRFV2_DATA_PATH", os.path.join(os.getcwd(), "data", "XRFV2"))
 cfg.GT_PATH = os.path.join(cfg.DATA_PATH, 'imu_annotations.json')
-cfg.TEST_DATA_ROOT = '/home/lipei/WWADL/imu'
+cfg.TEST_DATA_ROOT = os.environ.get("XRFV2_TEST_ROOT", os.path.join(os.getcwd(), "data", "WWADL", "imu"))
 cfg.DATASET_NAME = 'XRFV2'              
 cfg.BACKBONE_TYPE = 'cnn1d'                
-cfg.PRETRAINED_PATH = '/home/lipei/project/CoLA/output_ddp/classifier_model/classifier_best.pth'
-cfg.OUTPUT_PATH = '/home/lipei/project/CoLA/output_ddp'
-cfg.MODEL_PATH = '/home/lipei/project/CoLA/output_ddp/classifier_model'
+cfg.PRETRAINED_PATH = os.environ.get("XRFV2_PRETRAINED_PATH", "")
+cfg.OUTPUT_PATH = os.environ.get("XRFV2_OUTPUT_PATH", os.path.join(os.getcwd(), "outputs", "cola", "xrfv2"))
+cfg.MODEL_PATH = os.path.join(cfg.OUTPUT_PATH, "classifier_model")
 
                                                   
 cfg.LAMBDA = 0.01

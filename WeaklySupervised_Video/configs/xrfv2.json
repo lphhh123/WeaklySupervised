@@ -1,0 +1,42 @@
+{
+  "paths": {
+    "data_dir": "data/XRFV2",
+    "mapping_path": "label_mapping.json",
+    "output_dir": "outputs/xrfv2",
+    "ckpt_dir": "outputs/xrfv2/checkpoints"
+  },
+  "dataset": {
+    "name": "xrfv2",
+    "modal": "imu",
+    "num_segments": 2048,
+    "dry_run_num_segments": 128,
+    "use_airpods": true,
+    "gt_path": "data/XRFV2/imu_annotations.json",
+    "test_data_root": "data/WWADL/imu",
+    "class_dict": {}
+  },
+  "model": {
+    "inp_feat_num": 36,
+    "num_classes": 30,
+    "rskp": {
+      "w": 0.2,
+      "out_feat_num": 512,
+      "mu_num": 8,
+      "em_iter": 3,
+      "scale_factor": 4.0,
+      "dropout": 0.4
+    },
+    "cola": {
+      "backbone_type": "cnn1d",
+      "pretrained_path": null,
+      "train_backbone": false,
+      "r_easy": 15,
+      "r_hard": 20,
+      "m": 1,
+      "M": 10
+    }
+  },
+  "training": {
+    "batch_size": 2
+  }
+}
