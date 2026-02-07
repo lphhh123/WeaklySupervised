@@ -101,7 +101,7 @@ def train_pcl_oicr_one_fold_wetlab(config, fold: int, exp_name: str = "pcl_oicr_
         return_meta=False,
     )
 
-                                                  
+    # ⚠️ 默认 batch_size=1（避免 mil softmax 跨 batch 混）
     bs = int(config["training"].get("batch_size", 1))
     train_loader = DataLoader(
         train_dataset,
@@ -149,14 +149,14 @@ def train_pcl_oicr_one_fold_wetlab(config, fold: int, exp_name: str = "pcl_oicr_
             labels = labels.to(device).float()          # [B,K]
             B = sample_30s.shape[0]
 
-                     
+            # 提特征（冻结）
             with torch.no_grad():
                 global_feat = pretrained_backbone(sample_30s)  # [B,512,Tg]
 
             out = model(global_feat, proposal_boxes, labels=labels)
             losses = out.get("losses", {})
 
-                      
+            # 总损失：直接相加
             total_loss = None
             for k, v in losses.items():
                 total_loss = v if total_loss is None else (total_loss + v)
@@ -331,7 +331,7 @@ def test_pcl_oicr_wetlab(config, checkpoint_path, fold: int, test_mode: str = "t
             gpu_mem_list.append(torch.cuda.max_memory_allocated() / 1024 / 1024)
         inf_time_list.append((time.time() - t0) * 1000.0)
 
-                              
+        # 用最后一层 refine（去掉背景列0）
         refine_scores = out["refine_scores"]  # list of [1,P,C+1]
         final_prob = refine_scores[-1][0, :, 1:]  # [P,C]
 

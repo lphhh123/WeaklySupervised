@@ -13,33 +13,36 @@ def warn(*args, **kwargs):
 
 warnings.warn = warn
 
-                                          
-                          
+# ================= 配置区域 =================
+# 1. 日志根路径 (这里存放着 cfg.txt)
 PRED_PATH = "/home/yinjiaxi/wstal/tal_for_har/logs/actionformer/wetlab_seed1/"
 
-           
+# 2. 标注文件路径
 ANNO_PATH = '/home/yinjiaxi/wstal/tal_for_har/data/wetlab/annotations/'
 
-              
+# 3. 原始传感器数据路径
 RAW_DATA_PATH = '/home/yinjiaxi/wstal/tal_for_har/data/wetlab/raw/inertial'
 
-               
+# 4. JSON结果保存路径
 RESULT_SAVE_DIR = '/home/yinjiaxi/wstal/tal_for_har/result/actionformer'
 
-              
+# wetlab 数据集参数
 DEFAULT_DATASET = 'wetlab'
 NUM_CLASSES = 9
 SAMPLING_RATE = 50
 INPUT_DIM = 3
 SUBJECT_IDS = range(22)
 
-           
+# 想要测试的阈值列表
 SCORE_THRES = [0.0, 0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.5]
 
 
 # ===========================================
 
 def get_config_from_file(pred_path):
+    """
+    从 PRED_PATH 下的 cfg.txt 读取 dataset_name 和 init_rand_seed
+    """
     cfg_path = os.path.join(pred_path, 'cfg.txt')
     config_info = {
         'dataset_name': DEFAULT_DATASET,
@@ -69,21 +72,21 @@ def get_config_from_file(pred_path):
 
 
 def main():
-                       
+    # --- 1. 获取配置信息 ---
     config_info = get_config_from_file(PRED_PATH)
     dataset_name = config_info['dataset_name']
     seed = config_info['init_rand_seed']
 
-                                            
+    # 构造 CSV 文件的实际存放目录 (unprocessed_results)
     csv_dir = os.path.join(PRED_PATH, 'unprocessed_results')
 
     print(f"开始评估 Dataset: {dataset_name} (Seed: {seed})")
     print(f"配置路径: {PRED_PATH}")
-    print(f"预测CSV路径: {csv_dir}")            
+    print(f"预测CSV路径: {csv_dir}")  # 打印确认一下路径
     print(f"标注路径: {ANNO_PATH}")
     print("-" * 60)
 
-        
+    # 表头
     header = "{:<10} | {:<8} {:<8} {:<8} | {:<8} {:<8} {:<8} {:<8} {:<8} {:<8} | {:<8}".format(
         "Threshold", "P", "R", "F1", "UR", "OR", "DR", "IR", "FR", "MR", "mAP"
     )
@@ -97,7 +100,7 @@ def main():
     }
 
     for f in SCORE_THRES:
-                
+        # 初始化累加器
         all_mAP = []
         all_ur = np.zeros(NUM_CLASSES - 1)
         all_dr = np.zeros(NUM_CLASSES - 1)
@@ -112,15 +115,15 @@ def main():
 
         valid_subject_count = 0
 
-                      
+        # 遍历所有 Subject
         for i in SUBJECT_IDS:
             sbj_name = f'loso_sbj_{i}'
             json_file_path = os.path.join(ANNO_PATH, f'{sbj_name}.json')
 
-                                                     
+            # --- 修改处：指向 unprocessed_results 子文件夹 ---
             pred_file_path = os.path.join(csv_dir, f'v_seg_{sbj_name}.csv')
 
-                      
+            # 检查文件是否存在
             if not os.path.exists(json_file_path):
                 # print(f"Warning: Annotation file not found: {json_file_path}")
                 continue
@@ -130,17 +133,17 @@ def main():
 
             valid_subject_count += 1
 
-                     
+            # 1. 加载标注
             with open(json_file_path) as fi:
                 file = json.load(fi)
             anno_db = file['database']
             labels = ['null'] + list(file['label_dict'])
             label_dict = dict(zip(labels, list(range(len(labels)))))
 
-                       
+            # 2. 加载预测结果
             v_seg = pd.read_csv(pred_file_path, index_col=None, low_memory=False)
 
-                       
+            # 3. 加载原始数据
             v_data = np.empty((0, INPUT_DIM + 2))
             val_sbjs = [x for x in anno_db if anno_db[x]['subset'] == 'Validation']
 
@@ -153,17 +156,17 @@ def main():
                     {"label": label_dict}).fillna(0).to_numpy()
                 v_data = np.append(v_data, data, axis=0)
 
-                     
+            # 4. 阈值过滤
             v_seg_filtered = v_seg[v_seg.score > f].copy()
             v_seg_filtered = v_seg_filtered.rename(
                 columns={"video_id": "video-id", "t_start": "t-start", "t_end": "t-end"})
 
-                       
+            # 5. 计算 mAP
             det_eval = ANETdetection(json_file_path, 'validation', tiou_thresholds=[0.3, 0.4, 0.5, 0.6, 0.7])
             v_mAP, _ = det_eval.evaluate(v_seg_filtered)
             all_mAP.append(v_mAP)
 
-                        
+            # 6. 计算样本级指标
             preds, gt, _ = convert_segments_to_samples(v_seg_filtered, v_data, SAMPLING_RATE, threshold=f)
 
             eval_labels = range(NUM_CLASSES)
@@ -188,7 +191,7 @@ def main():
             print("No valid files found for evaluation.")
             break
 
-                           
+        # --- 汇总当前阈值的结果 ---
         avg_mAP = np.mean(all_mAP) * 100
         avg_prec = np.mean(all_prec) / valid_subject_count * 100
         avg_rec = np.mean(all_recall) / valid_subject_count * 100
@@ -220,7 +223,7 @@ def main():
         }
         json_results["metrics"].append(metric_entry)
 
-                                                    
+    # ================= 保存 JSON 文件 =================
     if not os.path.exists(RESULT_SAVE_DIR):
         os.makedirs(RESULT_SAVE_DIR)
         print(f"Created directory: {RESULT_SAVE_DIR}")

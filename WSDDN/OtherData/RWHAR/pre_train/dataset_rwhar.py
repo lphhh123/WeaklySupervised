@@ -8,6 +8,12 @@ from OtherData.utils import _load_loso_json, _subjects_by_split, _parse_fold_id_
 #  Dataset
 # ----------------------------
 class RWHARDataset_10s(Dataset):
+    """
+    RWHAR 预训练 Dataset：
+    - 从 processed/.../sbj_k.npy 还原连续 50Hz raw [T,21]
+    window center frame 落在 GT 段内 -> label_id
+    - 归一化：读取 raw/<stats_dirname>/loso_sbj_{fold}_stats.json（mean+var）
+    """
     def __init__(
         self,
         dataset_dir: str,
@@ -23,14 +29,14 @@ class RWHARDataset_10s(Dataset):
         overlap: float = 0.5,
 
         win_sec: float = 10.0,
-        win_overlap: float = 0.5,                                    
+        win_overlap: float = 0.5,    # ★10s window 默认 50% stride（=5s）
 
         normalize: bool = True,
         stats_dirname: str = "loso_norm_stats_json",
         ignore_zeros_in_stats: bool = False,
         eps: float = 1e-6,
 
-        cache_raw: bool = False,                                       
+        cache_raw: bool = False,     # ★RWHAR 每人序列很长，建议先 False，按需加载更省内存
         return_meta: bool = False,
     ):
         super().__init__()
@@ -54,7 +60,7 @@ class RWHARDataset_10s(Dataset):
         # window (frames)
         self.win_len = int(round(win_sec * self.fps))        # 10s -> 500
         self.win_stride = max(1, int(round(self.win_len * (1.0 - win_overlap))))
-                                                 
+        # 窗口内占比阈值（默认 0.0 表示只要有 overlap 就分配 label）
         self.min_label_frac = 0.0
 
         # raw cache
@@ -120,7 +126,7 @@ class RWHARDataset_10s(Dataset):
             self.fold_id = None
 
         if self.normalize:
-                                                             
+            # 缓存成 torch tensor，避免每个 __getitem__ 重复 from_numpy
             self.mean_t = torch.from_numpy(self.mean).float().unsqueeze(1)  # [C,1]
             self.std_t = torch.from_numpy(self.std).float().unsqueeze(1)  # [C,1]
         else:
@@ -145,7 +151,7 @@ class RWHARDataset_10s(Dataset):
                     min_frac=getattr(self, "min_label_frac", 0.0),
                 )
                 if lid is None:
-                    continue                
+                    continue  # 背景/占比不足 直接丢弃
                 self.index.append((sbj, s, e, lid))
 
         if len(self.index) == 0:

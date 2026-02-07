@@ -24,7 +24,7 @@ class SniCoLoss(nn.Module):
 
     def NCE(self, q, k, neg, T=0.07):
         if q.shape[0] == 0 or k.shape[0] == 0 or neg.shape[0] == 0:
-                                                 
+            # 如果没有挖掘到样本，返回一个带梯度的 0 (避免报错且不影响反向传播)
             return q.sum() * 0
         q = nn.functional.normalize(q, dim=1)
         k = nn.functional.normalize(k, dim=1)

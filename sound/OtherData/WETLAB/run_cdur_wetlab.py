@@ -13,7 +13,7 @@ import torch.nn.functional as F
 from torch.utils.data import DataLoader
 from tqdm import tqdm
 
-          
+# 确保引用路径正确
 from tool import ANETdetection
 from OtherData.WETLAB.dataset_wetlab_ws import WeaklyWetlabDataset
 from OtherData.utils import _meta_get, set_seed, build_gt_for_anet, dump_config
@@ -23,7 +23,7 @@ os.environ["CUDA_VISIBLE_DEVICES"] = "7"
 
 
 # ============================================================
-                     
+# 工具类：用于临时屏蔽 print 输出
 # ============================================================
 class HiddenPrints:
     def __enter__(self):
@@ -91,9 +91,9 @@ def train_cdur_one_fold_wetlab(config, fold: int, exp_name: str = "cdur_wetlab")
     model = model.to(device)
 
     def count_parameters(model):
-                
+        # 统计所有参数
         total_params = sum(p.numel() for p in model.parameters())
-                            
+        # 统计可训练参数 (通常我们关心这个)
         trainable_params = sum(p.numel() for p in model.parameters() if p.requires_grad)
         return total_params, trainable_params
 
@@ -192,8 +192,8 @@ def test_cdur_wetlab(config, checkpoint_path, fold: int, test_mode: str = "test_
     id2label = {int(v): k for k, v in label_dict.items()}
 
     # Dataset
-                                                        
-                                                                    
+    # 注意：如果 test_mode="test_full"，Dataset 通常会返回未经切片的整段特征
+    # 如果 Wetlab 视频过长导致 OOM，请确保 Dataset 内部处理了 full 模式的分块或采用 window 拼接
     ds = WeaklyWetlabDataset(
         dataset_dir=dataset_dir, loso_json=loso_json, mode=test_mode, fps=fps,
         num_sensors=in_channels, clip_sec=clip_sec, clip_overlap=0.0,
@@ -230,7 +230,7 @@ def test_cdur_wetlab(config, checkpoint_path, fold: int, test_mode: str = "test_
                     "segment": [float(abs_start), float(abs_end)]
                 })
 
-                                 
+    # [关键] 保存预测文件，文件名包含 test_mode
     pred_path = os.path.join(fold_dir, f"predictions_{test_mode}.json")
     final_results = {"version": "CDur-WETLAB", "results": results_cache, "external_data": {}}
     with open(pred_path, "w") as f:
@@ -274,7 +274,7 @@ def run_loso_cdur_wetlab(config):
 
     folds = config.get("folds", list(range(22)))
 
-            
+    # 用于全局合并
     all_pred_paths_win = []
     all_pred_paths_full = []
     all_gt_paths = []
@@ -286,13 +286,13 @@ def run_loso_cdur_wetlab(config):
         # 1. Train
         ckpt = train_cdur_one_fold_wetlab(config, fold)
 
-                                                          
+        # 2. Test Window (生成 predictions_test_window.json)
         mAPs_win, avg_mAP_win, pred_p_win, gt_p = test_cdur_wetlab(
             config, ckpt, fold, test_mode="test_window"
         )
 
-                                                           
-                                                      
+        # 3. [新增] Test Full (生成 predictions_test_full.json)
+        # 注意：如果 wetlab 数据过大，test_full 可能 OOM，请确保机器显存足够
         mAPs_full, avg_mAP_full, pred_p_full, _ = test_cdur_wetlab(
             config, ckpt, fold, test_mode="test_full"
         )
@@ -301,7 +301,7 @@ def run_loso_cdur_wetlab(config):
         all_pred_paths_full.append(pred_p_full)
         all_gt_paths.append(gt_p)
 
-                       
+        # 记录单个 Fold 的结果
         fold_entry = {
             "fold": fold,
             "window_mode": {
@@ -315,14 +315,14 @@ def run_loso_cdur_wetlab(config):
         }
         json_report_data.append(fold_entry)
 
-                
+        # 实时保存报告
         with open(report_path, 'w') as f:
             json.dump(json_report_data, f, indent=2)
 
         print(f">>> Fold {fold} Saved. Win: {avg_mAP_win:.4f} | Full: {avg_mAP_full:.4f}")
 
     # =========================================================
-                                   
+    # [新增] 保存所有 Fold 合并后的 Full 预测文件
     # =========================================================
     merged_results = {}
     for p_path in all_pred_paths_full:

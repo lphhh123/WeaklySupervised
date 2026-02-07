@@ -4,12 +4,12 @@ from easydict import EasyDict as edict
 
 cfg = edict()
 
-              
+# --- 基础配置 ---
 cfg.GPU_ID = '0'
 cfg.SEED = 2024
 cfg.NUM_WORKERS = 4
 
-                            
+# --- 数据集特定配置 (HANGTIME) ---
 cfg.DATASET_NAME = 'HANGTIME'
 cfg.BACKBONE_TYPE = 'cnn1d'
 cfg.MODAL = 'imu'
@@ -22,7 +22,7 @@ cfg.NUM_SEGMENTS = cfg.RAW_WINDOW_SIZE // cfg.DOWNSAMPLE_RATE
 
 cfg.UP_SCALE = 1
 
-              
+# --- 训练配置 ---
 cfg.BATCH_SIZE = 32
 cfg.LR_BASE = 1e-4
 cfg.LR_STEP_SIZE = 10
@@ -30,11 +30,11 @@ cfg.LR_GAMMA = 0.9
 cfg.NUM_EPOCHS = 80
 cfg.TRAIN_BACKBONE = False
 
-              
-cfg.DATASET_DIR = "/home/lipei/TAL_data/hangtime/"        
-cfg.PRETRAIN_DIR = "/home/lipei/project/WSDDN/OtherData/HANGTIME/pre_train/CNN1D"          
+# --- 路径配置 ---
+cfg.DATASET_DIR = "/home/lipei/TAL_data/hangtime/" # 数据根目录
+cfg.PRETRAIN_DIR = "/home/lipei/project/WSDDN/OtherData/HANGTIME/pre_train/CNN1D" # 预训练权重目录
 
-                 
+# --- CoLA 参数 ---
 cfg.LAMBDA = 0.01
 cfg.R_EASY = 5
 cfg.R_HARD = 10

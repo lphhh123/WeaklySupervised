@@ -362,7 +362,7 @@ if __name__ == "__main__":
     pred_path = "/home/lipei/project/WSDDN/test_results/xrfv2/xrfv2_cnn_oicr_0112/predictions_test_full.json"
     out_dir = "/home/lipei/project/WSDDN/test_results/xrfv2/xrfv2_cnn_oicr_0112/eval_out_full"
 
-            
+    # 过滤低分预测
     score_thr = 0.0
 
     evaluate_prf_and_uodifm(
