@@ -2,18 +2,17 @@ import json
 import numpy as np
 import os
 
-# 结果保存路径
 RESULT_SAVE_DIR = '/home/yinjiaxi/wstal/WeaklySupervised-master/metric_result/'
 
 
 def calculate_average_maps(file_path):
-    # 1. 检查文件是否存在
+
     if not os.path.exists(file_path):
         print(f"错误: 找不到文件 {file_path}")
         return
 
-    # 2. 提取文件名标识 (从倒数第二个文件夹名称获取)
-    # 例如 parent_dir 是 .../rwhar_dcase_10_500s_2026
+
+
     parent_dir = os.path.dirname(file_path)
     experiment_name = os.path.basename(parent_dir)
 
@@ -26,21 +25,21 @@ def calculate_average_maps(file_path):
         print(f"读取文件时发生错误: {e}")
         return
 
-    # 初始化列表来存储每个 fold 的数据
+
     window_mAPs = []
     window_avg_mAPs = []
     full_mAPs = []
     full_avg_mAPs = []
 
-    # 3. 遍历数据提取 mAP (适配提供的 list of dict 结构)
+
     for entry in data:
-        # --- 解析 Window Mode (数据位于根键 'mAPs' 和 'avg_mAP') ---
+
         if 'mAPs' in entry:
             window_mAPs.append(entry['mAPs'])
         if 'avg_mAP' in entry:
             window_avg_mAPs.append(entry['avg_mAP'])
 
-        # --- 解析 Full Mode (数据位于 'test_full' 字典中) ---
+
         if 'test_full' in entry:
             full_data = entry['test_full']
             if 'mAPs' in full_data:
@@ -48,16 +47,16 @@ def calculate_average_maps(file_path):
             if 'avg_mAP' in full_data:
                 full_avg_mAPs.append(full_data['avg_mAP'])
 
-    # 准备要写入 JSON 的字典
+
     output_json = {
         "experiment_name": experiment_name,
         "source_file": file_path,
         "results": {}
     }
 
-    # 4. 计算平均值并存入字典
 
-    # Window 模式计算
+
+
     if window_mAPs:
         window_mAPs_np = np.array(window_mAPs)
         mean_window_mAPs = np.mean(window_mAPs_np, axis=0)
@@ -75,7 +74,7 @@ def calculate_average_maps(file_path):
     else:
         print("未找到 Window 模式数据")
 
-    # Full 模式计算
+
     if full_mAPs:
         full_mAPs_np = np.array(full_mAPs)
         mean_full_mAPs = np.mean(full_mAPs_np, axis=0)
@@ -95,7 +94,7 @@ def calculate_average_maps(file_path):
 
     print("-" * 30)
 
-    # 5. 保存 JSON 文件
+
     if not os.path.exists(RESULT_SAVE_DIR):
         os.makedirs(RESULT_SAVE_DIR)
         print(f"创建目录: {RESULT_SAVE_DIR}")
@@ -112,7 +111,7 @@ def calculate_average_maps(file_path):
 
 
 if __name__ == "__main__":
-    # 更新后的目标文件路径
+
     target_file = "/home/yinjiaxi/wstal/WeaklySupervised-master/result/hangtime_cdur_10_5s_2022/final_results_summary.json"
 
     print(f"正在处理文件: {target_file}")

@@ -4,14 +4,9 @@ import numpy as np
 import subprocess
 from terminaltables import AsciiTable
 
-# ================= 配置区域 =================
-# 1. 结果根目录 (相对于本脚本)
 RESULTS_ROOT = "./output_rwhar_cola_ddp"
-# 2. 种子列表
 SEEDS = [2022, 2024, 2026]
-# 3. 学姐的评估脚本路径 (确保 eval 目录下有此文件)
 EVAL_SCRIPT = "eval/eval_folds_metrics.py"
-# 4. tIoU 阈值列表 (对齐学姐的 0.3-0.7)
 TIOUS = [0.3, 0.4, 0.5, 0.6, 0.7]
 
 
@@ -20,33 +15,32 @@ TIOUS = [0.3, 0.4, 0.5, 0.6, 0.7]
 def get_metrics_structure():
     return {
         "mAP_mean": [],
-        "mAP_per_tiou": [],  # 列表的列表: [[0.3, 0.4, 0.5, 0.6, 0.7], ...]
+        "mAP_per_tiou": [],
 
-        # 包含 Null (背景类) 的 P/R/F1
+
         "P_macro": [],
         "R_macro": [],
         "F1_macro": [],
 
-        # 不含 Null 的 P/R/F1 (作为对比保留)
+
         "P_macro_nonnull": [],
         "R_macro_nonnull": [],
         "F1_macro_nonnull": [],
 
-        # UODIFM 6项错误率
+
         "UR": [], "OR": [], "DR": [], "IR": [], "FR": [], "MR": []
     }
 
 
 def run_seed_eval(seed_path):
-    """调用学姐脚本计算该种子下所有 Fold 的平均值"""
-    # 模拟命令行调用: python eval_folds_metrics.py --exp_dirs path --tiou 0.3,0.4...
+
     cmd = [
         "python", EVAL_SCRIPT,
         "--exp_dirs", seed_path,
         "--tiou", ",".join(map(str, TIOUS)),
         "--use_conf_thresh", "--conf_thresh_override", "0"
     ]
-    # 执行并等待完成
+
     subprocess.run(cmd, check=True, stdout=subprocess.DEVNULL)
 
 
@@ -63,14 +57,14 @@ def main():
 
         print(f"🚀 处理 Seed {seed}: 正在执行 LOSO 汇总评估...")
 
-        # 1. 运行学姐脚本生成 metrics_summary_all_folds.json
+
         try:
             run_seed_eval(seed_dir)
         except Exception as e:
             print(f"   ⚠️ Seed {seed} 评估脚本报错: {e}")
             continue
 
-        # 2. 读取学姐脚本生成的 JSON
+
         summary_path = os.path.join(seed_dir, "metrics_summary_all_folds.json")
         if not os.path.exists(summary_path):
             print(f"   ⚠️ 未能生成汇总文件: {summary_path}")
@@ -82,7 +76,7 @@ def main():
             for mode in modes:
                 if mode not in data['modes']: continue
 
-                # 提取平均值块 (mean_over_folds)
+
                 res = data['modes'][mode]['mean_over_folds']
                 acc = final_stats[mode]
 
@@ -90,12 +84,12 @@ def main():
                 acc["mAP_mean"].append(res["mAP_mean"])
                 acc["mAP_per_tiou"].append(res["mAP_per_tiou"])
 
-                # P/R/F1 (包含背景类 - 你要求的)
+
                 acc["P_macro"].append(res["P_macro"])
                 acc["R_macro"].append(res["R_macro"])
                 acc["F1_macro"].append(res["F1_macro"])
 
-                # P/R/F1 (不含背景类)
+
                 acc["P_macro_nonnull"].append(res["P_macro_nonnull"])
                 acc["R_macro_nonnull"].append(res["R_macro_nonnull"])
                 acc["F1_macro_nonnull"].append(res["F1_macro_nonnull"])
@@ -105,7 +99,7 @@ def main():
                 for k in ["UR", "OR", "DR", "IR", "FR", "MR"]:
                     acc[k].append(uod[k])
 
-    # 3. 打印最终报表
+
     for mode in modes:
         print_final_table(mode, final_stats[mode])
 
@@ -118,7 +112,7 @@ def print_final_table(mode_name, acc):
 
     table_data = [["Metric", "Value (Mean ± Std)"]]
 
-    # --- 1. mAP 详情 ---
+
     per_tiou = np.array(acc["mAP_per_tiou"])  # [Seeds, 5]
     m_tiou = np.mean(per_tiou, axis=0)
     s_tiou = np.std(per_tiou, axis=0)
@@ -129,12 +123,12 @@ def print_final_table(mode_name, acc):
     table_data.append(["mAP_avg (0.3-0.7)", f"{np.mean(acc['mAP_mean']):.4f} ± {np.std(acc['mAP_mean']):.4f}"])
     table_data.append(["-" * 30, "-" * 20])
 
-    # --- 2. P/R/F1 (包含背景类 - 主推) ---
+
     table_data.append(["[Sample-level] Incl. Null (Background)", ""])
     for k in ["P_macro", "R_macro", "F1_macro"]:
         table_data.append([f"  {k}", f"{np.mean(acc[k]):.4f} ± {np.std(acc[k]):.4f}"])
 
-    # --- 3. P/R/F1 (不含背景类 - 参考) ---
+
     table_data.append(["[Sample-level] Excl. Null (Action Only)", ""])
     for k in ["P_macro_nonnull", "R_macro_nonnull", "F1_macro_nonnull"]:
         table_data.append([f"  {k}", f"{np.mean(acc[k]):.4f} ± {np.std(acc[k]):.4f}"])
@@ -147,7 +141,7 @@ def print_final_table(mode_name, acc):
         table_data.append([f"  {k}", f"{np.mean(acc[k]):.4f} ± {np.std(acc[k]):.4f}"])
 
     table = AsciiTable(table_data)
-    # 设置左对齐
+
     table.justify_columns[0] = 'left'
     print(table.table)
 

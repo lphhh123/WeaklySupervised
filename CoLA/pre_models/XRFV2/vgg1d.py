@@ -4,10 +4,6 @@ import torch.nn.functional as F
 
 
 def minmax_norm_1d_per_sample(a: torch.Tensor, eps: float = 1e-6) -> torch.Tensor:
-    """
-    对每个样本的时间维度进行 Min-Max 归一化
-    a: [B, T]
-    """
     a_min = a.amin(dim=1, keepdim=True)
     a_max = a.amax(dim=1, keepdim=True)
     return (a - a_min) / (a_max - a_min + eps)
@@ -22,10 +18,10 @@ class VGG1DBackbone(nn.Module):
 
     def __init__(self, in_channels=30, feat_dim=512, batch_norm=True, dropout=0.0, use_buaa=True):
         super().__init__()
-        # feat_dim 必须是 512，因为 VGG 结构决定了最后输出通道是 512
+
         assert feat_dim == 512
         self.use_buaa = use_buaa
-        self.out_dim = 512  # 供 factory 识别
+        self.out_dim = 512
 
         def conv(cin, cout):
             layers = [nn.Conv1d(cin, cout, kernel_size=3, padding=1, bias=not batch_norm)]
@@ -43,7 +39,7 @@ class VGG1DBackbone(nn.Module):
             layers.append(nn.MaxPool1d(kernel_size=2, stride=2))
             return nn.Sequential(*layers)
 
-        # VGG16 结构: [2,2,3,3,3]
+
         self.b1 = block(in_channels, 64, 2)  # T -> T/2
         self.b2 = block(64, 128, 2)  # T/2 -> T/4
         self.b3 = block(128, 256, 3)  # T/4 -> T/8
@@ -51,7 +47,7 @@ class VGG1DBackbone(nn.Module):
         self.b5 = block(512, 512, 3)  # T/16 -> T/32
 
     def forward(self, x):
-        # 逐层提取特征，保留中间结果用于 BUAA
+
         x1 = self.b1(x)  # [B,64, T/2]
         x2 = self.b2(x1)  # [B,128,T/4]
         x3 = self.b3(x2)  # [B,256,T/8]
@@ -65,26 +61,26 @@ class VGG1DBackbone(nn.Module):
         T_top = x5.shape[-1]
 
         def att(feat):
-            # 1) resize到 top 长度（对齐到顶层分辨率）
+
             feat_r = F.adaptive_max_pool1d(feat, output_size=T_top)  # [B, C, T_top]
-            # 2) 通道均值 (Channel Averaging) -> [B, T_top]
+
             a = feat_r.mean(dim=1)
             # 3) per-sample min-max -> [B, T_top]
             a = minmax_norm_1d_per_sample(a)
             return a
 
-        # 用浅层特征计算注意力图
-        # 注意：这里跳过了 x4 (跟参考代码一致)
+
+
         a1 = att(x1)
         a2 = att(x2)
         a3 = att(x3)
         a5 = att(x5)
 
-        # 聚合注意力: Element-wise Max
+
         A = torch.stack([a1, a2, a3, a5], dim=0).amax(dim=0)  # [B, T_top]
 
-        # 特征增强: Residual Attention
-        # (1 + A) 相当于把原特征放大
+
+
         x5 = x5 * (1.0 + A.unsqueeze(1))  # [B, 512, T_top]
 
         return x5

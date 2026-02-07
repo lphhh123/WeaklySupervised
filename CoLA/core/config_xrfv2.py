@@ -9,21 +9,18 @@ from easydict import EasyDict as edict
 
 cfg = edict()
 
-# ================= 1. 训练控制参数 (对齐学姐配置) =================
 cfg.TRAIN_BACKBONE = False
 cfg.NUM_EPOCHS = 80
 cfg.BATCH_SIZE = 32
 
-# 学习率配置
-cfg.LR_BASE = 1e-4           # [修改] 基础学习率
-cfg.LR_STEP_SIZE = 10        # [修改] 每 10 Epoch 衰减
-cfg.LR_GAMMA = 0.9           # [修改] 衰减系数
-cfg.WEIGHT_DECAY = 0.0005    # 保持默认或根据需要调整
+cfg.LR_BASE = 1e-4
+cfg.LR_STEP_SIZE = 10
+cfg.LR_GAMMA = 0.9
+cfg.WEIGHT_DECAY = 0.0005
 
-# ================= 2. 数据集配置 =================
 cfg.GPU_ID = '0'
 cfg.NUM_WORKERS = 4
-cfg.SEED = 2022              # 种子可以由外部传参覆盖
+cfg.SEED = 2022
 
 cfg.MODAL = 'imu'
 cfg.USE_AIRPODS = True
@@ -37,20 +34,18 @@ cfg.UP_SCALE = 1
 cfg.DATA_PATH = '/home/lipei/XRFV2'
 cfg.GT_PATH = os.path.join(cfg.DATA_PATH, 'imu_annotations.json')
 cfg.TEST_DATA_ROOT = '/home/lipei/WWADL/imu'
-cfg.DATASET_NAME = 'XRFV2'       # 数据集标识
-cfg.BACKBONE_TYPE = 'cnn1d'        # 模型架构标识
+cfg.DATASET_NAME = 'XRFV2'
+cfg.BACKBONE_TYPE = 'cnn1d'
 cfg.PRETRAINED_PATH = '/home/lipei/project/CoLA/output_ddp/classifier_model/classifier_best.pth'
 cfg.OUTPUT_PATH = '/home/lipei/project/CoLA/output_ddp'
 cfg.MODEL_PATH = '/home/lipei/project/CoLA/output_ddp/classifier_model'
 
-# ================= 3. CoLA 核心参数 =================
 cfg.LAMBDA = 0.01
 cfg.R_EASY = 15
 cfg.R_HARD = 20
 cfg.m = 1
 cfg.M = 10
 
-# 后处理阈值
 cfg.CLASS_THRESH = 0
 cfg.NMS_THRESH = 0.4
 cfg.CAS_THRESH = np.arange(0.1, 0.4, 0.05)

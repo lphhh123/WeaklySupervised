@@ -27,7 +27,7 @@ def set_seed(seed: int = 42):
 def train_pretrain_model(
     model,
     train_loader,
-    eval_loader,             # 这里 eval_loader 可以是 test 或 val
+    eval_loader,
     num_epochs=50,
     lr=1e-3,
     save_path='CNN1D_best_backbone.pth',
@@ -70,7 +70,7 @@ def train_pretrain_model(
         avg_train_loss = total_train_loss / max(1, len(train_loader.dataset))
         avg_train_acc = total_train_acc / max(1, len(train_loader.dataset))
 
-        # -------- 2) Eval (val 或 test) --------
+
         model.eval()
         total_eval_loss = 0.0
         total_eval_acc = 0.0
@@ -117,22 +117,13 @@ def train_pretrain_model(
 
 
 def run_loso_pretrain(config: dict):
-    """
-    四折 LOSO：
-      - train_ds = split="train" (Training subjects)
-      - test_ds  = split="test"  (Validation subject)
-    默认：eval_loader 直接用 test_ds（即“明确训练和测试划分”）
-
-    可选：val_mode="train_subject" 时，从 Training subjects 中按 subject 抽 1 个做 val，
-         test_ds 仍然保留用于最终测试。
-    """
     set_seed(config.get("seed", 2024))
 
     dataset_dir = config["dataset_dir"]
     out_dir = config["out_dir"]
     os.makedirs(out_dir, exist_ok=True)
 
-    val_mode = config.get("val_mode", "test")  # "test" 或 "train_subject"
+    val_mode = config.get("val_mode", "test")
 
     for fold in range(config.get("loso_number", 1)):
         loso_json = f"loso_sbj_{fold}.json"
@@ -154,7 +145,7 @@ def run_loso_pretrain(config: dict):
             ignore_zeros_in_stats=config.get("ignore_zeros_in_stats", False),
         )
 
-        # -------- 2) Test dataset：Validation subject（LOSO规定的测试人）--------
+
         test_ds = OpportunityDataset_3s(
             dataset_dir=dataset_dir,
             loso_json=loso_json,
@@ -163,18 +154,18 @@ def run_loso_pretrain(config: dict):
             num_sensors=config.get("num_sensors", 113),
             win_sec=config.get("win_sec", 3.0),
             win_overlap=config.get("win_overlap", 0.5),
-            normalize=True,  # 使用同一 fold 的 mean/var
+            normalize=True,
             stats_dirname=config.get("stats_dirname", "loso_norm_stats_json"),
             ignore_zeros_in_stats=config.get("ignore_zeros_in_stats", False),
         )
 
-        # -------- 3) 选择 eval 数据集 --------
-        # 默认：eval 就用 test（要的“明确训练/测试划分”）
+
+
         eval_ds = test_ds
 
-        # （不用测试集挑最优）——从 Training subjects 里抽一个 subject 做 val
+
         if val_mode == "train_subject":
-            # 取 train_ds_full.subjects 列表（Dataset 内部已有 subjects）
+
             train_subjects = list(getattr(train_ds_full, "subjects", []))
             if len(train_subjects) < 2:
                 raise RuntimeError(f"[Fold {fold}] Not enough training subjects for val_mode=train_subject")
@@ -183,7 +174,7 @@ def run_loso_pretrain(config: dict):
             val_sbj = rng.choice(train_subjects)
             tr_subjects = [s for s in train_subjects if s != val_sbj]
 
-            # 这里仍用 fold 的统计
+
             train_ds = OpportunityDataset_3s(
                 dataset_dir=dataset_dir,
                 loso_json=loso_json,
@@ -212,7 +203,7 @@ def run_loso_pretrain(config: dict):
             )
             eval_ds = val_ds
         else:
-            train_ds = train_ds_full  # 直接用 Training subjects 的所有窗口训练
+            train_ds = train_ds_full
 
         # -------- 4) Dataloaders --------
         train_loader = DataLoader(
@@ -283,8 +274,8 @@ def run_loso_pretrain(config: dict):
             save_path=save_backbone_path,
         )
 
-        # -------- 7) 训练结束后，在 test 上跑一遍最终指标 --------
-        # 如果 val_mode="test"，eval 就是 test，这一步可省略
+
+
         if val_mode == "train_subject":
             print(f"[Fold {fold}] Final evaluation on LOSO test subject ...")
             model.eval()
@@ -315,7 +306,7 @@ if __name__ == "__main__":
         "task": "single",
         "model_name": "CNN1D",  # "VGG1D"、 "CNN1D"
 
-        # 数据参数
+
         "fps": 30,
         "num_sensors": 113,
         "in_channels": 113,
@@ -325,11 +316,11 @@ if __name__ == "__main__":
         "win_sec": 3.0,
         "win_overlap": 0.5,
 
-        # 归一化 stats 的位置（已经算好 mean/var 的 json）
+
         "stats_dirname": "loso_norm_stats_json",
         "ignore_zeros_in_stats": False,
 
-        # 训练参数
+
         "batch_size": 32,
         "num_epochs": 60,
         "lr": 1e-3,
@@ -337,9 +328,9 @@ if __name__ == "__main__":
         "seed": 2024,
         "feat_dim": 512,
 
-        # 关键：验证模式
-        # "test"：eval=LOSO测试人（完全按“明确训练/测试划分”）
-        # "train_subject"：从Training subjects里抽1个人做val，test仍用于最终评估（更严谨）
+
+
+
         "val_mode": "test",
     }
 

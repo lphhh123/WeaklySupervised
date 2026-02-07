@@ -17,15 +17,11 @@ def _ceil_div(a: int, b: int) -> int:
     return (a + b - 1) // b
 
 class TADEmbedding_7s(nn.Module):
-    """
-    xrfv2 形态：Embedding -> TSSE x layer
-    但 length 不写死，用 dummy 推断，避免 478 这种长度在 stride/ceil 上踩坑。
-    """
     def __init__(self, in_channels, out_channels=512, layer=3, input_length=478, embedding_stride=1):
         super().__init__()
         self.embedding = Embedding(in_channels, stride=embedding_stride)  # xrfv2 Norm embedding
 
-        # 先用 dummy 推断 embedding 输出长度
+
         with torch.no_grad():
             dummy = torch.zeros(1, in_channels, input_length)
             emb = self.embedding(dummy)  # [1,512,L]
@@ -35,17 +31,17 @@ class TADEmbedding_7s(nn.Module):
         L = int(emb.size(-1))
         self.skip_tsse = nn.ModuleList()
         for i in range(int(layer)):
-            L_out = _ceil_div(L, 2)  # TSSE stride=2 近似输出长度
-            # 注意：xrfv2 这里 out_channels 传 256 也行（原实现里其实写死了 512/1024/2048）
+            L_out = _ceil_div(L, 2)
+
             self.skip_tsse.append(TSSE(in_channels=out_channels, out_channels=256, length=L_out))
             L = L_out
 
-        self.out_len = L  # 记录最终长度，便于调试
+        self.out_len = L
 
     def forward(self, x):
         x = self.embedding(x)      # [B,512,L0]
         for blk in self.skip_tsse:
-            x = blk(x)             # 每层大约 /2
+            x = blk(x)
         return x                   # [B,512,L_final]
 
 def _pad_to_multiple(x: torch.Tensor, multiple: int):
@@ -61,11 +57,6 @@ def _pad_to_multiple(x: torch.Tensor, multiple: int):
 
 
 def _crop_pyramid_to_valid(feats, valid_len0: int, scale_factor: int = 2):
-    """
-    feats: list of [B,C,L_i]
-    valid_len0: level0 的有效长度（未 padding 前）
-    假设每降一层长度大约 /scale_factor（与 xrfv2/FPNIdentity 一致）
-    """
     if not isinstance(feats, (list, tuple)):
         return feats
 
@@ -79,9 +70,6 @@ def _crop_pyramid_to_valid(feats, valid_len0: int, scale_factor: int = 2):
 
 
 class Mamba_config:
-    """
-    复刻 xrfv2 的 Mamba_config 形态（但不依赖 register 系统）
-    """
     def __init__(self, cfg=None):
         self.layer = 4
         self.n_embd = 512
@@ -98,11 +86,6 @@ class Mamba_config:
 
 
 class Mamba(nn.Module):
-    """
-    复刻 xrfv2 的 Mamba wrapper：
-      MambaBackbone + (可选)FPNIdentity
-    但 forward 支持传入外部 batched_masks（为了 padding/mask）
-    """
     def __init__(self, config: Mamba_config):
         super().__init__()
         self.cfg = config
@@ -122,22 +105,12 @@ class Mamba(nn.Module):
         if batched_masks is None:
             batched_masks = torch.ones(B, 1, L, dtype=torch.bool, device=x.device)
 
-        feats, masks = self.mamba_model(x, batched_masks)  # xrfv2 原接口
+        feats, masks = self.mamba_model(x, batched_masks)
 
         return feats
 
 
 class TSSE_MambaBackbone_7s(nn.Module):
-    """
-    完全 xrfv2 形态：
-      embedding = Embedding 或 TADEmbedding_7s
-      backbone  = Mamba(config)
-    forward:
-      x = embedding(x)
-      (pad+mask)
-      feats = backbone(x, mask)
-      return feats[0] (最高分辨率)
-    """
     def __init__(
         self,
         in_channels: int = 30,
@@ -145,7 +118,7 @@ class TSSE_MambaBackbone_7s(nn.Module):
         input_length: int = 478,
         embed_type: str = "Norm",       # "Norm" or "TSSE"
         embedding_stride: int = 1,
-        tsse_layers: int = 3,           # 对齐 xrfv2 TADEmbedding 默认 3
+        tsse_layers: int = 3,
         mamba_cfg: dict = None,
     ):
         super().__init__()
@@ -168,7 +141,7 @@ class TSSE_MambaBackbone_7s(nn.Module):
         cfg = Mamba_config(mamba_cfg or {})
         self.backbone = Mamba(cfg)
 
-        # 用于 pad_multiple 计算（避免 7/8 mismatch）
+
         self.scale_factor = int(cfg.scale_factor)
         self.arch = cfg.arch
 
@@ -178,7 +151,7 @@ class TSSE_MambaBackbone_7s(nn.Module):
         B, C, L0 = x.shape
 
         # ---- pad to safe multiple ----
-        # 常见 arch=(2,*,4), scale=2 => multiple=2^(2+4)=64
+
         multiple = self.scale_factor ** (int(self.arch[0]) + int(self.arch[-1]))
         x_pad, pad = _pad_to_multiple(x, multiple)
         Lp = x_pad.size(-1)
@@ -215,7 +188,7 @@ class TSSEMambaClassifier_7s(nn.Module):
 
     def forward(self, x):
         feat = self.backbone(x)  # [B,512,T]
-        # 更稳：用 mean 而不是 AdaptiveAvgPool，避免你以后改动长度/裁剪出问题
+
         pooled = feat.mean(dim=-1)   # [B,512]
         return self.fc(pooled)
 
@@ -233,7 +206,7 @@ class TSSE_7s(nn.Module):
         feat_dim: int = 512,
         input_length: int = 478,
         embedding_stride: int = 1,
-        tsse_layers: int = 3,           # 对齐 xrfv2 TADEmbedding 默认 3
+        tsse_layers: int = 3,
     ):
         super().__init__()
         if feat_dim != 512:
@@ -270,6 +243,6 @@ class TSSEClassifier_7s(nn.Module):
 
     def forward(self, x):
         feat = self.backbone(x)  # [B,512,T]
-        # 更稳：用 mean 而不是 AdaptiveAvgPool，避免你以后改动长度/裁剪出问题
+
         pooled = feat.mean(dim=-1)   # [B,512]
         return self.fc(pooled)

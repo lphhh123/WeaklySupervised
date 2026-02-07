@@ -16,19 +16,15 @@ from tqdm import tqdm
 
 from tool import ANETdetection
 
-# [假设] RWHAR 的 dataset 文件名为 dataset_rwhar_ws.py，类名为 WeaklyRWHARDataset
-# 请确保该文件存在于 OtherData/RWHAR/ 目录下
 from OtherData.RWHAR.dataset_rwhar_ws import WeaklyRWHARDataset
 from OtherData.utils import _meta_get, set_seed, build_gt_for_anet, dump_config
 
-# 引入 CDur 模型
 from models.CDur_model import CDur, MilSEDCNN
 
 os.environ["CUDA_VISIBLE_DEVICES"] = "4"
 
 
 # ============================================================
-# Helper: Context manager to suppress stdout (屏蔽啰嗦的输出)
 # ============================================================
 class HiddenPrints:
     def __enter__(self):
@@ -105,9 +101,9 @@ def train_cdur_one_fold_rwhar(config, fold: int, exp_name: str = "cdur_rwhar"):
     model = model.to(device)
 
     def count_parameters(model):
-        # 统计所有参数
+
         total_params = sum(p.numel() for p in model.parameters())
-        # 统计可训练参数 (通常我们关心这个)
+
         trainable_params = sum(p.numel() for p in model.parameters() if p.requires_grad)
         return total_params, trainable_params
 
@@ -310,20 +306,20 @@ def run_loso_cdur_rwhar(config):
 
     folds = config.get("folds", list(range(15)))
 
-    # 用于保存最终 JSON 结果的列表
+
     all_folds_metrics = []
 
     for fold in folds:
         # 1. Train
         ckpt = train_cdur_one_fold_rwhar(config, fold)
 
-        # 2. Test Window (默认模式，结果放在外层)
+
         mAPs_win, avg_mAP_win = test_cdur_rwhar(config, ckpt, fold, test_mode="test_window")
 
-        # 3. Test Full (全序列模式，结果放在 "test_full" 字段)
+
         mAPs_full, avg_mAP_full = test_cdur_rwhar(config, ckpt, fold, test_mode="test_full")
 
-        # 4. 构建当前 fold 的结果对象
+
         fold_result = {
             "fold": fold,
             "mAPs": mAPs_win.tolist(),  # numpy -> list
@@ -339,7 +335,7 @@ def run_loso_cdur_rwhar(config):
         print(f"[Fold {fold}] Win Avg: {avg_mAP_win:.4f} | Full Avg: {avg_mAP_full:.4f}")
 
     # ============================================================
-    # 保存 JSON 文件
+
     # ============================================================
     final_json_path = os.path.join(config["result_root"], "all_folds_results.json")
     with open(final_json_path, "w") as f:
@@ -356,7 +352,7 @@ if __name__ == "__main__":
         "exp_name": "cdur_rwhar",
         "model_type": "CDur",
 
-        # 请修改为你的实际路径
+
         "dataset_dir": "/home/lipei/TAL_data/rwhar/",
         "checkpoint_dir": "/home/yinjiaxi/wstal/WeaklySupervised-master/checkpoints/rwhar_cdur_10_500s_2026",
         "result_root": "/home/yinjiaxi/wstal/WeaklySupervised-master/result/rwhar_cdur_10_500s_2026",

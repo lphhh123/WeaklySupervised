@@ -27,7 +27,7 @@ def get_proposal_dict(cas_pred, aness_pred, pred, score_np, vid_num_seg, config)
         cas_tmp[cas_tmp[:, :, 0] < th] = 0
         seg_list = [np.where(cas_tmp[:, c, 0] > 0) for c in range(len(pred))]
 
-        # 调用核心坐标计算函数
+
         proposals = get_proposal_oic(seg_list, cas_tmp, score_np, pred, config.UP_SCALE, \
                                      vid_num_seg, config.FEATS_FPS, num_segments)
 
@@ -90,7 +90,7 @@ def get_proposal_oic(tList, wtcam, final_score, c_pred, scale, v_len, sampling_f
 
                 c_score = inner_score - outer_score + gamma * final_score[c_pred[i]]
 
-                # 这里的 t_factor 必须只与 v_len 和 num_segments 有关
+
                 t_start = grouped_temp_list[j][0] * t_factor
                 t_end = (grouped_temp_list[j][-1] + 1) * t_factor
 

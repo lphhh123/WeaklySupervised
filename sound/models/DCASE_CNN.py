@@ -9,7 +9,7 @@ class GLU(nn.Module):
 
     def forward(self, x):
         # x shape: [Batch, Channel, Height, Width]
-        # GLU通常作用在 Channel 维度上
+
         lin = self.linear(x.permute(0, 2, 3, 1))
         lin = lin.permute(0, 3, 1, 2)
         sig = self.sigmoid(x)
@@ -39,29 +39,14 @@ class CNN(nn.Module):
         padding=[1, 1, 1],
         stride=[1, 1, 1],
         nb_filters=[64, 64, 64],
-        # 【关键修改】默认Pooling策略
-        # 原版是 [(1, 4), (1, 4), (1, 4)] -> 传感器维度缩小 64 倍
-        # 这对 120 轴可能勉强能行，但对 6 轴/9 轴数据会直接导致维度归零报错
-        # 建议设为 None 或保守值，强制外部传入
+
+
+
+
         pooling=[(1, 2), (1, 2), (1, 2)],
         normalization="batch",
         **transformer_kwargs
     ):
-        """
-            Initialization of CNN network
-
-        Args:
-            n_in_channel: int, number of input channel (对于CRNN结构，这里通常是1)
-            activation: str, activation function
-            conv_dropout: float, dropout
-            kernel_size: list, kernel size
-            padding: list, padding
-            stride: list, stride
-            nb_filters: list, number of filters
-            pooling: list of tuples, pooling size for (Time, Sensors)
-                     Example: (1, 2) means Time dim stays same, Sensor dim / 2
-            normalization: choose between "batch" and "layer".
-        """
         super(CNN, self).__init__()
 
         self.nb_filters = nb_filters
@@ -97,8 +82,8 @@ class CNN(nn.Module):
         for i in range(len(nb_filters)):
             conv(i, normalization=normalization, dropout=conv_dropout, activ=activation)
             # Pooling: (Time, Sensors)
-            # 这里对应 PyTorch AvgPool2d(kernel_size=(H, W))
-            # 在 CRNN forward 中，H=Time, W=Sensors
+
+
             cnn.add_module(
                 "pooling{0}".format(i), nn.AvgPool2d(pooling[i])
             )

@@ -11,13 +11,6 @@ from OtherData.utils import _load_loso_json, _parse_fold_id_from_loso_name, _cli
 # Dataset
 # -------------------------
 class WeaklySBHARDataset(Dataset):
-    """
-    弱监督：返回 raw clip + clip级 multi-hot label
-    Return:
-      x: FloatTensor [C, T]
-      y: FloatTensor [num_classes]
-      meta(optional)
-    """
     def __init__(
         self,
         dataset_dir: str,
@@ -34,7 +27,7 @@ class WeaklySBHARDataset(Dataset):
         clip_sec: float = 30.0,     # ★SBHAR：30s clip
         clip_overlap: float = 0.5,  # 50% -> stride=15s
 
-        num_classes: int = 12,      # SBHAR：12 类
+        num_classes: int = 12,
         min_ov_frames: int = 1,
 
         neg_keep_ratio: float = 0.2,

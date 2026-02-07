@@ -19,48 +19,45 @@ class BatteryParams:
         self.T_ref = 298.15
 
         # Kinetics
-        self.c = 0.94242  # 对应你表中的 0.94242
+        self.c = 0.94242
         self.A_k = 7.0e-6
         self.Ea_k = 3500.0
 
         # Capacity
-        self.Q_nom_Ah = 5.000  # 标称 5000mAh
+        self.Q_nom_Ah = 5.000
         self.Q_nom_C = self.Q_nom_Ah * 3600
 
         # ECM Parameters
-        self.R0_ref = 0.0220  # 对应你表中的 0.0220
-        self.Ea_R = 3500.0  # 对应你表中的 活化能
+        self.R0_ref = 0.0220
+        self.Ea_R = 3500.0
         self.R_ts = 0.0450
         self.C_ts = 1781.2
         self.R_tl = 0.1520
         self.C_tl = 10000.0
 
-        # Aging Constants (新加入)
-        self.beta_sei = 0.00730  # SEI生长系数
-        self.gamma = 0.00010  # 内阻老化系数
+
+        self.beta_sei = 0.00730
+        self.gamma = 0.00010
 
         # Thresholds
         self.V_cutoff = 3.0
-        self.eta_pmic = 0.90  # 默认PMIC效率
+        self.eta_pmic = 0.90
 
-        # OCV Coefficients (更新为你的表内数值)
+
         self.ocv_coeffs = [1.6271, -0.0468, 1.4111, 3.1296, 5.3748, 3.3392]
 
     def get_k(self, T_kelvin):
         return self.A_k * np.exp(-self.Ea_k / (self.R_gas * T_kelvin))
 
     def get_SOH(self, N):
-        """计算容量保持率 (SOH) - 基于平方根定律"""
         return 1.0 - self.beta_sei * np.sqrt(N)
 
     def get_R0(self, T_kelvin, N):
-        """计算串联内阻 - 耦合温度(Arrhenius)与老化"""
         R_therm = self.R0_ref * np.exp(self.Ea_R / (self.R_gas * T_kelvin) - self.Ea_R / (self.R_gas * self.T_ref))
         R_aging = (1.0 + self.gamma * np.sqrt(N))
         return R_therm * R_aging
 
     def get_capacity_correction(self, T_celsius):
-        """CF(T) 分段三次样条修正"""
         dT = T_celsius - 25.0
         if T_celsius < 10:
             return -20.01e-6 * dT ** 3 - 1.8511e-3 * dT ** 2 - 41.536e-3 * dT + 0.6559
@@ -75,11 +72,10 @@ class BatteryParams:
 
     def get_ocv(self, soc):
         a = self.ocv_coeffs
-        term_exp = a[0] * np.exp(a[1] * soc)  # 修正为 a1*soc
+        term_exp = a[0] * np.exp(a[1] * soc)
         return term_exp + a[2] + a[3] * soc + a[4] * (soc ** 2) + a[5] * (soc ** 3)
 
 
-# --- 2. Differential Equations (保持不变) ---
 def model_derivatives(t, state, params, T_kelvin, Q_eff_C, P_load, R0_val, k_val):
     y1, y2, V_ts, V_tl = state
     h1 = y1 / params.c
@@ -99,7 +95,6 @@ def model_derivatives(t, state, params, T_kelvin, Q_eff_C, P_load, R0_val, k_val
     return [dy1_dt, dy2_dt, dVts_dt, dVtl_dt]
 
 
-# --- 3. Simulation Function (引入 N 修正) ---
 def simulate_scenario(setup, params):
     T_c = setup['T_amb']
     soc_init = setup['SOC_init']
@@ -113,7 +108,7 @@ def simulate_scenario(setup, params):
     soh_val = params.get_SOH(N)
     cf_t = params.get_capacity_correction(T_c)
 
-    # 核心：Q_eff 同时受老化(SOH)和温度(CF)影响
+
     Q_eff = params.Q_nom_C * soh_val * cf_t
 
     q_init = Q_eff * soc_init
@@ -139,7 +134,7 @@ def simulate_scenario(setup, params):
         t_span=(0, 48 * 3600), y0=state0, events=cutoff_event, method='RK45', rtol=1e-5
     )
 
-    # 结果后处理（计算序列用于绘图）
+
     t = sol.t
     y1, y2, Vts, Vtl = sol.y
     h1 = y1 / params.c;
@@ -171,7 +166,7 @@ def main():
         res['Color'] = scen['Color']
         results.append(res)
 
-    # --- 图 1：分场景详细动力学图 (Voltage & SOC) ---
+
     fig1, axes = plt.subplots(2, 2, figsize=(15, 10))
     fig1.suptitle('Figure 6.1: Detailed Battery Dynamics across Scenarios', fontsize=16, fontweight='bold')
 
@@ -179,9 +174,9 @@ def main():
         ax = axes[i // 2, i % 2]
         ax_soc = ax.twinx()
 
-        # 绘制电压
+
         ax.plot(res['time_h'], res['V'], color=res['Color'], linewidth=2.5, label='Terminal Voltage')
-        # 绘制SOC
+
         ax_soc.plot(res['time_h'], res['SOC'], color='gray', linestyle='--', alpha=0.8, label='SOC (%)')
 
         ax.set_title(f"Scenario: {res['Label']}\nTTE = {res['TTE']:.2f} h", fontsize=13)
@@ -194,7 +189,7 @@ def main():
     plt.tight_layout(rect=[0, 0.03, 1, 0.95])
     plt.savefig(os.path.join(SAVE_DIR, "Scenario_Details.png"), dpi=DPI)
 
-    # --- 图 2：核心观察图 - 四场景 SOC 趋势对比 ---
+
     plt.figure(figsize=(12, 7))
     for res in results:
         plt.plot(res['time_h'], res['SOC'], label=f"{res['Label']} (TTE={res['TTE']:.2f}h)",
@@ -204,12 +199,12 @@ def main():
     plt.xlabel('Discharge Time (Hours)', fontsize=12)
     plt.ylabel('Available State of Charge (%)', fontsize=12)
     plt.ylim(0, 100)
-    plt.xlim(0, 5)  # 根据你目前的TTE数据，5小时足够观察全貌
+    plt.xlim(0, 5)
     plt.axhline(0, color='black', linewidth=1)
     plt.grid(True, which='both', linestyle='--', alpha=0.5)
     plt.legend(loc='upper right', fontsize=11)
 
-    # 添加物理机理标注
+
     plt.annotate('Fastest Drain (Heavy Gaming)', xy=(1.5, 40), xytext=(2.5, 60),
                  arrowprops=dict(facecolor='black', shrink=0.05, width=1))
 
