@@ -1,0 +1,2037 @@
+W0131 12:57:24.487477 23736 site-packages/torch/distributed/run.py:792] 
+W0131 12:57:24.487477 23736 site-packages/torch/distributed/run.py:792] *****************************************
+W0131 12:57:24.487477 23736 site-packages/torch/distributed/run.py:792] Setting OMP_NUM_THREADS environment variable for each process to be 1 in default, to avoid your system being overloaded, please further tune the variable for optimal performance in your application as needed. 
+W0131 12:57:24.487477 23736 site-packages/torch/distributed/run.py:792] *****************************************
+
+
+### SEED: 2022 ###
+
+>>> [Train DDP] WETLAB Fold 0...
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_0.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_0.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_0.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_0.pth
+  Fold 0 Epoch 10 Loss: 0.7130
+  Fold 0 Epoch 20 Loss: 0.7079
+  Fold 0 Epoch 30 Loss: 0.7033
+  Fold 0 Epoch 40 Loss: 0.7061
+  Fold 0 Epoch 50 Loss: 0.7014
+  Fold 0 Epoch 60 Loss: 0.6986
+  Fold 0 Epoch 70 Loss: 0.6987
+  Fold 0 Epoch 80 Loss: 0.7041
+
+>>> [Eval] Inferencing Fold 0...
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_0.pth
+   -> Loading weights from ./output_wetlab_cola_ddp/seed_2022/seed_2022/fold0/model_final.pth...
+test_window: 0it [00:00, ?it/s]test_window: 1it [00:01,  1.30s/it]                                   test_full: 0it [00:00, ?it/s]test_full: 1it [00:00,  3.18it/s]                                    📊 [Stats] Time: 124.31ms | Mem: 149.37MB
+pipetting & 0.0990 & 0.0914 & 0.0471 & 0.0179 & 0.0179 & 0.0546 \\
+transfer & 0.0098 & 0.0024 & 0.0024 & 0.0000 & 0.0000 & 0.0029 \\
+stirring & 0.3600 & 0.3600 & 0.2337 & 0.0718 & 0.0410 & 0.2133 \\
+pouring & 0.0114 & 0.0114 & 0.0000 & 0.0000 & 0.0000 & 0.0045 \\
+peeling & 0.0044 & 0.0044 & 0.0044 & 0.0000 & 0.0000 & 0.0027 \\
+cutting & 0.1667 & 0.1667 & 0.0000 & 0.0000 & 0.0000 & 0.0667 \\
+pestling & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+inverting & 0.2000 & 0.2000 & 0.2000 & 0.2000 & 0.2000 & 0.2000 \\
+  --> test_full: mAP@Avg = 0.0681
+
+>>> [Train DDP] WETLAB Fold 1...
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_1.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_1.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_1.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_1.pth
+  Fold 1 Epoch 10 Loss: 0.7134
+  Fold 1 Epoch 20 Loss: 0.7072
+  Fold 1 Epoch 30 Loss: 0.7055
+  Fold 1 Epoch 40 Loss: 0.7071
+  Fold 1 Epoch 50 Loss: 0.7023
+  Fold 1 Epoch 60 Loss: 0.7010
+  Fold 1 Epoch 70 Loss: 0.6981
+  Fold 1 Epoch 80 Loss: 0.6951
+
+>>> [Eval] Inferencing Fold 1...
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_1.pth
+   -> Loading weights from ./output_wetlab_cola_ddp/seed_2022/seed_2022/fold1/model_final.pth...
+test_window: 0it [00:00, ?it/s]test_window: 1it [00:01,  1.62s/it]                                   test_full: 0it [00:00, ?it/s]test_full: 1it [00:00,  3.46it/s]                                    📊 [Stats] Time: 22.31ms | Mem: 221.92MB
+tiou_arr: 0.7534580960130295 inverting 0.3 4
+tiou_arr: 0.7534580960130295 inverting 0.39999999999999997 4
+tiou_arr: 0.7534580960130295 inverting 0.5 4
+tiou_arr: 0.7534580960130295 inverting 0.6 4
+tiou_arr: 0.7534580960130295 inverting 0.7 4
+pouring & 0.0355 & 0.0044 & 0.0044 & 0.0000 & 0.0000 & 0.0089 \\
+transfer & 0.0154 & 0.0116 & 0.0116 & 0.0000 & 0.0000 & 0.0077 \\
+pipetting & 0.3204 & 0.3204 & 0.1096 & 0.0991 & 0.0388 & 0.1777 \\
+stirring & 0.4201 & 0.4109 & 0.4109 & 0.4000 & 0.4000 & 0.4084 \\
+cutting & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+pestling & 1.0000 & 1.0000 & 1.0000 & 1.0000 & 1.0000 & 1.0000 \\
+inverting & 0.0052 & 0.0052 & 0.0000 & 0.0000 & 0.0000 & 0.0021 \\
+  --> test_full: mAP@Avg = 0.2292
+
+>>> [Train DDP] WETLAB Fold 2...
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_2.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_2.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_2.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_2.pth
+  Fold 2 Epoch 10 Loss: 0.7118
+  Fold 2 Epoch 20 Loss: 0.7075
+  Fold 2 Epoch 30 Loss: 0.7083
+  Fold 2 Epoch 40 Loss: 0.7036
+  Fold 2 Epoch 50 Loss: 0.7023
+  Fold 2 Epoch 60 Loss: 0.7030
+  Fold 2 Epoch 70 Loss: 0.7006
+  Fold 2 Epoch 80 Loss: 0.6971
+
+>>> [Eval] Inferencing Fold 2...
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_2.pth
+   -> Loading weights from ./output_wetlab_cola_ddp/seed_2022/seed_2022/fold2/model_final.pth...
+test_window: 0it [00:00, ?it/s]test_window: 1it [00:01,  1.36s/it]                                   test_full: 0it [00:00, ?it/s]test_full: 1it [00:00,  4.58it/s]                                    📊 [Stats] Time: 19.38ms | Mem: 142.08MB
+pouring & 0.0017 & 0.0017 & 0.0000 & 0.0000 & 0.0000 & 0.0007 \\
+transfer & 0.0078 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0016 \\
+pipetting & 0.0247 & 0.0102 & 0.0056 & 0.0000 & 0.0000 & 0.0081 \\
+stirring & 0.1966 & 0.1202 & 0.0444 & 0.0317 & 0.0044 & 0.0795 \\
+peeling & 0.0417 & 0.0095 & 0.0095 & 0.0095 & 0.0095 & 0.0160 \\
+cutting & 0.0161 & 0.0161 & 0.0161 & 0.0161 & 0.0161 & 0.0161 \\
+pestling & 0.8333 & 0.8333 & 0.8333 & 0.8333 & 0.8333 & 0.8333 \\
+inverting & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+  --> test_full: mAP@Avg = 0.1194
+
+>>> [Train DDP] WETLAB Fold 3...
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_3.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_3.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_3.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_3.pth
+  Fold 3 Epoch 10 Loss: 0.7120
+  Fold 3 Epoch 20 Loss: 0.7053
+  Fold 3 Epoch 30 Loss: 0.7089
+  Fold 3 Epoch 40 Loss: 0.7015
+  Fold 3 Epoch 50 Loss: 0.6995
+  Fold 3 Epoch 60 Loss: 0.7036
+  Fold 3 Epoch 70 Loss: 0.7043
+  Fold 3 Epoch 80 Loss: 0.6995
+
+>>> [Eval] Inferencing Fold 3...
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_3.pth
+   -> Loading weights from ./output_wetlab_cola_ddp/seed_2022/seed_2022/fold3/model_final.pth...
+test_window: 0it [00:00, ?it/s]test_window: 1it [00:02,  2.01s/it]                                   test_full: 0it [00:00, ?it/s]test_full: 1it [00:00,  2.87it/s]                                    📊 [Stats] Time: 24.33ms | Mem: 243.64MB
+pipetting & 0.4086 & 0.1837 & 0.1724 & 0.0713 & 0.0556 & 0.1783 \\
+transfer & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+stirring & 0.4195 & 0.3389 & 0.3389 & 0.1899 & 0.0823 & 0.2739 \\
+peeling & 0.0087 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0017 \\
+cutting & 0.5278 & 0.5278 & 0.5000 & 0.5000 & 0.5000 & 0.5111 \\
+pouring & 0.0038 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0008 \\
+pestling & 0.7255 & 0.7255 & 0.7255 & 0.3725 & 0.3725 & 0.5843 \\
+inverting & 0.0147 & 0.0147 & 0.0147 & 0.0147 & 0.0000 & 0.0118 \\
+  --> test_full: mAP@Avg = 0.1952
+
+>>> [Train DDP] WETLAB Fold 4...
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_4.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_4.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_4.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_4.pth
+  Fold 4 Epoch 10 Loss: 0.7098
+  Fold 4 Epoch 20 Loss: 0.7048
+  Fold 4 Epoch 30 Loss: 0.7039
+  Fold 4 Epoch 40 Loss: 0.7016
+  Fold 4 Epoch 50 Loss: 0.7032
+  Fold 4 Epoch 60 Loss: 0.6998
+  Fold 4 Epoch 70 Loss: 0.7020
+  Fold 4 Epoch 80 Loss: 0.6984
+
+>>> [Eval] Inferencing Fold 4...
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_4.pth
+   -> Loading weights from ./output_wetlab_cola_ddp/seed_2022/seed_2022/fold4/model_final.pth...
+test_window: 0it [00:00, ?it/s]test_window: 1it [00:01,  1.82s/it]                                   test_full: 0it [00:00, ?it/s]test_full: 1it [00:00,  3.61it/s]                                    📊 [Stats] Time: 18.39ms | Mem: 243.64MB
+transfer & 0.0042 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0008 \\
+pipetting & 0.2722 & 0.2703 & 0.1502 & 0.0135 & 0.0104 & 0.1433 \\
+stirring & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+pouring & 0.1250 & 0.0278 & 0.0278 & 0.0278 & 0.0000 & 0.0417 \\
+peeling & 0.0061 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0012 \\
+cutting & 0.5435 & 0.5435 & 0.5435 & 0.5435 & 0.5000 & 0.5348 \\
+pestling & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+inverting & 0.0294 & 0.0294 & 0.0294 & 0.0000 & 0.0000 & 0.0176 \\
+  --> test_full: mAP@Avg = 0.0924
+
+>>> [Train DDP] WETLAB Fold 5...
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_5.pth==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_5.pth
+
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_5.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_5.pth
+  Fold 5 Epoch 10 Loss: 0.7119
+  Fold 5 Epoch 20 Loss: 0.7065
+  Fold 5 Epoch 30 Loss: 0.7032
+  Fold 5 Epoch 40 Loss: 0.7058
+  Fold 5 Epoch 50 Loss: 0.7015
+  Fold 5 Epoch 60 Loss: 0.6991
+  Fold 5 Epoch 70 Loss: 0.7003
+  Fold 5 Epoch 80 Loss: 0.7016
+
+>>> [Eval] Inferencing Fold 5...
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_5.pth
+   -> Loading weights from ./output_wetlab_cola_ddp/seed_2022/seed_2022/fold5/model_final.pth...
+test_window: 0it [00:00, ?it/s]test_window: 1it [00:01,  1.31s/it]                                   test_full: 0it [00:00, ?it/s]test_full: 1it [00:00,  3.89it/s]                                    📊 [Stats] Time: 19.67ms | Mem: 146.92MB
+transfer & 0.0020 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0004 \\
+pipetting & 0.2395 & 0.0515 & 0.0232 & 0.0232 & 0.0232 & 0.0721 \\
+stirring & 0.2380 & 0.0504 & 0.0021 & 0.0021 & 0.0000 & 0.0585 \\
+pouring & 0.0006 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0001 \\
+peeling & 0.0033 & 0.0033 & 0.0033 & 0.0033 & 0.0033 & 0.0033 \\
+cutting & 0.5323 & 0.5323 & 0.5323 & 0.5323 & 0.5323 & 0.5323 \\
+pestling & 0.5000 & 0.5000 & 0.5000 & 0.5000 & 0.5000 & 0.5000 \\
+inverting & 0.0036 & 0.0036 & 0.0000 & 0.0000 & 0.0000 & 0.0014 \\
+  --> test_full: mAP@Avg = 0.1460
+
+>>> [Train DDP] WETLAB Fold 6...
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_6.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_6.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_6.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_6.pth
+  Fold 6 Epoch 10 Loss: 0.7155
+  Fold 6 Epoch 20 Loss: 0.7068
+  Fold 6 Epoch 30 Loss: 0.7040
+  Fold 6 Epoch 40 Loss: 0.7062
+  Fold 6 Epoch 50 Loss: 0.6996
+  Fold 6 Epoch 60 Loss: 0.7004
+  Fold 6 Epoch 70 Loss: 0.7011
+  Fold 6 Epoch 80 Loss: 0.6979
+
+>>> [Eval] Inferencing Fold 6...
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_6.pth
+   -> Loading weights from ./output_wetlab_cola_ddp/seed_2022/seed_2022/fold6/model_final.pth...
+test_window: 0it [00:00, ?it/s]test_window: 1it [00:01,  1.29s/it]                                   test_full: 0it [00:00, ?it/s]test_full: 1it [00:00,  5.12it/s]                                    📊 [Stats] Time: 13.27ms | Mem: 146.92MB
+transfer & 0.0048 & 0.0048 & 0.0000 & 0.0000 & 0.0000 & 0.0019 \\
+pipetting & 0.1506 & 0.0969 & 0.0923 & 0.0045 & 0.0045 & 0.0698 \\
+stirring & 0.2026 & 0.2000 & 0.0000 & 0.0000 & 0.0000 & 0.0805 \\
+pouring & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+peeling & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+cutting & 0.2576 & 0.0455 & 0.0455 & 0.0455 & 0.0455 & 0.0879 \\
+pestling & 0.6429 & 0.6429 & 0.6429 & 0.6429 & 0.0714 & 0.5286 \\
+inverting & 0.0516 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0103 \\
+  --> test_full: mAP@Avg = 0.0974
+
+>>> [Train DDP] WETLAB Fold 7...
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_7.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_7.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_7.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_7.pth
+  Fold 7 Epoch 10 Loss: 0.7083
+  Fold 7 Epoch 20 Loss: 0.7094
+  Fold 7 Epoch 30 Loss: 0.7047
+  Fold 7 Epoch 40 Loss: 0.7050
+  Fold 7 Epoch 50 Loss: 0.7016
+  Fold 7 Epoch 60 Loss: 0.6975
+  Fold 7 Epoch 70 Loss: 0.7045
+  Fold 7 Epoch 80 Loss: 0.6964
+
+>>> [Eval] Inferencing Fold 7...
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_7.pth
+   -> Loading weights from ./output_wetlab_cola_ddp/seed_2022/seed_2022/fold7/model_final.pth...
+test_window: 0it [00:00, ?it/s]test_window: 1it [00:01,  1.52s/it]                                   test_full: 0it [00:00, ?it/s]test_full: 1it [00:00,  4.33it/s]                                    📊 [Stats] Time: 22.18ms | Mem: 214.42MB
+transfer & 0.0227 & 0.0227 & 0.0000 & 0.0000 & 0.0000 & 0.0091 \\
+pipetting & 0.0207 & 0.0076 & 0.0049 & 0.0007 & 0.0007 & 0.0069 \\
+pouring & 0.0044 & 0.0003 & 0.0000 & 0.0000 & 0.0000 & 0.0010 \\
+peeling & 0.0625 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0125 \\
+cutting & 0.0109 & 0.0109 & 0.0109 & 0.0109 & 0.0000 & 0.0087 \\
+stirring & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+pestling & 0.0629 & 0.0629 & 0.0629 & 0.0629 & 0.0000 & 0.0503 \\
+inverting & 0.0500 & 0.0500 & 0.0500 & 0.0238 & 0.0238 & 0.0395 \\
+  --> test_full: mAP@Avg = 0.0160
+
+>>> [Train DDP] WETLAB Fold 8...
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_8.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_8.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_8.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_8.pth
+  Fold 8 Epoch 10 Loss: 0.7111
+  Fold 8 Epoch 20 Loss: 0.7090
+  Fold 8 Epoch 30 Loss: 0.7055
+  Fold 8 Epoch 40 Loss: 0.7064
+  Fold 8 Epoch 50 Loss: 0.7046
+  Fold 8 Epoch 60 Loss: 0.7013
+  Fold 8 Epoch 70 Loss: 0.7001
+  Fold 8 Epoch 80 Loss: 0.7053
+
+>>> [Eval] Inferencing Fold 8...
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_8.pth
+   -> Loading weights from ./output_wetlab_cola_ddp/seed_2022/seed_2022/fold8/model_final.pth...
+test_window: 0it [00:00, ?it/s]test_window: 1it [00:01,  1.67s/it]                                   test_full: 0it [00:00, ?it/s]test_full: 1it [00:00,  3.46it/s]                                    📊 [Stats] Time: 16.43ms | Mem: 214.42MB
+transfer & 0.0103 & 0.0103 & 0.0103 & 0.0026 & 0.0026 & 0.0072 \\
+pipetting & 0.0266 & 0.0066 & 0.0066 & 0.0025 & 0.0000 & 0.0085 \\
+stirring & 0.2506 & 0.1375 & 0.1375 & 0.0672 & 0.0003 & 0.1186 \\
+pouring & 0.0102 & 0.0003 & 0.0003 & 0.0003 & 0.0003 & 0.0023 \\
+peeling & 0.0042 & 0.0042 & 0.0000 & 0.0000 & 0.0000 & 0.0017 \\
+cutting & 0.4444 & 0.4444 & 0.4444 & 0.4444 & 0.1667 & 0.3889 \\
+pestling & 1.0000 & 1.0000 & 1.0000 & 0.6667 & 0.6667 & 0.8667 \\
+inverting & 0.0206 & 0.0128 & 0.0128 & 0.0128 & 0.0000 & 0.0118 \\
+  --> test_full: mAP@Avg = 0.1757
+
+>>> [Train DDP] WETLAB Fold 9...
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_9.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_9.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_9.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_9.pth
+  Fold 9 Epoch 10 Loss: 0.7118
+  Fold 9 Epoch 20 Loss: 0.7096
+  Fold 9 Epoch 30 Loss: 0.7070
+  Fold 9 Epoch 40 Loss: 0.7060
+  Fold 9 Epoch 50 Loss: 0.7051
+  Fold 9 Epoch 60 Loss: 0.6995
+  Fold 9 Epoch 70 Loss: 0.7010
+  Fold 9 Epoch 80 Loss: 0.7002
+
+>>> [Eval] Inferencing Fold 9...
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_9.pth
+   -> Loading weights from ./output_wetlab_cola_ddp/seed_2022/seed_2022/fold9/model_final.pth...
+test_window: 0it [00:00, ?it/s]test_window: 1it [00:01,  1.06s/it]                                   test_full: 0it [00:00, ?it/s]test_full: 1it [00:00,  3.59it/s]                                    📊 [Stats] Time: 17.83ms | Mem: 124.55MB
+transfer & 0.0230 & 0.0029 & 0.0000 & 0.0000 & 0.0000 & 0.0052 \\
+pipetting & 0.0882 & 0.0300 & 0.0009 & 0.0009 & 0.0000 & 0.0240 \\
+stirring & 0.0180 & 0.0123 & 0.0000 & 0.0000 & 0.0000 & 0.0061 \\
+pouring & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+peeling & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+cutting & 0.0833 & 0.0833 & 0.0000 & 0.0000 & 0.0000 & 0.0333 \\
+pestling & 0.5481 & 0.5481 & 0.4712 & 0.4135 & 0.4135 & 0.4788 \\
+inverting & 0.1312 & 0.1312 & 0.1312 & 0.1312 & 0.0430 & 0.1135 \\
+  --> test_full: mAP@Avg = 0.0826
+
+>>> [Train DDP] WETLAB Fold 10...
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_10.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_10.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_10.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_10.pth
+  Fold 10 Epoch 10 Loss: 0.7162
+  Fold 10 Epoch 20 Loss: 0.7103
+  Fold 10 Epoch 30 Loss: 0.7092
+  Fold 10 Epoch 40 Loss: 0.7107
+  Fold 10 Epoch 50 Loss: 0.7070
+  Fold 10 Epoch 60 Loss: 0.7074
+  Fold 10 Epoch 70 Loss: 0.7056
+  Fold 10 Epoch 80 Loss: 0.7040
+
+>>> [Eval] Inferencing Fold 10...
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_10.pth
+   -> Loading weights from ./output_wetlab_cola_ddp/seed_2022/seed_2022/fold10/model_final.pth...
+test_window: 0it [00:00, ?it/s]test_window: 1it [00:01,  1.99s/it]                                   test_full: 0it [00:00, ?it/s]test_full: 1it [00:00,  1.78it/s]                                    📊 [Stats] Time: 18.56ms | Mem: 243.64MB
+transfer & 0.0126 & 0.0126 & 0.0126 & 0.0126 & 0.0015 & 0.0103 \\
+pouring & 0.0148 & 0.0073 & 0.0059 & 0.0015 & 0.0000 & 0.0059 \\
+stirring & 0.5633 & 0.5603 & 0.4047 & 0.3095 & 0.3095 & 0.4294 \\
+peeling & 0.0038 & 0.0020 & 0.0020 & 0.0020 & 0.0020 & 0.0024 \\
+cutting & 0.1310 & 0.0238 & 0.0238 & 0.0238 & 0.0238 & 0.0452 \\
+pipetting & 0.1320 & 0.0690 & 0.0380 & 0.0168 & 0.0055 & 0.0523 \\
+pestling & 0.3333 & 0.3333 & 0.1111 & 0.1111 & 0.1111 & 0.2000 \\
+inverting & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+  --> test_full: mAP@Avg = 0.0932
+
+>>> [Train DDP] WETLAB Fold 11...
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_11.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_11.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_11.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_11.pth
+  Fold 11 Epoch 10 Loss: 0.7155
+  Fold 11 Epoch 20 Loss: 0.7096
+  Fold 11 Epoch 30 Loss: 0.7083
+  Fold 11 Epoch 40 Loss: 0.7061
+  Fold 11 Epoch 50 Loss: 0.7036
+  Fold 11 Epoch 60 Loss: 0.6976
+  Fold 11 Epoch 70 Loss: 0.6997
+  Fold 11 Epoch 80 Loss: 0.7000
+
+>>> [Eval] Inferencing Fold 11...
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_11.pth
+   -> Loading weights from ./output_wetlab_cola_ddp/seed_2022/seed_2022/fold11/model_final.pth...
+test_window: 0it [00:00, ?it/s]test_window: 1it [00:01,  1.58s/it]                                   test_full: 0it [00:00, ?it/s]test_full: 1it [00:00,  3.47it/s]                                    📊 [Stats] Time: 15.74ms | Mem: 214.42MB
+transfer & 0.0142 & 0.0101 & 0.0053 & 0.0030 & 0.0030 & 0.0071 \\
+pipetting & 0.2910 & 0.1248 & 0.0320 & 0.0000 & 0.0000 & 0.0896 \\
+stirring & 0.1429 & 0.1429 & 0.0012 & 0.0012 & 0.0012 & 0.0579 \\
+pouring & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+peeling & 0.0054 & 0.0054 & 0.0000 & 0.0000 & 0.0000 & 0.0022 \\
+cutting & 0.0192 & 0.0192 & 0.0192 & 0.0192 & 0.0192 & 0.0192 \\
+pestling & 0.4518 & 0.3069 & 0.3033 & 0.0615 & 0.0286 & 0.2304 \\
+inverting & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+  --> test_full: mAP@Avg = 0.0508
+
+>>> [Train DDP] WETLAB Fold 12...
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_12.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_12.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_12.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_12.pth
+  Fold 12 Epoch 10 Loss: 0.7145
+  Fold 12 Epoch 20 Loss: 0.7086
+  Fold 12 Epoch 30 Loss: 0.7063
+  Fold 12 Epoch 40 Loss: 0.7060
+  Fold 12 Epoch 50 Loss: 0.7053
+  Fold 12 Epoch 60 Loss: 0.7091
+  Fold 12 Epoch 70 Loss: 0.7043
+  Fold 12 Epoch 80 Loss: 0.7059
+
+>>> [Eval] Inferencing Fold 12...
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_12.pth
+   -> Loading weights from ./output_wetlab_cola_ddp/seed_2022/seed_2022/fold12/model_final.pth...
+test_window: 0it [00:00, ?it/s]test_window: 1it [00:01,  1.66s/it]                                   test_full: 0it [00:00, ?it/s]test_full: 1it [00:00,  3.72it/s]                                    📊 [Stats] Time: 17.59ms | Mem: 214.42MB
+transfer & 0.0196 & 0.0196 & 0.0024 & 0.0000 & 0.0000 & 0.0083 \\
+pipetting & 0.2086 & 0.0398 & 0.0398 & 0.0340 & 0.0000 & 0.0644 \\
+stirring & 0.1707 & 0.1707 & 0.1707 & 0.0019 & 0.0000 & 0.1028 \\
+pouring & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+cutting & 0.6667 & 0.4074 & 0.4074 & 0.4074 & 0.4074 & 0.4593 \\
+peeling & 0.0204 & 0.0204 & 0.0000 & 0.0000 & 0.0000 & 0.0082 \\
+pestling & 0.2088 & 0.0574 & 0.0574 & 0.0574 & 0.0574 & 0.0877 \\
+inverting & 0.0769 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0154 \\
+  --> test_full: mAP@Avg = 0.0933
+
+>>> [Train DDP] WETLAB Fold 13...
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_13.pth==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_13.pth
+
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_13.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_13.pth
+  Fold 13 Epoch 10 Loss: 0.7136
+  Fold 13 Epoch 20 Loss: 0.7094
+  Fold 13 Epoch 30 Loss: 0.7038
+  Fold 13 Epoch 40 Loss: 0.7010
+  Fold 13 Epoch 50 Loss: 0.7018
+  Fold 13 Epoch 60 Loss: 0.6980
+  Fold 13 Epoch 70 Loss: 0.7000
+  Fold 13 Epoch 80 Loss: 0.6980
+
+>>> [Eval] Inferencing Fold 13...
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_13.pth
+   -> Loading weights from ./output_wetlab_cola_ddp/seed_2022/seed_2022/fold13/model_final.pth...
+test_window: 0it [00:00, ?it/s]test_window: 1it [00:01,  1.00s/it]                                   test_full: 0it [00:00, ?it/s]test_full: 1it [00:00,  5.99it/s]                                    📊 [Stats] Time: 18.78ms | Mem: 130.21MB
+stirring & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+pouring & 0.0200 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0040 \\
+peeling & 0.0085 & 0.0085 & 0.0000 & 0.0000 & 0.0000 & 0.0034 \\
+cutting & 0.6111 & 0.6111 & 0.0556 & 0.0556 & 0.0000 & 0.2667 \\
+pipetting & 0.0153 & 0.0030 & 0.0008 & 0.0000 & 0.0000 & 0.0038 \\
+transfer & 0.0435 & 0.0435 & 0.0435 & 0.0435 & 0.0000 & 0.0348 \\
+pestling & 0.4128 & 0.4128 & 0.4128 & 0.4000 & 0.4000 & 0.4077 \\
+inverting & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+  --> test_full: mAP@Avg = 0.0900
+
+>>> [Train DDP] WETLAB Fold 14...
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_14.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_14.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_14.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_14.pth
+  Fold 14 Epoch 10 Loss: 0.7124
+  Fold 14 Epoch 20 Loss: 0.7062
+  Fold 14 Epoch 30 Loss: 0.7063
+  Fold 14 Epoch 40 Loss: 0.7034
+  Fold 14 Epoch 50 Loss: 0.7009
+  Fold 14 Epoch 60 Loss: 0.7037
+  Fold 14 Epoch 70 Loss: 0.7040
+  Fold 14 Epoch 80 Loss: 0.7013
+
+>>> [Eval] Inferencing Fold 14...
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_14.pth
+   -> Loading weights from ./output_wetlab_cola_ddp/seed_2022/seed_2022/fold14/model_final.pth...
+test_window: 0it [00:00, ?it/s]test_window: 1it [00:01,  1.26s/it]                                   test_full: 0it [00:00, ?it/s]test_full: 1it [00:00,  5.99it/s]                                    📊 [Stats] Time: 13.92ms | Mem: 146.92MB
+pipetting & 0.2642 & 0.2642 & 0.2642 & 0.2565 & 0.0556 & 0.2209 \\
+stirring & 0.0781 & 0.0781 & 0.0710 & 0.0100 & 0.0010 & 0.0476 \\
+pouring & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+peeling & 0.0068 & 0.0068 & 0.0000 & 0.0000 & 0.0000 & 0.0027 \\
+cutting & 0.5667 & 0.5000 & 0.5000 & 0.5000 & 0.0000 & 0.4133 \\
+pestling & 0.1901 & 0.1667 & 0.1667 & 0.1667 & 0.1667 & 0.1714 \\
+inverting & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+  --> test_full: mAP@Avg = 0.1223
+
+>>> [Train DDP] WETLAB Fold 15...
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_15.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_15.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_15.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_15.pth
+  Fold 15 Epoch 10 Loss: 0.7119
+  Fold 15 Epoch 20 Loss: 0.7062
+  Fold 15 Epoch 30 Loss: 0.7070
+  Fold 15 Epoch 40 Loss: 0.7031
+  Fold 15 Epoch 50 Loss: 0.7022
+  Fold 15 Epoch 60 Loss: 0.7021
+  Fold 15 Epoch 70 Loss: 0.6985
+  Fold 15 Epoch 80 Loss: 0.6989
+
+>>> [Eval] Inferencing Fold 15...
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_15.pth
+   -> Loading weights from ./output_wetlab_cola_ddp/seed_2022/seed_2022/fold15/model_final.pth...
+test_window: 0it [00:00, ?it/s]test_window: 1it [00:01,  1.40s/it]                                   test_full: 0it [00:00, ?it/s]test_full: 1it [00:00,  2.87it/s]                                    📊 [Stats] Time: 21.56ms | Mem: 197.73MB
+stirring & 0.1171 & 0.0952 & 0.0952 & 0.0000 & 0.0000 & 0.0615 \\
+pouring & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+peeling & 0.0037 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0007 \\
+cutting & 0.0455 & 0.0455 & 0.0000 & 0.0000 & 0.0000 & 0.0182 \\
+pipetting & 0.4217 & 0.2191 & 0.2099 & 0.1003 & 0.0325 & 0.1967 \\
+transfer & 0.0014 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0003 \\
+pestling & 0.0016 & 0.0016 & 0.0016 & 0.0016 & 0.0000 & 0.0013 \\
+inverting & 0.0054 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0011 \\
+  --> test_full: mAP@Avg = 0.0350
+
+>>> [Train DDP] WETLAB Fold 16...
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_16.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_16.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_16.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_16.pth
+  Fold 16 Epoch 10 Loss: 0.7085
+  Fold 16 Epoch 20 Loss: 0.7097
+  Fold 16 Epoch 30 Loss: 0.7074
+  Fold 16 Epoch 40 Loss: 0.7100
+  Fold 16 Epoch 50 Loss: 0.7034
+  Fold 16 Epoch 60 Loss: 0.6988
+  Fold 16 Epoch 70 Loss: 0.7012
+  Fold 16 Epoch 80 Loss: 0.6996
+
+>>> [Eval] Inferencing Fold 16...
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_16.pth
+   -> Loading weights from ./output_wetlab_cola_ddp/seed_2022/seed_2022/fold16/model_final.pth...
+test_window: 0it [00:00, ?it/s]test_window: 1it [00:01,  1.27s/it]                                   test_full: 0it [00:00, ?it/s]test_full: 1it [00:00,  4.66it/s]                                    📊 [Stats] Time: 20.11ms | Mem: 145.59MB
+pouring & 0.0038 & 0.0010 & 0.0000 & 0.0000 & 0.0000 & 0.0010 \\
+peeling & 0.0517 & 0.0517 & 0.0517 & 0.0517 & 0.0517 & 0.0517 \\
+cutting & 0.5000 & 0.5000 & 0.5000 & 0.5000 & 0.5000 & 0.5000 \\
+stirring & 0.2350 & 0.2350 & 0.1167 & 0.0250 & 0.0000 & 0.1223 \\
+pipetting & 0.0209 & 0.0187 & 0.0147 & 0.0000 & 0.0000 & 0.0109 \\
+transfer & 0.0199 & 0.0199 & 0.0034 & 0.0034 & 0.0000 & 0.0093 \\
+pestling & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+inverting & 0.0157 & 0.0039 & 0.0039 & 0.0000 & 0.0000 & 0.0047 \\
+  --> test_full: mAP@Avg = 0.0875
+
+>>> [Train DDP] WETLAB Fold 17...
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_17.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_17.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_17.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_17.pth
+  Fold 17 Epoch 10 Loss: 0.7126
+  Fold 17 Epoch 20 Loss: 0.7078
+  Fold 17 Epoch 30 Loss: 0.7100
+  Fold 17 Epoch 40 Loss: 0.7069
+  Fold 17 Epoch 50 Loss: 0.7064
+  Fold 17 Epoch 60 Loss: 0.7030
+  Fold 17 Epoch 70 Loss: 0.7040
+  Fold 17 Epoch 80 Loss: 0.7027
+
+>>> [Eval] Inferencing Fold 17...
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_17.pth
+   -> Loading weights from ./output_wetlab_cola_ddp/seed_2022/seed_2022/fold17/model_final.pth...
+test_window: 0it [00:00, ?it/s]test_window: 1it [00:01,  1.89s/it]                                   test_full: 0it [00:00, ?it/s]test_full: 1it [00:00,  3.77it/s]                                    📊 [Stats] Time: 18.35ms | Mem: 243.64MB
+pipetting & 0.3237 & 0.1559 & 0.0041 & 0.0000 & 0.0000 & 0.0967 \\
+stirring & 0.0075 & 0.0075 & 0.0000 & 0.0000 & 0.0000 & 0.0030 \\
+pouring & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+cutting & 0.0375 & 0.0167 & 0.0167 & 0.0167 & 0.0042 & 0.0183 \\
+peeling & 0.0032 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0006 \\
+transfer & 0.0019 & 0.0019 & 0.0019 & 0.0019 & 0.0000 & 0.0015 \\
+pestling & 0.0266 & 0.0085 & 0.0000 & 0.0000 & 0.0000 & 0.0070 \\
+inverting & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+  --> test_full: mAP@Avg = 0.0159
+
+>>> [Train DDP] WETLAB Fold 18...
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_18.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_18.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_18.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_18.pth
+  Fold 18 Epoch 10 Loss: 0.7135
+  Fold 18 Epoch 20 Loss: 0.7077
+  Fold 18 Epoch 30 Loss: 0.7088
+  Fold 18 Epoch 40 Loss: 0.7058
+  Fold 18 Epoch 50 Loss: 0.7062
+  Fold 18 Epoch 60 Loss: 0.7034
+  Fold 18 Epoch 70 Loss: 0.7034
+  Fold 18 Epoch 80 Loss: 0.7009
+
+>>> [Eval] Inferencing Fold 18...
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_18.pth
+   -> Loading weights from ./output_wetlab_cola_ddp/seed_2022/seed_2022/fold18/model_final.pth...
+test_window: 0it [00:00, ?it/s]test_window: 1it [00:01,  1.32s/it]                                   test_full: 0it [00:00, ?it/s]test_full: 1it [00:00,  2.92it/s]                                    📊 [Stats] Time: 12.99ms | Mem: 146.92MB
+transfer & 0.0206 & 0.0143 & 0.0143 & 0.0143 & 0.0143 & 0.0156 \\
+stirring & 0.0509 & 0.0152 & 0.0152 & 0.0000 & 0.0000 & 0.0163 \\
+pouring & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+cutting & 0.5292 & 0.5292 & 0.5292 & 0.3750 & 0.0000 & 0.3925 \\
+peeling & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+pestling & 1.0000 & 1.0000 & 1.0000 & 1.0000 & 1.0000 & 1.0000 \\
+pipetting & 0.0758 & 0.0075 & 0.0009 & 0.0000 & 0.0000 & 0.0168 \\
+inverting & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+  --> test_full: mAP@Avg = 0.1801
+
+>>> [Train DDP] WETLAB Fold 19...
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_19.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_19.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_19.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_19.pth
+  Fold 19 Epoch 10 Loss: 0.7163
+  Fold 19 Epoch 20 Loss: 0.7104
+  Fold 19 Epoch 30 Loss: 0.7112
+  Fold 19 Epoch 40 Loss: 0.7062
+  Fold 19 Epoch 50 Loss: 0.7039
+  Fold 19 Epoch 60 Loss: 0.7020
+  Fold 19 Epoch 70 Loss: 0.7067
+  Fold 19 Epoch 80 Loss: 0.7005
+
+>>> [Eval] Inferencing Fold 19...
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_19.pth
+   -> Loading weights from ./output_wetlab_cola_ddp/seed_2022/seed_2022/fold19/model_final.pth...
+test_window: 0it [00:00, ?it/s]test_window: 1it [00:01,  1.65s/it]                                   test_full: 0it [00:00, ?it/s]test_full: 1it [00:00,  3.24it/s]                                    📊 [Stats] Time: 17.04ms | Mem: 214.42MB
+pipetting & 0.2620 & 0.2232 & 0.2203 & 0.2203 & 0.1875 & 0.2227 \\
+stirring & 0.1435 & 0.0077 & 0.0048 & 0.0005 & 0.0000 & 0.0313 \\
+pouring & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+cutting & 0.5556 & 0.3846 & 0.3846 & 0.3846 & 0.3846 & 0.4188 \\
+peeling & 0.0091 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0018 \\
+pestling & 1.0000 & 1.0000 & 1.0000 & 1.0000 & 1.0000 & 1.0000 \\
+transfer & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+inverting & 0.1111 & 0.0370 & 0.0000 & 0.0000 & 0.0000 & 0.0296 \\
+  --> test_full: mAP@Avg = 0.2130
+
+>>> [Train DDP] WETLAB Fold 20...
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_20.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_20.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_20.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_20.pth
+  Fold 20 Epoch 10 Loss: 0.7213
+  Fold 20 Epoch 20 Loss: 0.7112
+  Fold 20 Epoch 30 Loss: 0.7173
+  Fold 20 Epoch 40 Loss: 0.7133
+  Fold 20 Epoch 50 Loss: 0.7115
+  Fold 20 Epoch 60 Loss: 0.7123
+  Fold 20 Epoch 70 Loss: 0.7108
+  Fold 20 Epoch 80 Loss: 0.7089
+
+>>> [Eval] Inferencing Fold 20...
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_20.pth
+   -> Loading weights from ./output_wetlab_cola_ddp/seed_2022/seed_2022/fold20/model_final.pth...
+test_window: 0it [00:00, ?it/s]test_window: 1it [00:01,  1.56s/it]                                   test_full: 0it [00:00, ?it/s]test_full: 1it [00:00,  3.81it/s]                                    📊 [Stats] Time: 16.26ms | Mem: 214.42MB
+pipetting & 0.0214 & 0.0180 & 0.0180 & 0.0180 & 0.0125 & 0.0176 \\
+stirring & 0.0734 & 0.0346 & 0.0104 & 0.0005 & 0.0000 & 0.0238 \\
+pouring & 0.0005 & 0.0005 & 0.0005 & 0.0000 & 0.0000 & 0.0003 \\
+cutting & 0.3686 & 0.3686 & 0.3452 & 0.3370 & 0.3333 & 0.3505 \\
+peeling & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+transfer & 0.0039 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0008 \\
+pestling & 0.0068 & 0.0068 & 0.0068 & 0.0068 & 0.0000 & 0.0054 \\
+inverting & 0.0191 & 0.0191 & 0.0191 & 0.0000 & 0.0000 & 0.0114 \\
+  --> test_full: mAP@Avg = 0.0512
+
+>>> [Train DDP] WETLAB Fold 21...
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_21.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_21.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_21.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_21.pth
+  Fold 21 Epoch 10 Loss: 0.7124
+  Fold 21 Epoch 20 Loss: 0.7073
+  Fold 21 Epoch 30 Loss: 0.7065
+  Fold 21 Epoch 40 Loss: 0.7035
+  Fold 21 Epoch 50 Loss: 0.6980
+  Fold 21 Epoch 60 Loss: 0.7001
+  Fold 21 Epoch 70 Loss: 0.7051
+  Fold 21 Epoch 80 Loss: 0.6972
+
+>>> [Eval] Inferencing Fold 21...
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_21.pth
+   -> Loading weights from ./output_wetlab_cola_ddp/seed_2022/seed_2022/fold21/model_final.pth...
+test_window: 0it [00:00, ?it/s]test_window: 1it [00:01,  1.32s/it]                                   test_full: 0it [00:00, ?it/s]test_full: 1it [00:00,  5.58it/s]                                    📊 [Stats] Time: 13.04ms | Mem: 146.92MB
+pipetting & 0.1284 & 0.0889 & 0.0889 & 0.0386 & 0.0345 & 0.0759 \\
+stirring & 0.0676 & 0.0031 & 0.0031 & 0.0000 & 0.0000 & 0.0148 \\
+pouring & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+peeling & 0.0069 & 0.0069 & 0.0069 & 0.0069 & 0.0000 & 0.0055 \\
+cutting & 0.3401 & 0.3401 & 0.3401 & 0.3401 & 0.0034 & 0.2727 \\
+pestling & 0.0323 & 0.0323 & 0.0323 & 0.0323 & 0.0323 & 0.0323 \\
+transfer & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+inverting & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+  --> test_full: mAP@Avg = 0.0501
+
+
+### SEED: 2024 ###
+
+>>> [Train DDP] WETLAB Fold 0...
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_0.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_0.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_0.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_0.pth
+  Fold 0 Epoch 10 Loss: 0.7131
+  Fold 0 Epoch 20 Loss: 0.7068
+  Fold 0 Epoch 30 Loss: 0.7054
+  Fold 0 Epoch 40 Loss: 0.7036
+  Fold 0 Epoch 50 Loss: 0.7026
+  Fold 0 Epoch 60 Loss: 0.7004
+  Fold 0 Epoch 70 Loss: 0.7023
+  Fold 0 Epoch 80 Loss: 0.6974
+
+>>> [Eval] Inferencing Fold 0...
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_0.pth
+   -> Loading weights from ./output_wetlab_cola_ddp/seed_2024/seed_2024/fold0/model_final.pth...
+test_window: 0it [00:00, ?it/s]test_window: 1it [00:01,  1.15s/it]                                   test_full: 0it [00:00, ?it/s]test_full: 1it [00:00,  5.44it/s]                                    📊 [Stats] Time: 13.00ms | Mem: 147.68MB
+pipetting & 0.0806 & 0.0431 & 0.0078 & 0.0078 & 0.0078 & 0.0294 \\
+transfer & 0.0025 & 0.0025 & 0.0025 & 0.0025 & 0.0000 & 0.0020 \\
+stirring & 0.3379 & 0.3379 & 0.2363 & 0.0661 & 0.0599 & 0.2076 \\
+pouring & 0.0020 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0004 \\
+peeling & 0.0055 & 0.0055 & 0.0055 & 0.0000 & 0.0000 & 0.0033 \\
+cutting & 0.2500 & 0.2500 & 0.0000 & 0.0000 & 0.0000 & 0.1000 \\
+pestling & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+inverting & 0.5000 & 0.5000 & 0.5000 & 0.5000 & 0.5000 & 0.5000 \\
+  --> test_full: mAP@Avg = 0.1053
+
+>>> [Train DDP] WETLAB Fold 1...
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_1.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_1.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_1.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_1.pth
+  Fold 1 Epoch 10 Loss: 0.7082
+  Fold 1 Epoch 20 Loss: 0.7081
+  Fold 1 Epoch 30 Loss: 0.7024
+  Fold 1 Epoch 40 Loss: 0.7031
+  Fold 1 Epoch 50 Loss: 0.7022
+  Fold 1 Epoch 60 Loss: 0.6996
+  Fold 1 Epoch 70 Loss: 0.6947
+  Fold 1 Epoch 80 Loss: 0.6980
+
+>>> [Eval] Inferencing Fold 1...
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_1.pth
+   -> Loading weights from ./output_wetlab_cola_ddp/seed_2024/seed_2024/fold1/model_final.pth...
+test_window: 0it [00:00, ?it/s]test_window: 1it [00:01,  1.67s/it]                                   test_full: 0it [00:00, ?it/s]test_full: 1it [00:00,  3.57it/s]                                    📊 [Stats] Time: 17.07ms | Mem: 221.92MB
+tiou_arr: 0.9073724007561432 peeling 0.3 304
+tiou_arr: 0.9073724007561432 peeling 0.39999999999999997 304
+tiou_arr: 0.9073724007561432 peeling 0.5 304
+tiou_arr: 0.9073724007561432 peeling 0.6 304
+tiou_arr: 0.9073724007561432 peeling 0.7 304
+tiou_arr: 0.48840206185567014 peeling 0.3 235
+tiou_arr: 0.48840206185567014 peeling 0.39999999999999997 235
+tiou_arr: 0.46449999999999997 peeling 0.3 116
+tiou_arr: 0.46449999999999997 peeling 0.39999999999999997 116
+tiou_arr: 0.7925142392188802 inverting 0.3 1
+tiou_arr: 0.7925142392188802 inverting 0.39999999999999997 1
+tiou_arr: 0.7925142392188802 inverting 0.5 1
+tiou_arr: 0.7925142392188802 inverting 0.6 1
+tiou_arr: 0.7925142392188802 inverting 0.7 1
+pouring & 0.0174 & 0.0047 & 0.0004 & 0.0004 & 0.0000 & 0.0046 \\
+transfer & 0.0088 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0018 \\
+pipetting & 0.2549 & 0.0713 & 0.0663 & 0.0199 & 0.0125 & 0.0850 \\
+stirring & 0.3634 & 0.3521 & 0.3333 & 0.3333 & 0.3333 & 0.3431 \\
+cutting & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+pestling & 1.0000 & 1.0000 & 1.0000 & 1.0000 & 1.0000 & 1.0000 \\
+inverting & 0.0047 & 0.0047 & 0.0000 & 0.0000 & 0.0000 & 0.0019 \\
+  --> test_full: mAP@Avg = 0.2052
+
+>>> [Train DDP] WETLAB Fold 2...
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_2.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_2.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_2.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_2.pth
+  Fold 2 Epoch 10 Loss: 0.7153
+  Fold 2 Epoch 20 Loss: 0.7066
+  Fold 2 Epoch 30 Loss: 0.7033
+  Fold 2 Epoch 40 Loss: 0.7055
+  Fold 2 Epoch 50 Loss: 0.7036
+  Fold 2 Epoch 60 Loss: 0.6999
+  Fold 2 Epoch 70 Loss: 0.6986
+  Fold 2 Epoch 80 Loss: 0.6959
+
+>>> [Eval] Inferencing Fold 2...
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_2.pth
+   -> Loading weights from ./output_wetlab_cola_ddp/seed_2024/seed_2024/fold2/model_final.pth...
+test_window: 0it [00:00, ?it/s]test_window: 1it [00:01,  1.39s/it]                                   test_full: 0it [00:00, ?it/s]test_full: 1it [00:00,  4.16it/s]                                    📊 [Stats] Time: 13.39ms | Mem: 142.08MB
+pouring & 0.0081 & 0.0033 & 0.0024 & 0.0024 & 0.0024 & 0.0037 \\
+transfer & 0.0083 & 0.0083 & 0.0000 & 0.0000 & 0.0000 & 0.0033 \\
+pipetting & 0.0266 & 0.0043 & 0.0026 & 0.0000 & 0.0000 & 0.0067 \\
+stirring & 0.1261 & 0.1261 & 0.0489 & 0.0308 & 0.0226 & 0.0709 \\
+peeling & 0.0084 & 0.0084 & 0.0084 & 0.0084 & 0.0084 & 0.0084 \\
+cutting & 0.0037 & 0.0037 & 0.0037 & 0.0000 & 0.0000 & 0.0022 \\
+pestling & 1.0000 & 1.0000 & 1.0000 & 1.0000 & 1.0000 & 1.0000 \\
+inverting & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+  --> test_full: mAP@Avg = 0.1369
+
+>>> [Train DDP] WETLAB Fold 3...
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_3.pth==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_3.pth
+
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_3.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_3.pth
+  Fold 3 Epoch 10 Loss: 0.7106
+  Fold 3 Epoch 20 Loss: 0.7088
+  Fold 3 Epoch 30 Loss: 0.7035
+  Fold 3 Epoch 40 Loss: 0.6985
+  Fold 3 Epoch 50 Loss: 0.7011
+  Fold 3 Epoch 60 Loss: 0.6989
+  Fold 3 Epoch 70 Loss: 0.7002
+  Fold 3 Epoch 80 Loss: 0.6972
+
+>>> [Eval] Inferencing Fold 3...
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_3.pth
+   -> Loading weights from ./output_wetlab_cola_ddp/seed_2024/seed_2024/fold3/model_final.pth...
+test_window: 0it [00:00, ?it/s]test_window: 1it [00:01,  1.97s/it]                                   test_full: 0it [00:00, ?it/s]test_full: 1it [00:00,  3.07it/s]                                    📊 [Stats] Time: 18.32ms | Mem: 243.64MB
+pipetting & 0.3704 & 0.1217 & 0.1177 & 0.0936 & 0.0562 & 0.1519 \\
+transfer & 0.0036 & 0.0036 & 0.0036 & 0.0036 & 0.0036 & 0.0036 \\
+stirring & 0.3665 & 0.3665 & 0.2222 & 0.2222 & 0.1250 & 0.2605 \\
+peeling & 0.0031 & 0.0031 & 0.0000 & 0.0000 & 0.0000 & 0.0013 \\
+cutting & 0.5333 & 0.5333 & 0.5000 & 0.5000 & 0.5000 & 0.5133 \\
+pouring & 0.0015 & 0.0004 & 0.0004 & 0.0000 & 0.0000 & 0.0005 \\
+pestling & 0.4078 & 0.4078 & 0.4078 & 0.0404 & 0.0404 & 0.2608 \\
+inverting & 0.0263 & 0.0263 & 0.0263 & 0.0263 & 0.0000 & 0.0211 \\
+  --> test_full: mAP@Avg = 0.1516
+
+>>> [Train DDP] WETLAB Fold 4...
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_4.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_4.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_4.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_4.pth
+  Fold 4 Epoch 10 Loss: 0.7099
+  Fold 4 Epoch 20 Loss: 0.7082
+  Fold 4 Epoch 30 Loss: 0.7018
+  Fold 4 Epoch 40 Loss: 0.7011
+  Fold 4 Epoch 50 Loss: 0.6983
+  Fold 4 Epoch 60 Loss: 0.6984
+  Fold 4 Epoch 70 Loss: 0.6922
+  Fold 4 Epoch 80 Loss: 0.6938
+
+>>> [Eval] Inferencing Fold 4...
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_4.pth
+   -> Loading weights from ./output_wetlab_cola_ddp/seed_2024/seed_2024/fold4/model_final.pth...
+test_window: 0it [00:00, ?it/s]test_window: 1it [00:01,  1.81s/it]                                   test_full: 0it [00:00, ?it/s]test_full: 1it [00:00,  2.75it/s]                                    📊 [Stats] Time: 19.09ms | Mem: 243.64MB
+transfer & 0.0032 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0006 \\
+pipetting & 0.3285 & 0.2593 & 0.2188 & 0.0490 & 0.0477 & 0.1807 \\
+stirring & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+pouring & 0.0526 & 0.0285 & 0.0278 & 0.0000 & 0.0000 & 0.0218 \\
+peeling & 0.0031 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0006 \\
+cutting & 0.5073 & 0.5073 & 0.5073 & 0.5000 & 0.5000 & 0.5044 \\
+pestling & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+inverting & 0.0833 & 0.0833 & 0.0833 & 0.0833 & 0.0000 & 0.0667 \\
+  --> test_full: mAP@Avg = 0.0968
+
+>>> [Train DDP] WETLAB Fold 5...
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_5.pth==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_5.pth==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_5.pth
+
+
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_5.pth
+  Fold 5 Epoch 10 Loss: 0.7135
+  Fold 5 Epoch 20 Loss: 0.7050
+  Fold 5 Epoch 30 Loss: 0.7042
+  Fold 5 Epoch 40 Loss: 0.7025
+  Fold 5 Epoch 50 Loss: 0.7028
+  Fold 5 Epoch 60 Loss: 0.7016
+  Fold 5 Epoch 70 Loss: 0.7017
+  Fold 5 Epoch 80 Loss: 0.6984
+
+>>> [Eval] Inferencing Fold 5...
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_5.pth
+   -> Loading weights from ./output_wetlab_cola_ddp/seed_2024/seed_2024/fold5/model_final.pth...
+test_window: 0it [00:00, ?it/s]test_window: 1it [00:01,  1.34s/it]                                   test_full: 0it [00:00, ?it/s]test_full: 1it [00:00,  3.94it/s]                                    📊 [Stats] Time: 13.74ms | Mem: 146.92MB
+transfer & 0.0024 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0005 \\
+pipetting & 0.2222 & 0.0497 & 0.0271 & 0.0271 & 0.0271 & 0.0707 \\
+stirring & 0.2168 & 0.0110 & 0.0064 & 0.0064 & 0.0000 & 0.0481 \\
+pouring & 0.0009 & 0.0009 & 0.0009 & 0.0000 & 0.0000 & 0.0005 \\
+peeling & 0.0036 & 0.0036 & 0.0036 & 0.0036 & 0.0036 & 0.0036 \\
+cutting & 0.5217 & 0.5217 & 0.5217 & 0.5217 & 0.5000 & 0.5174 \\
+pestling & 0.5085 & 0.5085 & 0.5000 & 0.5000 & 0.5000 & 0.5034 \\
+inverting & 0.0029 & 0.0029 & 0.0029 & 0.0000 & 0.0000 & 0.0017 \\
+  --> test_full: mAP@Avg = 0.1432
+
+>>> [Train DDP] WETLAB Fold 6...
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_6.pth==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_6.pth
+
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_6.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_6.pth
+  Fold 6 Epoch 10 Loss: 0.7083
+  Fold 6 Epoch 20 Loss: 0.7045
+  Fold 6 Epoch 30 Loss: 0.7012
+  Fold 6 Epoch 40 Loss: 0.7042
+  Fold 6 Epoch 50 Loss: 0.7010
+  Fold 6 Epoch 60 Loss: 0.6996
+  Fold 6 Epoch 70 Loss: 0.6986
+  Fold 6 Epoch 80 Loss: 0.6976
+
+>>> [Eval] Inferencing Fold 6...
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_6.pth
+   -> Loading weights from ./output_wetlab_cola_ddp/seed_2024/seed_2024/fold6/model_final.pth...
+test_window: 0it [00:00, ?it/s]test_window: 1it [00:01,  1.32s/it]                                   test_full: 0it [00:00, ?it/s]test_full: 1it [00:00,  4.98it/s]                                    📊 [Stats] Time: 14.22ms | Mem: 146.92MB
+transfer & 0.0248 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0050 \\
+pipetting & 0.1342 & 0.0156 & 0.0156 & 0.0156 & 0.0049 & 0.0372 \\
+stirring & 0.2031 & 0.2031 & 0.0000 & 0.0000 & 0.0000 & 0.0813 \\
+pouring & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+peeling & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+cutting & 0.0777 & 0.0455 & 0.0455 & 0.0455 & 0.0455 & 0.0519 \\
+pestling & 0.5667 & 0.5667 & 0.5667 & 0.5667 & 0.0333 & 0.4600 \\
+inverting & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+  --> test_full: mAP@Avg = 0.0794
+
+>>> [Train DDP] WETLAB Fold 7...
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_7.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_7.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_7.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_7.pth
+  Fold 7 Epoch 10 Loss: 0.7095
+  Fold 7 Epoch 20 Loss: 0.7065
+  Fold 7 Epoch 30 Loss: 0.7022
+  Fold 7 Epoch 40 Loss: 0.7001
+  Fold 7 Epoch 50 Loss: 0.7003
+  Fold 7 Epoch 60 Loss: 0.7013
+  Fold 7 Epoch 70 Loss: 0.6971
+  Fold 7 Epoch 80 Loss: 0.6983
+
+>>> [Eval] Inferencing Fold 7...
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_7.pth
+   -> Loading weights from ./output_wetlab_cola_ddp/seed_2024/seed_2024/fold7/model_final.pth...
+test_window: 0it [00:00, ?it/s]test_window: 1it [00:01,  1.52s/it]                                   test_full: 0it [00:00, ?it/s]test_full: 1it [00:00,  3.98it/s]                                    📊 [Stats] Time: 16.01ms | Mem: 214.42MB
+transfer & 0.0608 & 0.0088 & 0.0022 & 0.0022 & 0.0022 & 0.0152 \\
+pipetting & 0.0453 & 0.0193 & 0.0076 & 0.0019 & 0.0007 & 0.0150 \\
+pouring & 0.0019 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0004 \\
+peeling & 0.0357 & 0.0357 & 0.0000 & 0.0000 & 0.0000 & 0.0143 \\
+cutting & 0.0208 & 0.0208 & 0.0208 & 0.0208 & 0.0000 & 0.0167 \\
+stirring & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+pestling & 0.3088 & 0.3088 & 0.3088 & 0.3088 & 0.0000 & 0.2471 \\
+inverting & 0.0435 & 0.0435 & 0.0435 & 0.0167 & 0.0167 & 0.0328 \\
+  --> test_full: mAP@Avg = 0.0427
+
+>>> [Train DDP] WETLAB Fold 8...
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_8.pth==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_8.pth
+
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_8.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_8.pth
+  Fold 8 Epoch 10 Loss: 0.7065
+  Fold 8 Epoch 20 Loss: 0.7069
+  Fold 8 Epoch 30 Loss: 0.6996
+  Fold 8 Epoch 40 Loss: 0.7011
+  Fold 8 Epoch 50 Loss: 0.7004
+  Fold 8 Epoch 60 Loss: 0.7007
+  Fold 8 Epoch 70 Loss: 0.6973
+  Fold 8 Epoch 80 Loss: 0.7019
+
+>>> [Eval] Inferencing Fold 8...
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_8.pth
+   -> Loading weights from ./output_wetlab_cola_ddp/seed_2024/seed_2024/fold8/model_final.pth...
+test_window: 0it [00:00, ?it/s]test_window: 1it [00:01,  1.52s/it]                                   test_full: 0it [00:00, ?it/s]test_full: 1it [00:00,  3.37it/s]                                    📊 [Stats] Time: 15.86ms | Mem: 214.42MB
+transfer & 0.0069 & 0.0069 & 0.0000 & 0.0000 & 0.0000 & 0.0027 \\
+pipetting & 0.0140 & 0.0110 & 0.0062 & 0.0015 & 0.0000 & 0.0065 \\
+stirring & 0.2296 & 0.1565 & 0.1351 & 0.1351 & 0.0002 & 0.1313 \\
+pouring & 0.0208 & 0.0011 & 0.0000 & 0.0000 & 0.0000 & 0.0044 \\
+peeling & 0.0064 & 0.0064 & 0.0064 & 0.0000 & 0.0000 & 0.0038 \\
+cutting & 0.4444 & 0.4444 & 0.4444 & 0.4444 & 0.1667 & 0.3889 \\
+pestling & 1.0000 & 1.0000 & 1.0000 & 0.6667 & 0.6667 & 0.8667 \\
+inverting & 0.0182 & 0.0182 & 0.0182 & 0.0182 & 0.0000 & 0.0146 \\
+  --> test_full: mAP@Avg = 0.1774
+
+>>> [Train DDP] WETLAB Fold 9...
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_9.pth==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_9.pth
+
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_9.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_9.pth
+  Fold 9 Epoch 10 Loss: 0.7109
+  Fold 9 Epoch 20 Loss: 0.7055
+  Fold 9 Epoch 30 Loss: 0.7069
+  Fold 9 Epoch 40 Loss: 0.7017
+  Fold 9 Epoch 50 Loss: 0.6985
+  Fold 9 Epoch 60 Loss: 0.7003
+  Fold 9 Epoch 70 Loss: 0.7011
+  Fold 9 Epoch 80 Loss: 0.7007
+
+>>> [Eval] Inferencing Fold 9...
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_9.pth
+   -> Loading weights from ./output_wetlab_cola_ddp/seed_2024/seed_2024/fold9/model_final.pth...
+test_window: 0it [00:00, ?it/s]test_window: 1it [00:01,  1.23s/it]                                   test_full: 0it [00:00, ?it/s]test_full: 1it [00:00,  4.99it/s]                                    📊 [Stats] Time: 11.43ms | Mem: 124.55MB
+transfer & 0.0170 & 0.0170 & 0.0038 & 0.0038 & 0.0000 & 0.0083 \\
+pipetting & 0.1522 & 0.0596 & 0.0144 & 0.0144 & 0.0114 & 0.0504 \\
+stirring & 0.0329 & 0.0329 & 0.0139 & 0.0000 & 0.0000 & 0.0160 \\
+pouring & 0.0005 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0001 \\
+peeling & 0.0175 & 0.0068 & 0.0068 & 0.0000 & 0.0000 & 0.0062 \\
+cutting & 0.0861 & 0.0861 & 0.0014 & 0.0014 & 0.0000 & 0.0350 \\
+pestling & 0.5996 & 0.5558 & 0.5558 & 0.4250 & 0.4250 & 0.5122 \\
+inverting & 0.4074 & 0.4074 & 0.3333 & 0.3333 & 0.0000 & 0.2963 \\
+  --> test_full: mAP@Avg = 0.1156
+
+>>> [Train DDP] WETLAB Fold 10...
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_10.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_10.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_10.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_10.pth
+  Fold 10 Epoch 10 Loss: 0.7131
+  Fold 10 Epoch 20 Loss: 0.7094
+  Fold 10 Epoch 30 Loss: 0.7018
+  Fold 10 Epoch 40 Loss: 0.7081
+  Fold 10 Epoch 50 Loss: 0.7024
+  Fold 10 Epoch 60 Loss: 0.7087
+  Fold 10 Epoch 70 Loss: 0.7036
+  Fold 10 Epoch 80 Loss: 0.7014
+
+>>> [Eval] Inferencing Fold 10...
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_10.pth
+   -> Loading weights from ./output_wetlab_cola_ddp/seed_2024/seed_2024/fold10/model_final.pth...
+test_window: 0it [00:00, ?it/s]test_window: 1it [00:01,  1.93s/it]                                   test_full: 0it [00:00, ?it/s]test_full: 1it [00:00,  1.97it/s]                                    📊 [Stats] Time: 19.21ms | Mem: 243.64MB
+transfer & 0.0018 & 0.0018 & 0.0017 & 0.0000 & 0.0000 & 0.0010 \\
+pouring & 0.0087 & 0.0087 & 0.0066 & 0.0002 & 0.0000 & 0.0049 \\
+stirring & 0.5437 & 0.5437 & 0.4495 & 0.3097 & 0.2238 & 0.4141 \\
+peeling & 0.0048 & 0.0021 & 0.0021 & 0.0021 & 0.0021 & 0.0027 \\
+cutting & 0.0667 & 0.0667 & 0.0000 & 0.0000 & 0.0000 & 0.0267 \\
+pipetting & 0.0741 & 0.0375 & 0.0258 & 0.0096 & 0.0096 & 0.0313 \\
+pestling & 0.2407 & 0.2407 & 0.1667 & 0.1667 & 0.1667 & 0.1963 \\
+inverting & 0.0028 & 0.0028 & 0.0000 & 0.0000 & 0.0000 & 0.0011 \\
+  --> test_full: mAP@Avg = 0.0848
+
+>>> [Train DDP] WETLAB Fold 11...
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_11.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_11.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_11.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_11.pth
+  Fold 11 Epoch 10 Loss: 0.7098
+  Fold 11 Epoch 20 Loss: 0.7103
+  Fold 11 Epoch 30 Loss: 0.7053
+  Fold 11 Epoch 40 Loss: 0.7050
+  Fold 11 Epoch 50 Loss: 0.7012
+  Fold 11 Epoch 60 Loss: 0.6996
+  Fold 11 Epoch 70 Loss: 0.6994
+  Fold 11 Epoch 80 Loss: 0.7010
+
+>>> [Eval] Inferencing Fold 11...
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_11.pth
+   -> Loading weights from ./output_wetlab_cola_ddp/seed_2024/seed_2024/fold11/model_final.pth...
+test_window: 0it [00:00, ?it/s]test_window: 1it [00:01,  1.59s/it]                                   test_full: 0it [00:00, ?it/s]test_full: 1it [00:00,  2.64it/s]                                    📊 [Stats] Time: 16.23ms | Mem: 214.42MB
+transfer & 0.0215 & 0.0127 & 0.0127 & 0.0127 & 0.0023 & 0.0124 \\
+pipetting & 0.1028 & 0.0401 & 0.0401 & 0.0092 & 0.0000 & 0.0384 \\
+stirring & 0.1429 & 0.1429 & 0.0013 & 0.0013 & 0.0013 & 0.0579 \\
+pouring & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+peeling & 0.0029 & 0.0029 & 0.0029 & 0.0029 & 0.0029 & 0.0029 \\
+cutting & 0.0192 & 0.0192 & 0.0192 & 0.0192 & 0.0192 & 0.0192 \\
+pestling & 0.4079 & 0.2800 & 0.2800 & 0.0533 & 0.0182 & 0.2079 \\
+inverting & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+  --> test_full: mAP@Avg = 0.0424
+
+>>> [Train DDP] WETLAB Fold 12...
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_12.pth==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_12.pth
+
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_12.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_12.pth
+  Fold 12 Epoch 10 Loss: 0.7133
+  Fold 12 Epoch 20 Loss: 0.7107
+  Fold 12 Epoch 30 Loss: 0.7073
+  Fold 12 Epoch 40 Loss: 0.7095
+  Fold 12 Epoch 50 Loss: 0.7049
+  Fold 12 Epoch 60 Loss: 0.7045
+  Fold 12 Epoch 70 Loss: 0.7023
+  Fold 12 Epoch 80 Loss: 0.7031
+
+>>> [Eval] Inferencing Fold 12...
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_12.pth
+   -> Loading weights from ./output_wetlab_cola_ddp/seed_2024/seed_2024/fold12/model_final.pth...
+test_window: 0it [00:00, ?it/s]test_window: 1it [00:01,  1.55s/it]                                   test_full: 0it [00:00, ?it/s]test_full: 1it [00:00,  3.75it/s]                                    📊 [Stats] Time: 15.91ms | Mem: 214.42MB
+transfer & 0.0013 & 0.0013 & 0.0013 & 0.0013 & 0.0000 & 0.0011 \\
+pipetting & 0.0965 & 0.0217 & 0.0084 & 0.0024 & 0.0000 & 0.0258 \\
+stirring & 0.2069 & 0.1206 & 0.1206 & 0.0008 & 0.0000 & 0.0898 \\
+pouring & 0.0019 & 0.0004 & 0.0004 & 0.0004 & 0.0000 & 0.0006 \\
+cutting & 0.5526 & 0.3684 & 0.3684 & 0.3684 & 0.3684 & 0.4053 \\
+peeling & 0.0076 & 0.0033 & 0.0000 & 0.0000 & 0.0000 & 0.0022 \\
+pestling & 0.1316 & 0.1265 & 0.0362 & 0.0335 & 0.0335 & 0.0723 \\
+inverting & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+  --> test_full: mAP@Avg = 0.0746
+
+>>> [Train DDP] WETLAB Fold 13...
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_13.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_13.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_13.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_13.pth
+  Fold 13 Epoch 10 Loss: 0.7107
+  Fold 13 Epoch 20 Loss: 0.7071
+  Fold 13 Epoch 30 Loss: 0.7031
+  Fold 13 Epoch 40 Loss: 0.6984
+  Fold 13 Epoch 50 Loss: 0.7032
+  Fold 13 Epoch 60 Loss: 0.6983
+  Fold 13 Epoch 70 Loss: 0.6961
+  Fold 13 Epoch 80 Loss: 0.6933
+
+>>> [Eval] Inferencing Fold 13...
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_13.pth
+   -> Loading weights from ./output_wetlab_cola_ddp/seed_2024/seed_2024/fold13/model_final.pth...
+test_window: 0it [00:00, ?it/s]test_window: 1it [00:01,  1.08s/it]                                   test_full: 0it [00:00, ?it/s]test_full: 1it [00:00,  6.92it/s]                                    📊 [Stats] Time: 11.10ms | Mem: 130.21MB
+stirring & 0.0015 & 0.0015 & 0.0000 & 0.0000 & 0.0000 & 0.0006 \\
+pouring & 0.0200 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0040 \\
+peeling & 0.0104 & 0.0104 & 0.0104 & 0.0104 & 0.0104 & 0.0104 \\
+cutting & 0.3929 & 0.3929 & 0.0714 & 0.0714 & 0.0000 & 0.1857 \\
+pipetting & 0.0910 & 0.0243 & 0.0149 & 0.0082 & 0.0000 & 0.0277 \\
+transfer & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+pestling & 0.4667 & 0.4667 & 0.4667 & 0.4667 & 0.4667 & 0.4667 \\
+inverting & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+  --> test_full: mAP@Avg = 0.0869
+
+>>> [Train DDP] WETLAB Fold 14...
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_14.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_14.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_14.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_14.pth
+  Fold 14 Epoch 10 Loss: 0.7099
+  Fold 14 Epoch 20 Loss: 0.7084
+  Fold 14 Epoch 30 Loss: 0.7017
+  Fold 14 Epoch 40 Loss: 0.7048
+  Fold 14 Epoch 50 Loss: 0.7019
+  Fold 14 Epoch 60 Loss: 0.6988
+  Fold 14 Epoch 70 Loss: 0.7010
+  Fold 14 Epoch 80 Loss: 0.7018
+
+>>> [Eval] Inferencing Fold 14...
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_14.pth
+   -> Loading weights from ./output_wetlab_cola_ddp/seed_2024/seed_2024/fold14/model_final.pth...
+test_window: 0it [00:00, ?it/s]test_window: 1it [00:01,  1.27s/it]                                   test_full: 0it [00:00, ?it/s]test_full: 1it [00:00,  4.97it/s]                                    📊 [Stats] Time: 14.11ms | Mem: 146.92MB
+tiou_arr: 0.658967391304324 inverting 0.3 11
+tiou_arr: 0.658967391304324 inverting 0.39999999999999997 11
+tiou_arr: 0.658967391304324 inverting 0.5 11
+tiou_arr: 0.658967391304324 inverting 0.6 11
+pipetting & 0.2743 & 0.2743 & 0.2743 & 0.0862 & 0.0862 & 0.1990 \\
+stirring & 0.1858 & 0.1545 & 0.0923 & 0.0664 & 0.0476 & 0.1093 \\
+pouring & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+peeling & 0.0044 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0009 \\
+cutting & 0.5714 & 0.5000 & 0.5000 & 0.5000 & 0.0000 & 0.4143 \\
+pestling & 0.1744 & 0.1688 & 0.1688 & 0.1688 & 0.1688 & 0.1699 \\
+inverting & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+  --> test_full: mAP@Avg = 0.1276
+
+>>> [Train DDP] WETLAB Fold 15...
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_15.pth==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_15.pth
+
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_15.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_15.pth
+  Fold 15 Epoch 10 Loss: 0.7110
+  Fold 15 Epoch 20 Loss: 0.7076
+  Fold 15 Epoch 30 Loss: 0.6991
+  Fold 15 Epoch 40 Loss: 0.7013
+  Fold 15 Epoch 50 Loss: 0.7004
+  Fold 15 Epoch 60 Loss: 0.6963
+  Fold 15 Epoch 70 Loss: 0.6990
+  Fold 15 Epoch 80 Loss: 0.6944
+
+>>> [Eval] Inferencing Fold 15...
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_15.pth
+   -> Loading weights from ./output_wetlab_cola_ddp/seed_2024/seed_2024/fold15/model_final.pth...
+test_window: 0it [00:00, ?it/s]test_window: 1it [00:01,  1.40s/it]                                   test_full: 0it [00:00, ?it/s]test_full: 1it [00:00,  4.90it/s]                                    📊 [Stats] Time: 14.52ms | Mem: 197.73MB
+stirring & 0.0998 & 0.0848 & 0.0848 & 0.0008 & 0.0008 & 0.0542 \\
+pouring & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+peeling & 0.0047 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0009 \\
+cutting & 0.1000 & 0.1000 & 0.0000 & 0.0000 & 0.0000 & 0.0400 \\
+pipetting & 0.3637 & 0.1419 & 0.1150 & 0.0997 & 0.0005 & 0.1442 \\
+transfer & 0.0042 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0008 \\
+pestling & 0.0374 & 0.0374 & 0.0374 & 0.0374 & 0.0020 & 0.0303 \\
+inverting & 0.0074 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0015 \\
+  --> test_full: mAP@Avg = 0.0340
+
+>>> [Train DDP] WETLAB Fold 16...
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_16.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_16.pth==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_16.pth
+
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_16.pth
+  Fold 16 Epoch 10 Loss: 0.7130
+  Fold 16 Epoch 20 Loss: 0.7076
+  Fold 16 Epoch 30 Loss: 0.7031
+  Fold 16 Epoch 40 Loss: 0.7059
+  Fold 16 Epoch 50 Loss: 0.7000
+  Fold 16 Epoch 60 Loss: 0.7005
+  Fold 16 Epoch 70 Loss: 0.6967
+  Fold 16 Epoch 80 Loss: 0.6964
+
+>>> [Eval] Inferencing Fold 16...
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_16.pth
+   -> Loading weights from ./output_wetlab_cola_ddp/seed_2024/seed_2024/fold16/model_final.pth...
+test_window: 0it [00:00, ?it/s]test_window: 1it [00:01,  1.36s/it]                                   test_full: 0it [00:00, ?it/s]test_full: 1it [00:00,  2.85it/s]                                    📊 [Stats] Time: 13.06ms | Mem: 145.59MB
+pouring & 0.0008 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0002 \\
+peeling & 0.0267 & 0.0149 & 0.0149 & 0.0149 & 0.0149 & 0.0173 \\
+cutting & 0.4167 & 0.4167 & 0.4167 & 0.4167 & 0.4167 & 0.4167 \\
+stirring & 0.4750 & 0.4750 & 0.4000 & 0.2000 & 0.0000 & 0.3100 \\
+pipetting & 0.0516 & 0.0073 & 0.0009 & 0.0009 & 0.0000 & 0.0122 \\
+transfer & 0.0020 & 0.0020 & 0.0000 & 0.0000 & 0.0000 & 0.0008 \\
+pestling & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+inverting & 1.0000 & 0.5000 & 0.5000 & 0.5000 & 0.0000 & 0.5000 \\
+  --> test_full: mAP@Avg = 0.1571
+
+>>> [Train DDP] WETLAB Fold 17...
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_17.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_17.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_17.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_17.pth
+  Fold 17 Epoch 10 Loss: 0.7140
+  Fold 17 Epoch 20 Loss: 0.7092
+  Fold 17 Epoch 30 Loss: 0.7065
+  Fold 17 Epoch 40 Loss: 0.7060
+  Fold 17 Epoch 50 Loss: 0.7061
+  Fold 17 Epoch 60 Loss: 0.7034
+  Fold 17 Epoch 70 Loss: 0.6988
+  Fold 17 Epoch 80 Loss: 0.6983
+
+>>> [Eval] Inferencing Fold 17...
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_17.pth
+   -> Loading weights from ./output_wetlab_cola_ddp/seed_2024/seed_2024/fold17/model_final.pth...
+test_window: 0it [00:00, ?it/s]test_window: 1it [00:01,  1.78s/it]                                   test_full: 0it [00:00, ?it/s]test_full: 1it [00:00,  3.67it/s]                                    📊 [Stats] Time: 19.54ms | Mem: 243.64MB
+pipetting & 0.3617 & 0.3008 & 0.1603 & 0.0078 & 0.0078 & 0.1677 \\
+stirring & 0.0030 & 0.0030 & 0.0000 & 0.0000 & 0.0000 & 0.0012 \\
+pouring & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+cutting & 0.1500 & 0.0667 & 0.0667 & 0.0667 & 0.0167 & 0.0733 \\
+peeling & 0.0156 & 0.0156 & 0.0039 & 0.0000 & 0.0000 & 0.0070 \\
+transfer & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+pestling & 0.0090 & 0.0090 & 0.0040 & 0.0000 & 0.0000 & 0.0044 \\
+inverting & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+  --> test_full: mAP@Avg = 0.0317
+
+>>> [Train DDP] WETLAB Fold 18...
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_18.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_18.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_18.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_18.pth
+  Fold 18 Epoch 10 Loss: 0.7168
+  Fold 18 Epoch 20 Loss: 0.7118
+  Fold 18 Epoch 30 Loss: 0.7069
+  Fold 18 Epoch 40 Loss: 0.7050
+  Fold 18 Epoch 50 Loss: 0.7035
+  Fold 18 Epoch 60 Loss: 0.7053
+  Fold 18 Epoch 70 Loss: 0.7017
+  Fold 18 Epoch 80 Loss: 0.7013
+
+>>> [Eval] Inferencing Fold 18...
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_18.pth
+   -> Loading weights from ./output_wetlab_cola_ddp/seed_2024/seed_2024/fold18/model_final.pth...
+test_window: 0it [00:00, ?it/s]test_window: 1it [00:01,  1.46s/it]                                   test_full: 0it [00:00, ?it/s]test_full: 1it [00:00,  3.79it/s]                                    📊 [Stats] Time: 13.98ms | Mem: 146.92MB
+transfer & 0.0252 & 0.0252 & 0.0238 & 0.0000 & 0.0000 & 0.0149 \\
+stirring & 0.1332 & 0.0997 & 0.0997 & 0.0997 & 0.0007 & 0.0866 \\
+pouring & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+cutting & 0.5667 & 0.4000 & 0.4000 & 0.4000 & 0.0000 & 0.3533 \\
+peeling & 0.0031 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0006 \\
+pestling & 1.0000 & 1.0000 & 1.0000 & 1.0000 & 1.0000 & 1.0000 \\
+pipetting & 0.1292 & 0.0145 & 0.0111 & 0.0000 & 0.0000 & 0.0309 \\
+inverting & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+  --> test_full: mAP@Avg = 0.1858
+
+>>> [Train DDP] WETLAB Fold 19...
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_19.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_19.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_19.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_19.pth
+  Fold 19 Epoch 10 Loss: 0.7160
+  Fold 19 Epoch 20 Loss: 0.7101
+  Fold 19 Epoch 30 Loss: 0.7087
+  Fold 19 Epoch 40 Loss: 0.7089
+  Fold 19 Epoch 50 Loss: 0.7019
+  Fold 19 Epoch 60 Loss: 0.7020
+  Fold 19 Epoch 70 Loss: 0.6999
+  Fold 19 Epoch 80 Loss: 0.7016
+
+>>> [Eval] Inferencing Fold 19...
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_19.pth
+   -> Loading weights from ./output_wetlab_cola_ddp/seed_2024/seed_2024/fold19/model_final.pth...
+test_window: 0it [00:00, ?it/s]test_window: 1it [00:01,  1.76s/it]                                   test_full: 0it [00:00, ?it/s]test_full: 1it [00:00,  3.21it/s]                                    📊 [Stats] Time: 16.27ms | Mem: 214.42MB
+pipetting & 0.0900 & 0.0802 & 0.0361 & 0.0333 & 0.0083 & 0.0496 \\
+stirring & 0.1568 & 0.0094 & 0.0023 & 0.0006 & 0.0006 & 0.0339 \\
+pouring & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+cutting & 0.6667 & 0.3333 & 0.3333 & 0.3333 & 0.3333 & 0.4000 \\
+peeling & 0.0227 & 0.0055 & 0.0055 & 0.0000 & 0.0000 & 0.0067 \\
+pestling & 1.0000 & 1.0000 & 1.0000 & 1.0000 & 1.0000 & 1.0000 \\
+transfer & 0.0048 & 0.0048 & 0.0048 & 0.0000 & 0.0000 & 0.0029 \\
+inverting & 0.0191 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0038 \\
+  --> test_full: mAP@Avg = 0.1871
+
+>>> [Train DDP] WETLAB Fold 20...
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_20.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_20.pth==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_20.pth
+
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_20.pth
+  Fold 20 Epoch 10 Loss: 0.7174
+  Fold 20 Epoch 20 Loss: 0.7160
+  Fold 20 Epoch 30 Loss: 0.7120
+  Fold 20 Epoch 40 Loss: 0.7066
+  Fold 20 Epoch 50 Loss: 0.7082
+  Fold 20 Epoch 60 Loss: 0.7074
+  Fold 20 Epoch 70 Loss: 0.7061
+  Fold 20 Epoch 80 Loss: 0.7051
+
+>>> [Eval] Inferencing Fold 20...
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_20.pth
+   -> Loading weights from ./output_wetlab_cola_ddp/seed_2024/seed_2024/fold20/model_final.pth...
+test_window: 0it [00:00, ?it/s]test_window: 1it [00:01,  1.58s/it]                                   test_full: 0it [00:00, ?it/s]test_full: 1it [00:00,  2.57it/s]                                    📊 [Stats] Time: 16.52ms | Mem: 214.42MB
+pipetting & 0.0398 & 0.0156 & 0.0023 & 0.0012 & 0.0012 & 0.0120 \\
+stirring & 0.1376 & 0.1204 & 0.0005 & 0.0005 & 0.0005 & 0.0519 \\
+pouring & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+cutting & 0.3849 & 0.3849 & 0.3849 & 0.3849 & 0.3849 & 0.3849 \\
+peeling & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+transfer & 0.0423 & 0.0423 & 0.0083 & 0.0000 & 0.0000 & 0.0186 \\
+pestling & 0.0056 & 0.0056 & 0.0056 & 0.0056 & 0.0000 & 0.0044 \\
+inverting & 0.0132 & 0.0132 & 0.0069 & 0.0069 & 0.0069 & 0.0094 \\
+  --> test_full: mAP@Avg = 0.0602
+
+>>> [Train DDP] WETLAB Fold 21...
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_21.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_21.pth==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_21.pth
+
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_21.pth
+  Fold 21 Epoch 10 Loss: 0.7099
+  Fold 21 Epoch 20 Loss: 0.7065
+  Fold 21 Epoch 30 Loss: 0.7077
+  Fold 21 Epoch 40 Loss: 0.7053
+  Fold 21 Epoch 50 Loss: 0.6981
+  Fold 21 Epoch 60 Loss: 0.6963
+  Fold 21 Epoch 70 Loss: 0.6962
+  Fold 21 Epoch 80 Loss: 0.6944
+
+>>> [Eval] Inferencing Fold 21...
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_21.pth
+   -> Loading weights from ./output_wetlab_cola_ddp/seed_2024/seed_2024/fold21/model_final.pth...
+test_window: 0it [00:00, ?it/s]test_window: 1it [00:01,  1.32s/it]                                   test_full: 0it [00:00, ?it/s]test_full: 1it [00:00,  4.25it/s]                                    📊 [Stats] Time: 13.13ms | Mem: 146.92MB
+pipetting & 0.0800 & 0.0205 & 0.0180 & 0.0032 & 0.0032 & 0.0250 \\
+stirring & 0.2607 & 0.1337 & 0.1272 & 0.0000 & 0.0000 & 0.1043 \\
+pouring & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+peeling & 0.0046 & 0.0046 & 0.0000 & 0.0000 & 0.0000 & 0.0018 \\
+cutting & 0.3381 & 0.3381 & 0.3381 & 0.3381 & 0.0000 & 0.2705 \\
+pestling & 0.2135 & 0.2135 & 0.0678 & 0.0678 & 0.0678 & 0.1261 \\
+transfer & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+inverting & 0.0068 & 0.0068 & 0.0000 & 0.0000 & 0.0000 & 0.0027 \\
+  --> test_full: mAP@Avg = 0.0663
+
+
+### SEED: 2026 ###
+
+>>> [Train DDP] WETLAB Fold 0...
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_0.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_0.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_0.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_0.pth
+  Fold 0 Epoch 10 Loss: 0.7107
+  Fold 0 Epoch 20 Loss: 0.7073
+  Fold 0 Epoch 30 Loss: 0.7028
+  Fold 0 Epoch 40 Loss: 0.7022
+  Fold 0 Epoch 50 Loss: 0.7053
+  Fold 0 Epoch 60 Loss: 0.7005
+  Fold 0 Epoch 70 Loss: 0.7005
+  Fold 0 Epoch 80 Loss: 0.6997
+
+>>> [Eval] Inferencing Fold 0...
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_0.pth
+   -> Loading weights from ./output_wetlab_cola_ddp/seed_2026/seed_2026/fold0/model_final.pth...
+test_window: 0it [00:00, ?it/s]test_window: 1it [00:01,  1.32s/it]                                   test_full: 0it [00:00, ?it/s]test_full: 1it [00:00,  4.99it/s]                                    📊 [Stats] Time: 14.53ms | Mem: 147.68MB
+pipetting & 0.1043 & 0.0358 & 0.0091 & 0.0034 & 0.0017 & 0.0309 \\
+transfer & 0.0026 & 0.0026 & 0.0024 & 0.0024 & 0.0000 & 0.0020 \\
+stirring & 0.3373 & 0.3373 & 0.2398 & 0.0626 & 0.0579 & 0.2070 \\
+pouring & 0.0114 & 0.0114 & 0.0000 & 0.0000 & 0.0000 & 0.0045 \\
+peeling & 0.0054 & 0.0054 & 0.0000 & 0.0000 & 0.0000 & 0.0022 \\
+cutting & 0.1667 & 0.1667 & 0.0000 & 0.0000 & 0.0000 & 0.0667 \\
+pestling & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+inverting & 0.0909 & 0.0909 & 0.0909 & 0.0909 & 0.0909 & 0.0909 \\
+  --> test_full: mAP@Avg = 0.0505
+
+>>> [Train DDP] WETLAB Fold 1...
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_1.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_1.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_1.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_1.pth
+  Fold 1 Epoch 10 Loss: 0.7109
+  Fold 1 Epoch 20 Loss: 0.7065
+  Fold 1 Epoch 30 Loss: 0.7032
+  Fold 1 Epoch 40 Loss: 0.7016
+  Fold 1 Epoch 50 Loss: 0.7046
+  Fold 1 Epoch 60 Loss: 0.6998
+  Fold 1 Epoch 70 Loss: 0.7001
+  Fold 1 Epoch 80 Loss: 0.6959
+
+>>> [Eval] Inferencing Fold 1...
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_1.pth
+   -> Loading weights from ./output_wetlab_cola_ddp/seed_2026/seed_2026/fold1/model_final.pth...
+test_window: 0it [00:00, ?it/s]test_window: 1it [00:01,  1.60s/it]                                   test_full: 0it [00:00, ?it/s]test_full: 1it [00:00,  2.59it/s]                                    📊 [Stats] Time: 16.52ms | Mem: 221.92MB
+tiou_arr: 0.7399141630901306 inverting 0.3 10
+tiou_arr: 0.7399141630901306 inverting 0.39999999999999997 10
+tiou_arr: 0.7399141630901306 inverting 0.5 10
+tiou_arr: 0.7399141630901306 inverting 0.6 10
+tiou_arr: 0.7399141630901306 inverting 0.7 10
+pouring & 0.0200 & 0.0027 & 0.0020 & 0.0020 & 0.0000 & 0.0053 \\
+transfer & 0.0136 & 0.0104 & 0.0104 & 0.0104 & 0.0104 & 0.0110 \\
+pipetting & 0.4069 & 0.3718 & 0.1895 & 0.1860 & 0.1023 & 0.2513 \\
+stirring & 0.3644 & 0.3333 & 0.3333 & 0.3333 & 0.3333 & 0.3396 \\
+cutting & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+pestling & 1.0000 & 1.0000 & 1.0000 & 1.0000 & 0.2500 & 0.8500 \\
+inverting & 0.0043 & 0.0043 & 0.0000 & 0.0000 & 0.0000 & 0.0017 \\
+  --> test_full: mAP@Avg = 0.2084
+
+>>> [Train DDP] WETLAB Fold 2...
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_2.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_2.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_2.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_2.pth
+  Fold 2 Epoch 10 Loss: 0.7090
+  Fold 2 Epoch 20 Loss: 0.7060
+  Fold 2 Epoch 30 Loss: 0.7045
+  Fold 2 Epoch 40 Loss: 0.7011
+  Fold 2 Epoch 50 Loss: 0.7010
+  Fold 2 Epoch 60 Loss: 0.6957
+  Fold 2 Epoch 70 Loss: 0.6957
+  Fold 2 Epoch 80 Loss: 0.6953
+
+>>> [Eval] Inferencing Fold 2...
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_2.pth
+   -> Loading weights from ./output_wetlab_cola_ddp/seed_2026/seed_2026/fold2/model_final.pth...
+test_window: 0it [00:00, ?it/s]test_window: 1it [00:01,  1.25s/it]                                   test_full: 0it [00:00, ?it/s]test_full: 1it [00:00,  4.78it/s]                                    📊 [Stats] Time: 12.57ms | Mem: 142.08MB
+pouring & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+transfer & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+pipetting & 0.0074 & 0.0024 & 0.0000 & 0.0000 & 0.0000 & 0.0020 \\
+stirring & 0.0717 & 0.0531 & 0.0015 & 0.0015 & 0.0015 & 0.0259 \\
+peeling & 0.1111 & 0.0102 & 0.0102 & 0.0102 & 0.0102 & 0.0304 \\
+cutting & 0.0267 & 0.0267 & 0.0076 & 0.0076 & 0.0076 & 0.0152 \\
+pestling & 0.7500 & 0.7500 & 0.7500 & 0.7500 & 0.7500 & 0.7500 \\
+inverting & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+  --> test_full: mAP@Avg = 0.1029
+
+>>> [Train DDP] WETLAB Fold 3...
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_3.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_3.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_3.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_3.pth
+  Fold 3 Epoch 10 Loss: 0.7096
+  Fold 3 Epoch 20 Loss: 0.7072
+  Fold 3 Epoch 30 Loss: 0.7100
+  Fold 3 Epoch 40 Loss: 0.7000
+  Fold 3 Epoch 50 Loss: 0.7012
+  Fold 3 Epoch 60 Loss: 0.7016
+  Fold 3 Epoch 70 Loss: 0.7011
+  Fold 3 Epoch 80 Loss: 0.7011
+
+>>> [Eval] Inferencing Fold 3...
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_3.pth
+   -> Loading weights from ./output_wetlab_cola_ddp/seed_2026/seed_2026/fold3/model_final.pth...
+test_window: 0it [00:00, ?it/s]test_window: 1it [00:01,  1.88s/it]                                   test_full: 0it [00:00, ?it/s]test_full: 1it [00:00,  3.08it/s]                                    📊 [Stats] Time: 18.39ms | Mem: 243.64MB
+pipetting & 0.3840 & 0.1812 & 0.1812 & 0.1492 & 0.0378 & 0.1867 \\
+transfer & 0.0045 & 0.0045 & 0.0045 & 0.0000 & 0.0000 & 0.0027 \\
+stirring & 0.3661 & 0.1429 & 0.0446 & 0.0376 & 0.0376 & 0.1258 \\
+peeling & 0.0056 & 0.0056 & 0.0056 & 0.0056 & 0.0056 & 0.0056 \\
+cutting & 0.5208 & 0.5208 & 0.5000 & 0.5000 & 0.5000 & 0.5083 \\
+pouring & 0.0041 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0008 \\
+pestling & 0.5576 & 0.5576 & 0.5576 & 0.1273 & 0.1273 & 0.3855 \\
+inverting & 0.0049 & 0.0049 & 0.0049 & 0.0000 & 0.0000 & 0.0029 \\
+  --> test_full: mAP@Avg = 0.1523
+
+>>> [Train DDP] WETLAB Fold 4...
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_4.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_4.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_4.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_4.pth
+  Fold 4 Epoch 10 Loss: 0.7086
+  Fold 4 Epoch 20 Loss: 0.7036
+  Fold 4 Epoch 30 Loss: 0.7040
+  Fold 4 Epoch 40 Loss: 0.7029
+  Fold 4 Epoch 50 Loss: 0.6993
+  Fold 4 Epoch 60 Loss: 0.7022
+  Fold 4 Epoch 70 Loss: 0.6963
+  Fold 4 Epoch 80 Loss: 0.6946
+
+>>> [Eval] Inferencing Fold 4...
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_4.pth
+   -> Loading weights from ./output_wetlab_cola_ddp/seed_2026/seed_2026/fold4/model_final.pth...
+test_window: 0it [00:00, ?it/s]test_window: 1it [00:01,  1.92s/it]                                   test_full: 0it [00:00, ?it/s]test_full: 1it [00:00,  3.49it/s]                                    📊 [Stats] Time: 19.31ms | Mem: 243.64MB
+transfer & 0.0035 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0007 \\
+pipetting & 0.3281 & 0.2142 & 0.1540 & 0.0203 & 0.0180 & 0.1469 \\
+stirring & 0.0021 & 0.0021 & 0.0000 & 0.0000 & 0.0000 & 0.0008 \\
+pouring & 0.0187 & 0.0187 & 0.0126 & 0.0119 & 0.0000 & 0.0124 \\
+peeling & 0.0050 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0010 \\
+cutting & 0.5039 & 0.5039 & 0.5039 & 0.5039 & 0.5000 & 0.5031 \\
+pestling & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+inverting & 0.0476 & 0.0476 & 0.0476 & 0.0000 & 0.0000 & 0.0286 \\
+  --> test_full: mAP@Avg = 0.0867
+
+>>> [Train DDP] WETLAB Fold 5...
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_5.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_5.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_5.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_5.pth
+  Fold 5 Epoch 10 Loss: 0.7100
+  Fold 5 Epoch 20 Loss: 0.7050
+  Fold 5 Epoch 30 Loss: 0.7012
+  Fold 5 Epoch 40 Loss: 0.7026
+  Fold 5 Epoch 50 Loss: 0.7030
+  Fold 5 Epoch 60 Loss: 0.7012
+  Fold 5 Epoch 70 Loss: 0.6994
+  Fold 5 Epoch 80 Loss: 0.6976
+
+>>> [Eval] Inferencing Fold 5...
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_5.pth
+   -> Loading weights from ./output_wetlab_cola_ddp/seed_2026/seed_2026/fold5/model_final.pth...
+test_window: 0it [00:00, ?it/s]test_window: 1it [00:01,  1.27s/it]                                   test_full: 0it [00:00, ?it/s]test_full: 1it [00:00,  4.89it/s]                                    📊 [Stats] Time: 13.02ms | Mem: 146.92MB
+transfer & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+pipetting & 0.2085 & 0.0484 & 0.0193 & 0.0079 & 0.0079 & 0.0584 \\
+stirring & 0.2169 & 0.1905 & 0.0042 & 0.0000 & 0.0000 & 0.0823 \\
+pouring & 0.0008 & 0.0008 & 0.0000 & 0.0000 & 0.0000 & 0.0003 \\
+peeling & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+cutting & 0.5143 & 0.5143 & 0.5143 & 0.5143 & 0.5143 & 0.5143 \\
+pestling & 0.5141 & 0.5141 & 0.5000 & 0.5000 & 0.5000 & 0.5056 \\
+inverting & 0.0128 & 0.0128 & 0.0000 & 0.0000 & 0.0000 & 0.0051 \\
+  --> test_full: mAP@Avg = 0.1458
+
+>>> [Train DDP] WETLAB Fold 6...
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_6.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_6.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_6.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_6.pth
+  Fold 6 Epoch 10 Loss: 0.7076
+  Fold 6 Epoch 20 Loss: 0.7078
+  Fold 6 Epoch 30 Loss: 0.7056
+  Fold 6 Epoch 40 Loss: 0.7013
+  Fold 6 Epoch 50 Loss: 0.6971
+  Fold 6 Epoch 60 Loss: 0.6997
+  Fold 6 Epoch 70 Loss: 0.6980
+  Fold 6 Epoch 80 Loss: 0.6945
+
+>>> [Eval] Inferencing Fold 6...
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_6.pth
+   -> Loading weights from ./output_wetlab_cola_ddp/seed_2026/seed_2026/fold6/model_final.pth...
+test_window: 0it [00:00, ?it/s]test_window: 1it [00:01,  1.19s/it]                                   test_full: 0it [00:00, ?it/s]test_full: 1it [00:00,  5.07it/s]                                    📊 [Stats] Time: 13.80ms | Mem: 146.92MB
+transfer & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+pipetting & 0.1061 & 0.0556 & 0.0333 & 0.0238 & 0.0238 & 0.0485 \\
+stirring & 0.1130 & 0.1046 & 0.0023 & 0.0000 & 0.0000 & 0.0440 \\
+pouring & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+peeling & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+cutting & 0.3333 & 0.0833 & 0.0833 & 0.0833 & 0.0833 & 0.1333 \\
+pestling & 0.5000 & 0.5000 & 0.5000 & 0.5000 & 0.0000 & 0.4000 \\
+inverting & 0.0135 & 0.0125 & 0.0125 & 0.0125 & 0.0000 & 0.0102 \\
+  --> test_full: mAP@Avg = 0.0795
+
+>>> [Train DDP] WETLAB Fold 7...
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_7.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_7.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_7.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_7.pth
+  Fold 7 Epoch 10 Loss: 0.7133
+  Fold 7 Epoch 20 Loss: 0.7050
+  Fold 7 Epoch 30 Loss: 0.7011
+  Fold 7 Epoch 40 Loss: 0.7046
+  Fold 7 Epoch 50 Loss: 0.7028
+  Fold 7 Epoch 60 Loss: 0.6999
+  Fold 7 Epoch 70 Loss: 0.6991
+  Fold 7 Epoch 80 Loss: 0.6969
+
+>>> [Eval] Inferencing Fold 7...
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_7.pth
+   -> Loading weights from ./output_wetlab_cola_ddp/seed_2026/seed_2026/fold7/model_final.pth...
+test_window: 0it [00:00, ?it/s]test_window: 1it [00:01,  1.60s/it]                                   test_full: 0it [00:00, ?it/s]test_full: 1it [00:00,  4.51it/s]                                    📊 [Stats] Time: 16.46ms | Mem: 214.42MB
+transfer & 0.0701 & 0.0038 & 0.0038 & 0.0000 & 0.0000 & 0.0156 \\
+pipetting & 0.1105 & 0.0725 & 0.0005 & 0.0005 & 0.0000 & 0.0368 \\
+pouring & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+peeling & 0.0196 & 0.0196 & 0.0102 & 0.0000 & 0.0000 & 0.0099 \\
+cutting & 0.0062 & 0.0062 & 0.0062 & 0.0062 & 0.0000 & 0.0049 \\
+stirring & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+pestling & 0.1667 & 0.1667 & 0.1667 & 0.1667 & 0.0000 & 0.1333 \\
+inverting & 0.0476 & 0.0476 & 0.0476 & 0.0227 & 0.0227 & 0.0377 \\
+  --> test_full: mAP@Avg = 0.0298
+
+>>> [Train DDP] WETLAB Fold 8...
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_8.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_8.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_8.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_8.pth
+  Fold 8 Epoch 10 Loss: 0.7137
+  Fold 8 Epoch 20 Loss: 0.7060
+  Fold 8 Epoch 30 Loss: 0.7017
+  Fold 8 Epoch 40 Loss: 0.7063
+  Fold 8 Epoch 50 Loss: 0.7030
+  Fold 8 Epoch 60 Loss: 0.7025
+  Fold 8 Epoch 70 Loss: 0.7003
+  Fold 8 Epoch 80 Loss: 0.7001
+
+>>> [Eval] Inferencing Fold 8...
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_8.pth
+   -> Loading weights from ./output_wetlab_cola_ddp/seed_2026/seed_2026/fold8/model_final.pth...
+test_window: 0it [00:00, ?it/s]test_window: 1it [00:01,  1.50s/it]                                   test_full: 0it [00:00, ?it/s]test_full: 1it [00:00,  3.44it/s]                                    📊 [Stats] Time: 16.73ms | Mem: 214.42MB
+transfer & 0.0109 & 0.0109 & 0.0109 & 0.0109 & 0.0109 & 0.0109 \\
+pipetting & 0.0481 & 0.0461 & 0.0351 & 0.0004 & 0.0004 & 0.0260 \\
+stirring & 0.2805 & 0.1360 & 0.1360 & 0.1333 & 0.0333 & 0.1438 \\
+pouring & 0.0074 & 0.0004 & 0.0004 & 0.0000 & 0.0000 & 0.0016 \\
+peeling & 0.0074 & 0.0032 & 0.0032 & 0.0032 & 0.0032 & 0.0041 \\
+cutting & 0.3333 & 0.3333 & 0.3333 & 0.3333 & 0.1667 & 0.3000 \\
+pestling & 0.9167 & 0.9167 & 0.9167 & 0.6667 & 0.6667 & 0.8167 \\
+inverting & 0.0153 & 0.0153 & 0.0153 & 0.0044 & 0.0044 & 0.0109 \\
+  --> test_full: mAP@Avg = 0.1643
+
+>>> [Train DDP] WETLAB Fold 9...
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_9.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_9.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_9.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_9.pth
+  Fold 9 Epoch 10 Loss: 0.7111
+  Fold 9 Epoch 20 Loss: 0.7067
+  Fold 9 Epoch 30 Loss: 0.7032
+  Fold 9 Epoch 40 Loss: 0.7055
+  Fold 9 Epoch 50 Loss: 0.7018
+  Fold 9 Epoch 60 Loss: 0.7023
+  Fold 9 Epoch 70 Loss: 0.7001
+  Fold 9 Epoch 80 Loss: 0.6987
+
+>>> [Eval] Inferencing Fold 9...
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_9.pth
+   -> Loading weights from ./output_wetlab_cola_ddp/seed_2026/seed_2026/fold9/model_final.pth...
+test_window: 0it [00:00, ?it/s]test_window: 1it [00:01,  1.08s/it]                                   test_full: 0it [00:00, ?it/s]test_full: 1it [00:00,  5.40it/s]                                    📊 [Stats] Time: 10.70ms | Mem: 124.55MB
+transfer & 0.0128 & 0.0128 & 0.0128 & 0.0128 & 0.0128 & 0.0128 \\
+pipetting & 0.0630 & 0.0356 & 0.0040 & 0.0035 & 0.0000 & 0.0212 \\
+stirring & 0.0590 & 0.0590 & 0.0590 & 0.0000 & 0.0000 & 0.0354 \\
+pouring & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+peeling & 0.0084 & 0.0084 & 0.0000 & 0.0000 & 0.0000 & 0.0034 \\
+cutting & 0.0833 & 0.0833 & 0.0000 & 0.0000 & 0.0000 & 0.0333 \\
+pestling & 0.5309 & 0.5309 & 0.5309 & 0.4190 & 0.4107 & 0.4845 \\
+inverting & 0.0604 & 0.0604 & 0.0604 & 0.0556 & 0.0000 & 0.0473 \\
+  --> test_full: mAP@Avg = 0.0798
+
+>>> [Train DDP] WETLAB Fold 10...
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_10.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_10.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_10.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_10.pth
+  Fold 10 Epoch 10 Loss: 0.7116
+  Fold 10 Epoch 20 Loss: 0.7099
+  Fold 10 Epoch 30 Loss: 0.7088
+  Fold 10 Epoch 40 Loss: 0.7061
+  Fold 10 Epoch 50 Loss: 0.7095
+  Fold 10 Epoch 60 Loss: 0.7055
+  Fold 10 Epoch 70 Loss: 0.7001
+  Fold 10 Epoch 80 Loss: 0.7040
+
+>>> [Eval] Inferencing Fold 10...
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_10.pth
+   -> Loading weights from ./output_wetlab_cola_ddp/seed_2026/seed_2026/fold10/model_final.pth...
+test_window: 0it [00:00, ?it/s]test_window: 1it [00:02,  2.04s/it]                                   test_full: 0it [00:00, ?it/s]test_full: 1it [00:00,  2.35it/s]                                    📊 [Stats] Time: 18.75ms | Mem: 243.64MB
+transfer & 0.0118 & 0.0118 & 0.0118 & 0.0118 & 0.0000 & 0.0095 \\
+pouring & 0.0085 & 0.0064 & 0.0064 & 0.0009 & 0.0002 & 0.0045 \\
+stirring & 0.5131 & 0.5131 & 0.3880 & 0.2637 & 0.2238 & 0.3803 \\
+peeling & 0.0021 & 0.0021 & 0.0021 & 0.0021 & 0.0021 & 0.0021 \\
+cutting & 0.3333 & 0.0833 & 0.0833 & 0.0833 & 0.0833 & 0.1333 \\
+pipetting & 0.0900 & 0.0468 & 0.0129 & 0.0012 & 0.0012 & 0.0304 \\
+pestling & 0.3333 & 0.3333 & 0.1667 & 0.1667 & 0.1667 & 0.2333 \\
+inverting & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+  --> test_full: mAP@Avg = 0.0992
+
+>>> [Train DDP] WETLAB Fold 11...
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_11.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_11.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_11.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_11.pth
+  Fold 11 Epoch 10 Loss: 0.7130
+  Fold 11 Epoch 20 Loss: 0.7090
+  Fold 11 Epoch 30 Loss: 0.7081
+  Fold 11 Epoch 40 Loss: 0.7067
+  Fold 11 Epoch 50 Loss: 0.7018
+  Fold 11 Epoch 60 Loss: 0.6976
+  Fold 11 Epoch 70 Loss: 0.7018
+  Fold 11 Epoch 80 Loss: 0.6987
+
+>>> [Eval] Inferencing Fold 11...
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_11.pth
+   -> Loading weights from ./output_wetlab_cola_ddp/seed_2026/seed_2026/fold11/model_final.pth...
+test_window: 0it [00:00, ?it/s]test_window: 1it [00:01,  1.54s/it]                                   test_full: 0it [00:00, ?it/s]test_full: 1it [00:00,  2.78it/s]                                    📊 [Stats] Time: 15.85ms | Mem: 214.42MB
+transfer & 0.0273 & 0.0179 & 0.0077 & 0.0053 & 0.0019 & 0.0120 \\
+pipetting & 0.1115 & 0.0133 & 0.0078 & 0.0010 & 0.0000 & 0.0267 \\
+stirring & 0.1429 & 0.1429 & 0.0000 & 0.0000 & 0.0000 & 0.0571 \\
+pouring & 0.0028 & 0.0028 & 0.0028 & 0.0000 & 0.0000 & 0.0017 \\
+peeling & 0.0053 & 0.0053 & 0.0000 & 0.0000 & 0.0000 & 0.0021 \\
+cutting & 0.0143 & 0.0143 & 0.0143 & 0.0143 & 0.0143 & 0.0143 \\
+pestling & 0.6333 & 0.6333 & 0.3583 & 0.0833 & 0.0667 & 0.3550 \\
+inverting & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+  --> test_full: mAP@Avg = 0.0586
+
+>>> [Train DDP] WETLAB Fold 12...
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_12.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_12.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_12.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_12.pth
+  Fold 12 Epoch 10 Loss: 0.7146
+  Fold 12 Epoch 20 Loss: 0.7110
+  Fold 12 Epoch 30 Loss: 0.7114
+  Fold 12 Epoch 40 Loss: 0.7050
+  Fold 12 Epoch 50 Loss: 0.7094
+  Fold 12 Epoch 60 Loss: 0.7036
+  Fold 12 Epoch 70 Loss: 0.7067
+  Fold 12 Epoch 80 Loss: 0.7006
+
+>>> [Eval] Inferencing Fold 12...
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_12.pth
+   -> Loading weights from ./output_wetlab_cola_ddp/seed_2026/seed_2026/fold12/model_final.pth...
+test_window: 0it [00:00, ?it/s]test_window: 1it [00:01,  1.50s/it]                                   test_full: 0it [00:00, ?it/s]test_full: 1it [00:00,  3.59it/s]                                    📊 [Stats] Time: 15.69ms | Mem: 214.42MB
+transfer & 0.0057 & 0.0057 & 0.0057 & 0.0000 & 0.0000 & 0.0034 \\
+pipetting & 0.0555 & 0.0158 & 0.0067 & 0.0027 & 0.0007 & 0.0163 \\
+stirring & 0.4370 & 0.3519 & 0.3130 & 0.0593 & 0.0019 & 0.2326 \\
+pouring & 0.0005 & 0.0005 & 0.0000 & 0.0000 & 0.0000 & 0.0002 \\
+cutting & 0.4788 & 0.3852 & 0.3852 & 0.3852 & 0.0238 & 0.3316 \\
+peeling & 0.0063 & 0.0063 & 0.0000 & 0.0000 & 0.0000 & 0.0025 \\
+pestling & 0.1663 & 0.0580 & 0.0580 & 0.0580 & 0.0580 & 0.0796 \\
+inverting & 0.0169 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0034 \\
+  --> test_full: mAP@Avg = 0.0837
+
+>>> [Train DDP] WETLAB Fold 13...
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_13.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_13.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_13.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_13.pth
+  Fold 13 Epoch 10 Loss: 0.7139
+  Fold 13 Epoch 20 Loss: 0.7042
+  Fold 13 Epoch 30 Loss: 0.7062
+  Fold 13 Epoch 40 Loss: 0.6984
+  Fold 13 Epoch 50 Loss: 0.7017
+  Fold 13 Epoch 60 Loss: 0.6980
+  Fold 13 Epoch 70 Loss: 0.6980
+  Fold 13 Epoch 80 Loss: 0.6987
+
+>>> [Eval] Inferencing Fold 13...
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_13.pth
+   -> Loading weights from ./output_wetlab_cola_ddp/seed_2026/seed_2026/fold13/model_final.pth...
+test_window: 0it [00:00, ?it/s]test_window: 1it [00:01,  1.09s/it]                                   test_full: 0it [00:00, ?it/s]test_full: 1it [00:00,  6.42it/s]                                    📊 [Stats] Time: 11.22ms | Mem: 130.21MB
+stirring & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+pouring & 0.0207 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0041 \\
+peeling & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+cutting & 0.1000 & 0.1000 & 0.0000 & 0.0000 & 0.0000 & 0.0400 \\
+pipetting & 0.0412 & 0.0412 & 0.0286 & 0.0011 & 0.0011 & 0.0227 \\
+transfer & 0.0556 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0111 \\
+pestling & 0.4429 & 0.4429 & 0.4429 & 0.4429 & 0.4429 & 0.4429 \\
+inverting & 0.0833 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0167 \\
+  --> test_full: mAP@Avg = 0.0672
+
+>>> [Train DDP] WETLAB Fold 14...
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_14.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_14.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_14.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_14.pth
+  Fold 14 Epoch 10 Loss: 0.7090
+  Fold 14 Epoch 20 Loss: 0.7047
+  Fold 14 Epoch 30 Loss: 0.7032
+  Fold 14 Epoch 40 Loss: 0.7035
+  Fold 14 Epoch 50 Loss: 0.7012
+  Fold 14 Epoch 60 Loss: 0.7023
+  Fold 14 Epoch 70 Loss: 0.6981
+  Fold 14 Epoch 80 Loss: 0.6943
+
+>>> [Eval] Inferencing Fold 14...
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_14.pth
+   -> Loading weights from ./output_wetlab_cola_ddp/seed_2026/seed_2026/fold14/model_final.pth...
+test_window: 0it [00:00, ?it/s]test_window: 1it [00:01,  1.24s/it]                                   test_full: 0it [00:00, ?it/s]test_full: 1it [00:00,  6.00it/s]                                    📊 [Stats] Time: 13.17ms | Mem: 146.92MB
+tiou_arr: 0.5092307692307608 inverting 0.3 33
+tiou_arr: 0.5092307692307608 inverting 0.39999999999999997 33
+tiou_arr: 0.5092307692307608 inverting 0.5 33
+tiou_arr: 0.34159482758621573 inverting 0.3 12
+tiou_arr: 0.33514492753623154 transfer 0.3 307
+tiou_arr: 0.8973880597014917 peeling 0.3 280
+tiou_arr: 0.8973880597014917 peeling 0.39999999999999997 280
+tiou_arr: 0.8973880597014917 peeling 0.5 280
+tiou_arr: 0.8973880597014917 peeling 0.6 280
+tiou_arr: 0.8973880597014917 peeling 0.7 280
+tiou_arr: 0.3211805555555551 transfer 0.3 285
+tiou_arr: 0.3028391167192474 inverting 0.3 58
+pipetting & 0.3262 & 0.3133 & 0.3133 & 0.3133 & 0.2795 & 0.3091 \\
+stirring & 0.0159 & 0.0159 & 0.0071 & 0.0018 & 0.0018 & 0.0085 \\
+pouring & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+peeling & 0.0102 & 0.0102 & 0.0102 & 0.0102 & 0.0102 & 0.0102 \\
+cutting & 0.5769 & 0.5000 & 0.5000 & 0.5000 & 0.0000 & 0.4154 \\
+pestling & 0.1757 & 0.1667 & 0.1667 & 0.1667 & 0.1667 & 0.1685 \\
+inverting & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+  --> test_full: mAP@Avg = 0.1302
+
+>>> [Train DDP] WETLAB Fold 15...
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_15.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_15.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_15.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_15.pth
+  Fold 15 Epoch 10 Loss: 0.7113
+  Fold 15 Epoch 20 Loss: 0.7101
+  Fold 15 Epoch 30 Loss: 0.7051
+  Fold 15 Epoch 40 Loss: 0.7018
+  Fold 15 Epoch 50 Loss: 0.7052
+  Fold 15 Epoch 60 Loss: 0.6978
+  Fold 15 Epoch 70 Loss: 0.7009
+  Fold 15 Epoch 80 Loss: 0.6960
+
+>>> [Eval] Inferencing Fold 15...
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_15.pth
+   -> Loading weights from ./output_wetlab_cola_ddp/seed_2026/seed_2026/fold15/model_final.pth...
+test_window: 0it [00:00, ?it/s]test_window: 1it [00:01,  1.44s/it]                                   test_full: 0it [00:00, ?it/s]test_full: 1it [00:00,  4.66it/s]                                    📊 [Stats] Time: 14.92ms | Mem: 197.73MB
+stirring & 0.2326 & 0.1481 & 0.0434 & 0.0006 & 0.0000 & 0.0849 \\
+pouring & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+peeling & 0.0046 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0009 \\
+cutting & 0.0500 & 0.0500 & 0.0000 & 0.0000 & 0.0000 & 0.0200 \\
+pipetting & 0.1683 & 0.1529 & 0.0774 & 0.0220 & 0.0007 & 0.0842 \\
+transfer & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+pestling & 0.0025 & 0.0025 & 0.0025 & 0.0025 & 0.0025 & 0.0025 \\
+inverting & 0.0177 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0035 \\
+  --> test_full: mAP@Avg = 0.0245
+
+>>> [Train DDP] WETLAB Fold 16...
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_16.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_16.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_16.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_16.pth
+  Fold 16 Epoch 10 Loss: 0.7120
+  Fold 16 Epoch 20 Loss: 0.7061
+  Fold 16 Epoch 30 Loss: 0.7039
+  Fold 16 Epoch 40 Loss: 0.7031
+  Fold 16 Epoch 50 Loss: 0.6999
+  Fold 16 Epoch 60 Loss: 0.6978
+  Fold 16 Epoch 70 Loss: 0.6981
+  Fold 16 Epoch 80 Loss: 0.6955
+
+>>> [Eval] Inferencing Fold 16...
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_16.pth
+   -> Loading weights from ./output_wetlab_cola_ddp/seed_2026/seed_2026/fold16/model_final.pth...
+test_window: 0it [00:00, ?it/s]test_window: 1it [00:01,  1.25s/it]                                   test_full: 0it [00:00, ?it/s]test_full: 1it [00:00,  4.84it/s]                                    📊 [Stats] Time: 12.97ms | Mem: 145.59MB
+pouring & 0.0047 & 0.0012 & 0.0012 & 0.0000 & 0.0000 & 0.0014 \\
+peeling & 0.0190 & 0.0190 & 0.0190 & 0.0190 & 0.0190 & 0.0190 \\
+cutting & 0.5000 & 0.5000 & 0.5000 & 0.5000 & 0.5000 & 0.5000 \\
+stirring & 0.0866 & 0.0866 & 0.0077 & 0.0000 & 0.0000 & 0.0362 \\
+pipetting & 0.0243 & 0.0205 & 0.0132 & 0.0011 & 0.0000 & 0.0118 \\
+transfer & 0.0017 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0003 \\
+pestling & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+inverting & 0.0050 & 0.0050 & 0.0000 & 0.0000 & 0.0000 & 0.0020 \\
+  --> test_full: mAP@Avg = 0.0713
+
+>>> [Train DDP] WETLAB Fold 17...
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_17.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_17.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_17.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_17.pth
+  Fold 17 Epoch 10 Loss: 0.7103
+  Fold 17 Epoch 20 Loss: 0.7101
+  Fold 17 Epoch 30 Loss: 0.7109
+  Fold 17 Epoch 40 Loss: 0.7081
+  Fold 17 Epoch 50 Loss: 0.7078
+  Fold 17 Epoch 60 Loss: 0.7016
+  Fold 17 Epoch 70 Loss: 0.7044
+  Fold 17 Epoch 80 Loss: 0.7017
+
+>>> [Eval] Inferencing Fold 17...
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_17.pth
+   -> Loading weights from ./output_wetlab_cola_ddp/seed_2026/seed_2026/fold17/model_final.pth...
+test_window: 0it [00:00, ?it/s]test_window: 1it [00:01,  1.79s/it]                                   test_full: 0it [00:00, ?it/s]test_full: 1it [00:00,  3.75it/s]                                    📊 [Stats] Time: 18.95ms | Mem: 243.64MB
+pipetting & 0.1538 & 0.0568 & 0.0005 & 0.0000 & 0.0000 & 0.0422 \\
+stirring & 0.0090 & 0.0090 & 0.0000 & 0.0000 & 0.0000 & 0.0036 \\
+pouring & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+cutting & 0.0243 & 0.0076 & 0.0076 & 0.0076 & 0.0045 & 0.0104 \\
+peeling & 0.0098 & 0.0025 & 0.0000 & 0.0000 & 0.0000 & 0.0025 \\
+transfer & 0.0191 & 0.0191 & 0.0099 & 0.0025 & 0.0025 & 0.0106 \\
+pestling & 0.0838 & 0.0838 & 0.0000 & 0.0000 & 0.0000 & 0.0335 \\
+inverting & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+  --> test_full: mAP@Avg = 0.0128
+
+>>> [Train DDP] WETLAB Fold 18...
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_18.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_18.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_18.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_18.pth
+  Fold 18 Epoch 10 Loss: 0.7109
+  Fold 18 Epoch 20 Loss: 0.7088
+  Fold 18 Epoch 30 Loss: 0.7075
+  Fold 18 Epoch 40 Loss: 0.7044
+  Fold 18 Epoch 50 Loss: 0.7061
+  Fold 18 Epoch 60 Loss: 0.7043
+  Fold 18 Epoch 70 Loss: 0.7015
+  Fold 18 Epoch 80 Loss: 0.6999
+
+>>> [Eval] Inferencing Fold 18...
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_18.pth
+   -> Loading weights from ./output_wetlab_cola_ddp/seed_2026/seed_2026/fold18/model_final.pth...
+test_window: 0it [00:00, ?it/s]test_window: 1it [00:01,  1.48s/it]                                   test_full: 0it [00:00, ?it/s]test_full: 1it [00:00,  3.62it/s]                                    📊 [Stats] Time: 13.67ms | Mem: 146.92MB
+transfer & 0.0535 & 0.0303 & 0.0303 & 0.0204 & 0.0204 & 0.0310 \\
+stirring & 0.1066 & 0.0990 & 0.0945 & 0.0928 & 0.0010 & 0.0788 \\
+pouring & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+cutting & 0.5333 & 0.5333 & 0.5333 & 0.3778 & 0.0000 & 0.3956 \\
+peeling & 0.0031 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0006 \\
+pestling & 1.0000 & 1.0000 & 1.0000 & 1.0000 & 1.0000 & 1.0000 \\
+pipetting & 0.0849 & 0.0010 & 0.0010 & 0.0010 & 0.0000 & 0.0176 \\
+inverting & 0.0019 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0004 \\
+  --> test_full: mAP@Avg = 0.1905
+
+>>> [Train DDP] WETLAB Fold 19...
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_19.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_19.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_19.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_19.pth
+  Fold 19 Epoch 10 Loss: 0.7128
+  Fold 19 Epoch 20 Loss: 0.7080
+  Fold 19 Epoch 30 Loss: 0.7077
+  Fold 19 Epoch 40 Loss: 0.7048
+  Fold 19 Epoch 50 Loss: 0.7020
+  Fold 19 Epoch 60 Loss: 0.7044
+  Fold 19 Epoch 70 Loss: 0.7025
+  Fold 19 Epoch 80 Loss: 0.7022
+
+>>> [Eval] Inferencing Fold 19...
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_19.pth
+   -> Loading weights from ./output_wetlab_cola_ddp/seed_2026/seed_2026/fold19/model_final.pth...
+test_window: 0it [00:00, ?it/s]test_window: 1it [00:01,  1.74s/it]                                   test_full: 0it [00:00, ?it/s]test_full: 1it [00:00,  3.34it/s]                                    📊 [Stats] Time: 16.96ms | Mem: 214.42MB
+pipetting & 0.0539 & 0.0401 & 0.0355 & 0.0287 & 0.0069 & 0.0330 \\
+stirring & 0.0590 & 0.0023 & 0.0005 & 0.0005 & 0.0000 & 0.0125 \\
+pouring & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+cutting & 0.6667 & 0.3333 & 0.3333 & 0.3333 & 0.3333 & 0.4000 \\
+peeling & 0.0588 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0118 \\
+pestling & 1.0000 & 1.0000 & 1.0000 & 1.0000 & 1.0000 & 1.0000 \\
+transfer & 0.0114 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0023 \\
+inverting & 0.0028 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0006 \\
+  --> test_full: mAP@Avg = 0.1825
+
+>>> [Train DDP] WETLAB Fold 20...
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_20.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_20.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_20.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_20.pth
+  Fold 20 Epoch 10 Loss: 0.7186
+  Fold 20 Epoch 20 Loss: 0.7152
+  Fold 20 Epoch 30 Loss: 0.7122
+  Fold 20 Epoch 40 Loss: 0.7150
+  Fold 20 Epoch 50 Loss: 0.7062
+  Fold 20 Epoch 60 Loss: 0.7143
+  Fold 20 Epoch 70 Loss: 0.7081
+  Fold 20 Epoch 80 Loss: 0.7062
+
+>>> [Eval] Inferencing Fold 20...
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_20.pth
+   -> Loading weights from ./output_wetlab_cola_ddp/seed_2026/seed_2026/fold20/model_final.pth...
+test_window: 0it [00:00, ?it/s]test_window: 1it [00:01,  1.62s/it]                                   test_full: 0it [00:00, ?it/s]test_full: 1it [00:00,  2.57it/s]                                    📊 [Stats] Time: 16.03ms | Mem: 214.42MB
+pipetting & 0.0258 & 0.0179 & 0.0115 & 0.0029 & 0.0029 & 0.0122 \\
+stirring & 0.1691 & 0.0549 & 0.0071 & 0.0008 & 0.0000 & 0.0464 \\
+pouring & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+cutting & 0.5214 & 0.5214 & 0.5214 & 0.5214 & 0.5214 & 0.5214 \\
+peeling & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+transfer & 0.0247 & 0.0081 & 0.0000 & 0.0000 & 0.0000 & 0.0066 \\
+pestling & 0.0797 & 0.0147 & 0.0147 & 0.0147 & 0.0000 & 0.0248 \\
+inverting & 0.0074 & 0.0030 & 0.0030 & 0.0000 & 0.0000 & 0.0027 \\
+  --> test_full: mAP@Avg = 0.0767
+
+>>> [Train DDP] WETLAB Fold 21...
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_21.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_21.pth==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_21.pth
+
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_21.pth
+  Fold 21 Epoch 10 Loss: 0.7126
+  Fold 21 Epoch 20 Loss: 0.7059
+  Fold 21 Epoch 30 Loss: 0.7011
+  Fold 21 Epoch 40 Loss: 0.7041
+  Fold 21 Epoch 50 Loss: 0.6981
+  Fold 21 Epoch 60 Loss: 0.6984
+  Fold 21 Epoch 70 Loss: 0.7028
+  Fold 21 Epoch 80 Loss: 0.6960
+
+>>> [Eval] Inferencing Fold 21...
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_21.pth
+   -> Loading weights from ./output_wetlab_cola_ddp/seed_2026/seed_2026/fold21/model_final.pth...
+test_window: 0it [00:00, ?it/s]test_window: 1it [00:01,  1.26s/it]                                   test_full: 0it [00:00, ?it/s]test_full: 1it [00:00,  4.94it/s]                                    📊 [Stats] Time: 13.62ms | Mem: 146.92MB
+pipetting & 0.0526 & 0.0488 & 0.0488 & 0.0046 & 0.0033 & 0.0316 \\
+stirring & 0.1369 & 0.0146 & 0.0032 & 0.0006 & 0.0006 & 0.0312 \\
+pouring & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+peeling & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+cutting & 0.0605 & 0.0605 & 0.0605 & 0.0605 & 0.0000 & 0.0484 \\
+pestling & 0.0351 & 0.0351 & 0.0351 & 0.0351 & 0.0351 & 0.0351 \\
+transfer & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+inverting & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+  --> test_full: mAP@Avg = 0.0183
+tiou_arr: 0.3450900786602383 peeling 0.3 23
+tiou_arr: 0.7507781697447603 peeling 0.39999999999999997 104
+tiou_arr: 0.7507781697447603 peeling 0.5 104
+tiou_arr: 0.7507781697447603 peeling 0.6 104
+tiou_arr: 0.7507781697447603 peeling 0.7 104
+tiou_arr: 0.3345060099677503 peeling 0.3 114
+tiou_arr: 0.3517426273458445 peeling 0.3 261
+tiou_arr: 0.745575221238937 peeling 0.39999999999999997 493
+tiou_arr: 0.745575221238937 peeling 0.5 493
+tiou_arr: 0.745575221238937 peeling 0.6 493
+tiou_arr: 0.745575221238937 peeling 0.7 493
+tiou_arr: 0.45712596096984065 peeling 0.3 184
+tiou_arr: 0.45712596096984065 peeling 0.39999999999999997 184
+tiou_arr: 0.4406294706723892 peeling 0.3 48
+tiou_arr: 0.4406294706723892 peeling 0.39999999999999997 48
+tiou_arr: 0.909813596491232 pestling 0.3 0
+tiou_arr: 0.909813596491232 pestling 0.39999999999999997 0
+tiou_arr: 0.909813596491232 pestling 0.5 0
+tiou_arr: 0.909813596491232 pestling 0.6 0
+tiou_arr: 0.909813596491232 pestling 0.7 0
+tiou_arr: 0.5285596026490068 peeling 0.3 181
+tiou_arr: 0.5285596026490068 peeling 0.39999999999999997 181
+tiou_arr: 0.5285596026490068 peeling 0.5 181
+tiou_arr: 0.3467492260061917 peeling 0.3 56
+tiou_arr: 0.5456081081081083 peeling 0.39999999999999997 146
+tiou_arr: 0.5456081081081083 peeling 0.5 146
+tiou_arr: 0.7189473684210524 peeling 0.3 95
+tiou_arr: 0.7189473684210524 peeling 0.39999999999999997 95
+tiou_arr: 0.7189473684210524 peeling 0.5 95
+tiou_arr: 0.7189473684210524 peeling 0.6 95
+tiou_arr: 0.7189473684210524 peeling 0.7 95
+tiou_arr: 0.3130230125523014 peeling 0.3 210
+tiou_arr: 0.7459349593495941 peeling 0.3 177
+tiou_arr: 0.7459349593495941 peeling 0.39999999999999997 177
+tiou_arr: 0.7459349593495941 peeling 0.5 177
+tiou_arr: 0.7459349593495941 peeling 0.6 177
+tiou_arr: 0.7459349593495941 peeling 0.7 177
+tiou_arr: 0.36939313984168837 peeling 0.3 135
+tiou_arr: 0.7979431336963095 peeling 0.39999999999999997 307
+tiou_arr: 0.7979431336963095 peeling 0.5 307
+tiou_arr: 0.7979431336963095 peeling 0.6 307
+tiou_arr: 0.7979431336963095 peeling 0.7 307
+tiou_arr: 0.33004484304932863 peeling 0.3 162
+tiou_arr: 0.6277777777777812 transfer 0.3 22
+tiou_arr: 0.6277777777777812 transfer 0.39999999999999997 22
+tiou_arr: 0.6277777777777812 transfer 0.5 22
+tiou_arr: 0.6277777777777812 transfer 0.6 22
+tiou_arr: 0.42616720955483134 peeling 0.3 145
+tiou_arr: 0.42616720955483134 peeling 0.39999999999999997 145
+tiou_arr: 0.3920174958993996 peeling 0.3 109
+tiou_arr: 0.9215311004784682 peeling 0.3 339
+tiou_arr: 0.9215311004784682 peeling 0.39999999999999997 339
+tiou_arr: 0.9215311004784682 peeling 0.5 339
+tiou_arr: 0.9215311004784682 peeling 0.6 339
+tiou_arr: 0.9215311004784682 peeling 0.7 339
+tiou_arr: 0.32900432900432885 peeling 0.3 131
+tiou_arr: 0.4603321033210332 peeling 0.39999999999999997 303
+tiou_arr: 0.36840062111801236 peeling 0.3 322
+tiou_arr: 0.34574168076706085 peeling 0.3 43
+tiou_arr: 0.5647435897435896 peeling 0.39999999999999997 181
+tiou_arr: 0.5647435897435896 peeling 0.5 181
+tiou_arr: 0.45535714285714307 peeling 0.3 216
+tiou_arr: 0.45535714285714307 peeling 0.39999999999999997 216
+tiou_arr: 0.41786649214659716 peeling 0.3 183
+tiou_arr: 0.41786649214659716 peeling 0.39999999999999997 183
+tiou_arr: 0.68554829339143 peeling 0.3 144
+tiou_arr: 0.68554829339143 peeling 0.39999999999999997 144
+tiou_arr: 0.68554829339143 peeling 0.5 144
+tiou_arr: 0.68554829339143 peeling 0.6 144
+tiou_arr: 0.3517426273458445 peeling 0.3 207
+tiou_arr: 0.8085412667946253 peeling 0.39999999999999997 470
+tiou_arr: 0.8085412667946253 peeling 0.5 470
+tiou_arr: 0.8085412667946253 peeling 0.6 470
+tiou_arr: 0.8085412667946253 peeling 0.7 470
+tiou_arr: 0.5161290322580908 transfer 0.3 206
+tiou_arr: 0.5161290322580908 transfer 0.39999999999999997 206
+tiou_arr: 0.5161290322580908 transfer 0.5 206
+tiou_arr: 0.326486013986014 peeling 0.3 199
+tiou_arr: 0.8055555555555552 peeling 0.3 484
+tiou_arr: 0.8055555555555552 peeling 0.39999999999999997 484
+tiou_arr: 0.8055555555555552 peeling 0.5 484
+tiou_arr: 0.8055555555555552 peeling 0.6 484
+tiou_arr: 0.8055555555555552 peeling 0.7 484
+tiou_arr: 0.5036844386649332 peeling 0.3 225
+tiou_arr: 0.5036844386649332 peeling 0.39999999999999997 225
+tiou_arr: 0.5036844386649332 peeling 0.5 225
+tiou_arr: 0.300324675324675 transfer 0.3 238
+tiou_arr: 0.3843843843843844 peeling 0.3 15
+tiou_arr: 0.31433823529411775 peeling 0.3 266
+tiou_arr: 0.8809946714031969 peeling 0.3 118
+tiou_arr: 0.8809946714031969 peeling 0.39999999999999997 118
+tiou_arr: 0.8809946714031969 peeling 0.5 118
+tiou_arr: 0.8809946714031969 peeling 0.6 118
+tiou_arr: 0.8809946714031969 peeling 0.7 118
+tiou_arr: 0.4036636504082988 peeling 0.3 317
+tiou_arr: 0.4036636504082988 peeling 0.39999999999999997 317
+tiou_arr: 0.32564252336448524 peeling 0.3 317
+tiou_arr: 0.43243243243243135 peeling 0.3 27
+tiou_arr: 0.43243243243243135 peeling 0.39999999999999997 27
+tiou_arr: 0.8827127659574504 pestling 0.3 0
+tiou_arr: 0.8827127659574504 pestling 0.39999999999999997 0
+tiou_arr: 0.8827127659574504 pestling 0.5 0
+tiou_arr: 0.8827127659574504 pestling 0.6 0
+tiou_arr: 0.8827127659574504 pestling 0.7 0
+tiou_arr: 0.8517915309446252 peeling 0.3 97
+tiou_arr: 0.8517915309446252 peeling 0.39999999999999997 97
+tiou_arr: 0.8517915309446252 peeling 0.5 97
+tiou_arr: 0.8517915309446252 peeling 0.6 97
+tiou_arr: 0.8517915309446252 peeling 0.7 97
+tiou_arr: 0.3178206583427935 peeling 0.3 16
+tiou_arr: 0.5725552050473074 inverting 0.3 20
+tiou_arr: 0.5725552050473074 inverting 0.39999999999999997 20
+tiou_arr: 0.5725552050473074 inverting 0.5 20
+tiou_arr: 0.315545243619462 transfer 0.3 87
+tiou_arr: 0.45929887106357725 peeling 0.3 188
+tiou_arr: 0.45929887106357725 peeling 0.39999999999999997 188
+tiou_arr: 0.4933823529411757 peeling 0.3 159
+tiou_arr: 0.4933823529411757 peeling 0.39999999999999997 159
+tiou_arr: 0.33247422680412203 transfer 0.3 17
+tiou_arr: 0.36840062111801214 peeling 0.3 321
+tiou_arr: 0.9098135964912291 pestling 0.3 0
+tiou_arr: 0.9098135964912291 pestling 0.39999999999999997 0
+tiou_arr: 0.9098135964912291 pestling 0.5 0
+tiou_arr: 0.9098135964912291 pestling 0.6 0
+tiou_arr: 0.9098135964912291 pestling 0.7 0
+tiou_arr: 0.5277044854881268 peeling 0.3 156
+tiou_arr: 0.5277044854881268 peeling 0.39999999999999997 156
+tiou_arr: 0.5277044854881268 peeling 0.5 156
+tiou_arr: 0.4511930585683508 inverting 0.3 362
+tiou_arr: 0.4511930585683508 inverting 0.39999999999999997 362
+tiou_arr: 0.3896329365079364 peeling 0.3 228
+tiou_arr: 0.32885054554681564 peeling 0.3 8
+tiou_arr: 0.8606952550114182 peeling 0.39999999999999997 97
+tiou_arr: 0.8606952550114182 peeling 0.5 97
+tiou_arr: 0.8606952550114182 peeling 0.6 97
+tiou_arr: 0.8606952550114182 peeling 0.7 97
+tiou_arr: 0.4164164164164157 peeling 0.3 50
+tiou_arr: 0.4164164164164157 peeling 0.39999999999999997 50
+tiou_arr: 0.526700804681785 peeling 0.5 97
+tiou_arr: 0.46042850896370785 peeling 0.3 118
+tiou_arr: 0.46042850896370785 peeling 0.39999999999999997 118
+tiou_arr: 0.30166330645161304 peeling 0.3 216

@@ -1,0 +1,1353 @@
+W0131 15:27:25.505238 8453 site-packages/torch/distributed/run.py:792] 
+W0131 15:27:25.505238 8453 site-packages/torch/distributed/run.py:792] *****************************************
+W0131 15:27:25.505238 8453 site-packages/torch/distributed/run.py:792] Setting OMP_NUM_THREADS environment variable for each process to be 1 in default, to avoid your system being overloaded, please further tune the variable for optimal performance in your application as needed. 
+W0131 15:27:25.505238 8453 site-packages/torch/distributed/run.py:792] *****************************************
+
+
+### SEED: 2022 ###
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/SBHAR/pre_train/CNN1D/sbhar_CNN1D_pretrained_loso_sbj_0.pth
+
+>>> [Train DDP] WEAR Fold 0...
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/SBHAR/pre_train/CNN1D/sbhar_CNN1D_pretrained_loso_sbj_0.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/SBHAR/pre_train/CNN1D/sbhar_CNN1D_pretrained_loso_sbj_0.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/SBHAR/pre_train/CNN1D/sbhar_CNN1D_pretrained_loso_sbj_0.pth
+  Fold 0 Epoch 10 Loss: 0.7170
+  Fold 0 Epoch 20 Loss: 0.7162
+  Fold 0 Epoch 30 Loss: 0.7167
+  Fold 0 Epoch 40 Loss: 0.7136
+  Fold 0 Epoch 50 Loss: 0.7166
+  Fold 0 Epoch 60 Loss: 0.7142
+  Fold 0 Epoch 70 Loss: 0.7135
+  Fold 0 Epoch 80 Loss: 0.7133
+
+>>> [Eval] Inferencing Fold 0...
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/SBHAR/pre_train/CNN1D/sbhar_CNN1D_pretrained_loso_sbj_0.pth
+   -> Loading weights from ./output_sbhar_cola_ddp/seed_2022/seed_2022/fold0/model_final.pth...
+test_window: 0it [00:00, ?it/s]test_window: 1it [00:00,  1.88it/s]                                   standing & 0.0870 & 0.0714 & 0.0402 & 0.0000 & 0.0000 & 0.0397 \\
+stand-to-sit & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+sitting & 0.0360 & 0.0203 & 0.0084 & 0.0000 & 0.0000 & 0.0129 \\
+sit-to-stand & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+stand-to-lie & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+lying & 0.2105 & 0.2105 & 0.2105 & 0.1184 & 0.0132 & 0.1526 \\
+lie-to-sit & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+sit-to-lie & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+lie-to-stand & 0.0106 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0021 \\
+walking & 1.0000 & 0.9152 & 0.7135 & 0.5994 & 0.5841 & 0.7624 \\
+walking_downstairs & 0.4817 & 0.3503 & 0.2761 & 0.1849 & 0.1594 & 0.2905 \\
+walking_upstairs & 0.7167 & 0.3542 & 0.2515 & 0.0522 & 0.0319 & 0.2813 \\
+  --> test_window: mAP@Avg = 0.1285
+test_full: 0it [00:00, ?it/s]test_full: 1it [00:00,  6.30it/s]                                    📊 [Stats] Time: 18.11ms | Mem: 66.81MB
+standing & 0.1081 & 0.1081 & 0.0445 & 0.0192 & 0.0000 & 0.0560 \\
+stand-to-sit & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+sitting & 0.0465 & 0.0465 & 0.0263 & 0.0175 & 0.0044 & 0.0282 \\
+sit-to-stand & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+stand-to-lie & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+lying & 0.3077 & 0.2667 & 0.2667 & 0.1500 & 0.0167 & 0.2015 \\
+lie-to-sit & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+sit-to-lie & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+lie-to-stand & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+walking & 0.8969 & 0.8969 & 0.8969 & 0.7661 & 0.5571 & 0.8028 \\
+walking_downstairs & 0.4536 & 0.4401 & 0.1027 & 0.1027 & 0.0634 & 0.2325 \\
+walking_upstairs & 0.1154 & 0.1154 & 0.1034 & 0.1034 & 0.0196 & 0.0915 \\
+  --> test_full: mAP@Avg = 0.1177
+
+>>> [Train DDP] WEAR Fold 1...
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/SBHAR/pre_train/CNN1D/sbhar_CNN1D_pretrained_loso_sbj_1.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/SBHAR/pre_train/CNN1D/sbhar_CNN1D_pretrained_loso_sbj_1.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/SBHAR/pre_train/CNN1D/sbhar_CNN1D_pretrained_loso_sbj_1.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/SBHAR/pre_train/CNN1D/sbhar_CNN1D_pretrained_loso_sbj_1.pth
+  Fold 1 Epoch 10 Loss: 0.7142
+  Fold 1 Epoch 20 Loss: 0.7143
+  Fold 1 Epoch 30 Loss: 0.7116
+  Fold 1 Epoch 40 Loss: 0.7151
+  Fold 1 Epoch 50 Loss: 0.7137
+  Fold 1 Epoch 60 Loss: 0.7121
+  Fold 1 Epoch 70 Loss: 0.7130
+  Fold 1 Epoch 80 Loss: 0.7139
+
+>>> [Eval] Inferencing Fold 1...
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/SBHAR/pre_train/CNN1D/sbhar_CNN1D_pretrained_loso_sbj_1.pth
+   -> Loading weights from ./output_sbhar_cola_ddp/seed_2022/seed_2022/fold1/model_final.pth...
+test_window: 0it [00:00, ?it/s]test_window: 1it [00:00,  2.33it/s]                                   standing & 0.1447 & 0.1447 & 0.0526 & 0.0000 & 0.0000 & 0.0684 \\
+stand-to-sit & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+sitting & 0.0870 & 0.0870 & 0.0870 & 0.0870 & 0.0217 & 0.0739 \\
+sit-to-stand & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+stand-to-lie & 0.0056 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0011 \\
+lying & 1.0000 & 1.0000 & 0.1481 & 0.0154 & 0.0154 & 0.4358 \\
+lie-to-sit & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+sit-to-lie & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+lie-to-stand & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+walking & 0.0948 & 0.0412 & 0.0412 & 0.0140 & 0.0140 & 0.0410 \\
+walking_downstairs & 1.0000 & 1.0000 & 1.0000 & 1.0000 & 1.0000 & 1.0000 \\
+walking_upstairs & 0.5000 & 0.5000 & 0.5000 & 0.3472 & 0.2424 & 0.4179 \\
+  --> test_window: mAP@Avg = 0.1698
+test_full: 0it [00:00, ?it/s]test_full: 1it [00:00,  7.08it/s]                                    📊 [Stats] Time: 20.02ms | Mem: 61.62MB
+standing & 0.1481 & 0.0865 & 0.0865 & 0.0400 & 0.0000 & 0.0722 \\
+stand-to-sit & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+sitting & 0.1081 & 0.1081 & 0.0954 & 0.0954 & 0.0954 & 0.1005 \\
+sit-to-stand & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+stand-to-lie & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+lying & 1.0000 & 1.0000 & 0.6250 & 0.0833 & 0.0000 & 0.5417 \\
+lie-to-sit & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+sit-to-lie & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+lie-to-stand & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+walking & 0.0784 & 0.0549 & 0.0549 & 0.0549 & 0.0549 & 0.0596 \\
+walking_downstairs & 1.0000 & 1.0000 & 1.0000 & 1.0000 & 1.0000 & 1.0000 \\
+walking_upstairs & 0.5000 & 0.5000 & 0.5000 & 0.3788 & 0.0833 & 0.3924 \\
+  --> test_full: mAP@Avg = 0.1805
+
+>>> [Train DDP] WEAR Fold 2...
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/SBHAR/pre_train/CNN1D/sbhar_CNN1D_pretrained_loso_sbj_2.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/SBHAR/pre_train/CNN1D/sbhar_CNN1D_pretrained_loso_sbj_2.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/SBHAR/pre_train/CNN1D/sbhar_CNN1D_pretrained_loso_sbj_2.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/SBHAR/pre_train/CNN1D/sbhar_CNN1D_pretrained_loso_sbj_2.pth
+  Fold 2 Epoch 10 Loss: 0.7153
+  Fold 2 Epoch 20 Loss: 0.7136
+  Fold 2 Epoch 30 Loss: 0.7158
+  Fold 2 Epoch 40 Loss: 0.7156
+  Fold 2 Epoch 50 Loss: 0.7153
+  Fold 2 Epoch 60 Loss: 0.7164
+  Fold 2 Epoch 70 Loss: 0.7135
+  Fold 2 Epoch 80 Loss: 0.7132
+
+>>> [Eval] Inferencing Fold 2...
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/SBHAR/pre_train/CNN1D/sbhar_CNN1D_pretrained_loso_sbj_2.pth
+   -> Loading weights from ./output_sbhar_cola_ddp/seed_2022/seed_2022/fold2/model_final.pth...
+test_window: 0it [00:00, ?it/s]test_window: 1it [00:00,  3.47it/s]                                   standing & 0.2250 & 0.1111 & 0.1111 & 0.0000 & 0.0000 & 0.0894 \\
+stand-to-sit & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+sitting & 0.3312 & 0.3312 & 0.2375 & 0.0000 & 0.0000 & 0.1800 \\
+sit-to-stand & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+stand-to-lie & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+lying & 1.0000 & 1.0000 & 1.0000 & 0.7589 & 0.5000 & 0.8518 \\
+lie-to-sit & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+sit-to-lie & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+lie-to-stand & 0.0152 & 0.0152 & 0.0000 & 0.0000 & 0.0000 & 0.0061 \\
+walking & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+walking_upstairs & 0.1594 & 0.1228 & 0.0902 & 0.0627 & 0.0234 & 0.0917 \\
+walking_downstairs & 0.1627 & 0.1627 & 0.0923 & 0.0651 & 0.0231 & 0.1012 \\
+  --> test_window: mAP@Avg = 0.1100
+test_full: 0it [00:00, ?it/s]test_full: 1it [00:00,  9.80it/s]                                    📊 [Stats] Time: 20.88ms | Mem: 64.94MB
+standing & 0.1326 & 0.1250 & 0.0556 & 0.0556 & 0.0139 & 0.0765 \\
+stand-to-sit & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+sitting & 0.6905 & 0.6905 & 0.3839 & 0.0208 & 0.0000 & 0.3571 \\
+sit-to-stand & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+stand-to-lie & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+lying & 0.6667 & 0.6667 & 0.6667 & 0.6667 & 0.1250 & 0.5583 \\
+lie-to-sit & 0.0114 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0023 \\
+sit-to-lie & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+lie-to-stand & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+walking & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+walking_upstairs & 0.1580 & 0.1113 & 0.0618 & 0.0618 & 0.0238 & 0.0833 \\
+walking_downstairs & 0.1681 & 0.1681 & 0.1123 & 0.0366 & 0.0163 & 0.1003 \\
+  --> test_full: mAP@Avg = 0.0982
+
+>>> [Train DDP] WEAR Fold 3...
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/SBHAR/pre_train/CNN1D/sbhar_CNN1D_pretrained_loso_sbj_3.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/SBHAR/pre_train/CNN1D/sbhar_CNN1D_pretrained_loso_sbj_3.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/SBHAR/pre_train/CNN1D/sbhar_CNN1D_pretrained_loso_sbj_3.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/SBHAR/pre_train/CNN1D/sbhar_CNN1D_pretrained_loso_sbj_3.pth
+  Fold 3 Epoch 10 Loss: 0.7172
+  Fold 3 Epoch 20 Loss: 0.7149
+  Fold 3 Epoch 30 Loss: 0.7136
+  Fold 3 Epoch 40 Loss: 0.7143
+  Fold 3 Epoch 50 Loss: 0.7142
+  Fold 3 Epoch 60 Loss: 0.7148
+  Fold 3 Epoch 70 Loss: 0.7146
+  Fold 3 Epoch 80 Loss: 0.7141
+
+>>> [Eval] Inferencing Fold 3...
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/SBHAR/pre_train/CNN1D/sbhar_CNN1D_pretrained_loso_sbj_3.pth
+   -> Loading weights from ./output_sbhar_cola_ddp/seed_2022/seed_2022/fold3/model_final.pth...
+test_window: 0it [00:00, ?it/s]test_window: 1it [00:00,  4.29it/s]                                   standing & 0.4010 & 0.1818 & 0.0455 & 0.0167 & 0.0000 & 0.1290 \\
+stand-to-sit & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+sitting & 0.2204 & 0.2105 & 0.2105 & 0.1184 & 0.0526 & 0.1625 \\
+sit-to-stand & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+stand-to-lie & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+lying & 1.0000 & 1.0000 & 1.0000 & 1.0000 & 0.2500 & 0.8500 \\
+lie-to-sit & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+sit-to-lie & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+lie-to-stand & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+walking & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+walking_downstairs & 0.0042 & 0.0042 & 0.0000 & 0.0000 & 0.0000 & 0.0017 \\
+walking_upstairs & 0.1444 & 0.0741 & 0.0230 & 0.0057 & 0.0057 & 0.0506 \\
+  --> test_window: mAP@Avg = 0.0995
+test_full: 0it [00:00, ?it/s]                                📊 [Stats] Time: 19.87ms | Mem: 60.73MB
+standing & 0.8611 & 0.6603 & 0.0588 & 0.0588 & 0.0588 & 0.3396 \\
+stand-to-sit & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+sitting & 0.2833 & 0.1833 & 0.0167 & 0.0167 & 0.0167 & 0.1033 \\
+sit-to-stand & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+stand-to-lie & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+lying & 1.0000 & 1.0000 & 1.0000 & 0.5000 & 0.0000 & 0.7000 \\
+lie-to-sit & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+sit-to-lie & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+lie-to-stand & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+walking & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+walking_downstairs & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+walking_upstairs & 0.0119 & 0.0119 & 0.0000 & 0.0000 & 0.0000 & 0.0048 \\
+  --> test_full: mAP@Avg = 0.0956
+
+>>> [Train DDP] WEAR Fold 4...
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/SBHAR/pre_train/CNN1D/sbhar_CNN1D_pretrained_loso_sbj_4.pth==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/SBHAR/pre_train/CNN1D/sbhar_CNN1D_pretrained_loso_sbj_4.pth
+
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/SBHAR/pre_train/CNN1D/sbhar_CNN1D_pretrained_loso_sbj_4.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/SBHAR/pre_train/CNN1D/sbhar_CNN1D_pretrained_loso_sbj_4.pth
+  Fold 4 Epoch 10 Loss: 0.7173
+  Fold 4 Epoch 20 Loss: 0.7158
+  Fold 4 Epoch 30 Loss: 0.7142
+  Fold 4 Epoch 40 Loss: 0.7139
+  Fold 4 Epoch 50 Loss: 0.7137
+  Fold 4 Epoch 60 Loss: 0.7149
+  Fold 4 Epoch 70 Loss: 0.7135
+  Fold 4 Epoch 80 Loss: 0.7133
+
+>>> [Eval] Inferencing Fold 4...
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/SBHAR/pre_train/CNN1D/sbhar_CNN1D_pretrained_loso_sbj_4.pth
+   -> Loading weights from ./output_sbhar_cola_ddp/seed_2022/seed_2022/fold4/model_final.pth...
+test_window: 0it [00:00, ?it/s]test_window: 1it [00:00,  2.69it/s]                                   standing & 0.1750 & 0.1028 & 0.1028 & 0.0361 & 0.0056 & 0.0844 \\
+stand-to-sit & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+sitting & 0.1111 & 0.1111 & 0.1111 & 0.1111 & 0.0682 & 0.1025 \\
+sit-to-stand & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+stand-to-lie & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+lying & 1.0000 & 1.0000 & 0.4702 & 0.0179 & 0.0179 & 0.5012 \\
+lie-to-sit & 0.0085 & 0.0085 & 0.0000 & 0.0000 & 0.0000 & 0.0034 \\
+sit-to-lie & 0.0147 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0029 \\
+lie-to-stand & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+walking & 0.1081 & 0.1081 & 0.1081 & 0.1081 & 0.0270 & 0.0919 \\
+walking_downstairs & 0.9583 & 0.8333 & 0.6667 & 0.6667 & 0.0000 & 0.6250 \\
+walking_upstairs & 0.8611 & 0.8611 & 0.7500 & 0.7500 & 0.0417 & 0.6528 \\
+  --> test_window: mAP@Avg = 0.1720
+test_full: 0it [00:00, ?it/s]test_full: 1it [00:00,  7.65it/s]                                    📊 [Stats] Time: 19.33ms | Mem: 75.80MB
+standing & 0.3026 & 0.1863 & 0.0456 & 0.0089 & 0.0089 & 0.1105 \\
+stand-to-sit & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+sitting & 0.1026 & 0.1026 & 0.0562 & 0.0562 & 0.0086 & 0.0653 \\
+sit-to-stand & 0.0104 & 0.0104 & 0.0104 & 0.0000 & 0.0000 & 0.0063 \\
+stand-to-lie & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+lying & 0.8000 & 0.8000 & 0.5500 & 0.3013 & 0.2750 & 0.5453 \\
+lie-to-sit & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+sit-to-lie & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+lie-to-stand & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+walking & 0.1046 & 0.1046 & 0.1046 & 0.1046 & 0.0213 & 0.0879 \\
+walking_downstairs & 0.8750 & 0.5181 & 0.4063 & 0.3833 & 0.0167 & 0.4399 \\
+walking_upstairs & 0.8194 & 0.5699 & 0.2389 & 0.0926 & 0.0556 & 0.3553 \\
+  --> test_full: mAP@Avg = 0.1342
+
+>>> [Train DDP] WEAR Fold 5...
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/SBHAR/pre_train/CNN1D/sbhar_CNN1D_pretrained_loso_sbj_5.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/SBHAR/pre_train/CNN1D/sbhar_CNN1D_pretrained_loso_sbj_5.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/SBHAR/pre_train/CNN1D/sbhar_CNN1D_pretrained_loso_sbj_5.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/SBHAR/pre_train/CNN1D/sbhar_CNN1D_pretrained_loso_sbj_5.pth
+  Fold 5 Epoch 10 Loss: 0.7179
+  Fold 5 Epoch 20 Loss: 0.7153
+  Fold 5 Epoch 30 Loss: 0.7160
+  Fold 5 Epoch 40 Loss: 0.7144
+  Fold 5 Epoch 50 Loss: 0.7148
+  Fold 5 Epoch 60 Loss: 0.7132
+  Fold 5 Epoch 70 Loss: 0.7124
+  Fold 5 Epoch 80 Loss: 0.7136
+
+>>> [Eval] Inferencing Fold 5...
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/SBHAR/pre_train/CNN1D/sbhar_CNN1D_pretrained_loso_sbj_5.pth
+   -> Loading weights from ./output_sbhar_cola_ddp/seed_2022/seed_2022/fold5/model_final.pth...
+test_window: 0it [00:00, ?it/s]test_window: 1it [00:00,  1.94it/s]                                   standing & 0.1125 & 0.1125 & 0.0579 & 0.0056 & 0.0056 & 0.0588 \\
+stand-to-sit & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+sitting & 0.0526 & 0.0526 & 0.0296 & 0.0164 & 0.0164 & 0.0335 \\
+sit-to-stand & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+stand-to-lie & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+lying & 1.0000 & 1.0000 & 0.5000 & 0.0000 & 0.0000 & 0.5000 \\
+lie-to-sit & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+sit-to-lie & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+lie-to-stand & 0.0057 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0011 \\
+walking & 0.0755 & 0.0755 & 0.0755 & 0.0755 & 0.0425 & 0.0689 \\
+walking_downstairs & 0.4282 & 0.2531 & 0.1146 & 0.0903 & 0.0833 & 0.1939 \\
+walking_upstairs & 0.6818 & 0.2663 & 0.1259 & 0.1155 & 0.0970 & 0.2573 \\
+  --> test_window: mAP@Avg = 0.0928
+test_full: 0it [00:00, ?it/s]test_full: 1it [00:00,  6.70it/s]                                    📊 [Stats] Time: 20.20ms | Mem: 73.97MB
+standing & 0.1940 & 0.1659 & 0.0776 & 0.0776 & 0.0345 & 0.1099 \\
+stand-to-sit & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+sitting & 0.0656 & 0.0635 & 0.0635 & 0.0369 & 0.0164 & 0.0492 \\
+sit-to-stand & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+stand-to-lie & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+lying & 0.3636 & 0.3636 & 0.3636 & 0.3636 & 0.0000 & 0.2909 \\
+lie-to-sit & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+sit-to-lie & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+lie-to-stand & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+walking & 0.0976 & 0.0976 & 0.0976 & 0.0549 & 0.0076 & 0.0710 \\
+walking_downstairs & 0.5048 & 0.2857 & 0.1944 & 0.1944 & 0.1667 & 0.2692 \\
+walking_upstairs & 0.1034 & 0.1034 & 0.0744 & 0.0131 & 0.0032 & 0.0595 \\
+  --> test_full: mAP@Avg = 0.0708
+
+>>> [Train DDP] WEAR Fold 6...
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/SBHAR/pre_train/CNN1D/sbhar_CNN1D_pretrained_loso_sbj_6.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/SBHAR/pre_train/CNN1D/sbhar_CNN1D_pretrained_loso_sbj_6.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/SBHAR/pre_train/CNN1D/sbhar_CNN1D_pretrained_loso_sbj_6.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/SBHAR/pre_train/CNN1D/sbhar_CNN1D_pretrained_loso_sbj_6.pth
+  Fold 6 Epoch 10 Loss: 0.7168
+  Fold 6 Epoch 20 Loss: 0.7145
+  Fold 6 Epoch 30 Loss: 0.7131
+  Fold 6 Epoch 40 Loss: 0.7130
+  Fold 6 Epoch 50 Loss: 0.7128
+  Fold 6 Epoch 60 Loss: 0.7128
+  Fold 6 Epoch 70 Loss: 0.7124
+  Fold 6 Epoch 80 Loss: 0.7123
+
+>>> [Eval] Inferencing Fold 6...
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/SBHAR/pre_train/CNN1D/sbhar_CNN1D_pretrained_loso_sbj_6.pth
+   -> Loading weights from ./output_sbhar_cola_ddp/seed_2022/seed_2022/fold6/model_final.pth...
+test_window: 0it [00:00, ?it/s]test_window: 1it [00:00,  2.18it/s]                                   standing & 0.0433 & 0.0433 & 0.0192 & 0.0000 & 0.0000 & 0.0212 \\
+stand-to-sit & 0.0077 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0015 \\
+sitting & 0.0204 & 0.0051 & 0.0051 & 0.0000 & 0.0000 & 0.0061 \\
+sit-to-stand & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+stand-to-lie & 0.0204 & 0.0204 & 0.0000 & 0.0000 & 0.0000 & 0.0082 \\
+lying & 0.0204 & 0.0204 & 0.0204 & 0.0000 & 0.0000 & 0.0122 \\
+lie-to-sit & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+sit-to-lie & 0.0274 & 0.0069 & 0.0000 & 0.0000 & 0.0000 & 0.0069 \\
+lie-to-stand & 0.1053 & 0.0263 & 0.0000 & 0.0000 & 0.0000 & 0.0263 \\
+walking & 1.0000 & 1.0000 & 1.0000 & 0.7500 & 0.7500 & 0.9000 \\
+walking_downstairs & 0.9762 & 0.7383 & 0.5484 & 0.5484 & 0.5484 & 0.6719 \\
+walking_upstairs & 0.5206 & 0.5206 & 0.1032 & 0.0476 & 0.0357 & 0.2456 \\
+  --> test_window: mAP@Avg = 0.1583
+test_full: 0it [00:00, ?it/s]test_full: 1it [00:00,  8.22it/s]                                    📊 [Stats] Time: 14.06ms | Mem: 60.29MB
+standing & 0.0976 & 0.0682 & 0.0682 & 0.0303 & 0.0000 & 0.0528 \\
+stand-to-sit & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+sitting & 0.0312 & 0.0089 & 0.0089 & 0.0000 & 0.0000 & 0.0098 \\
+sit-to-stand & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+stand-to-lie & 0.0328 & 0.0082 & 0.0082 & 0.0000 & 0.0000 & 0.0098 \\
+lying & 0.0400 & 0.0400 & 0.0400 & 0.0000 & 0.0000 & 0.0240 \\
+lie-to-sit & 0.0102 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0020 \\
+sit-to-lie & 0.0364 & 0.0364 & 0.0096 & 0.0096 & 0.0000 & 0.0184 \\
+lie-to-stand & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+walking & 1.0000 & 1.0000 & 1.0000 & 0.7770 & 0.7500 & 0.9054 \\
+walking_downstairs & 0.6804 & 0.6804 & 0.4702 & 0.4702 & 0.4306 & 0.5464 \\
+walking_upstairs & 0.3638 & 0.1722 & 0.1496 & 0.1259 & 0.1259 & 0.1875 \\
+  --> test_full: mAP@Avg = 0.1464
+
+>>> [Train DDP] WEAR Fold 7...
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/SBHAR/pre_train/CNN1D/sbhar_CNN1D_pretrained_loso_sbj_7.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/SBHAR/pre_train/CNN1D/sbhar_CNN1D_pretrained_loso_sbj_7.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/SBHAR/pre_train/CNN1D/sbhar_CNN1D_pretrained_loso_sbj_7.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/SBHAR/pre_train/CNN1D/sbhar_CNN1D_pretrained_loso_sbj_7.pth
+  Fold 7 Epoch 10 Loss: 0.7169
+  Fold 7 Epoch 20 Loss: 0.7159
+  Fold 7 Epoch 30 Loss: 0.7140
+  Fold 7 Epoch 40 Loss: 0.7137
+  Fold 7 Epoch 50 Loss: 0.7132
+  Fold 7 Epoch 60 Loss: 0.7143
+  Fold 7 Epoch 70 Loss: 0.7140
+  Fold 7 Epoch 80 Loss: 0.7133
+
+>>> [Eval] Inferencing Fold 7...
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/SBHAR/pre_train/CNN1D/sbhar_CNN1D_pretrained_loso_sbj_7.pth
+   -> Loading weights from ./output_sbhar_cola_ddp/seed_2022/seed_2022/fold7/model_final.pth...
+test_window: 0it [00:00, ?it/s]test_window: 1it [00:00,  2.64it/s]                                   standing & 0.0726 & 0.0726 & 0.0726 & 0.0081 & 0.0000 & 0.0452 \\
+stand-to-sit & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+sitting & 0.0526 & 0.0526 & 0.0526 & 0.0156 & 0.0000 & 0.0347 \\
+sit-to-stand & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+stand-to-lie & 0.0385 & 0.0385 & 0.0096 & 0.0096 & 0.0096 & 0.0212 \\
+lying & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+lie-to-sit & 0.0256 & 0.0064 & 0.0064 & 0.0000 & 0.0000 & 0.0077 \\
+sit-to-lie & 0.0217 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0043 \\
+walking & 0.0600 & 0.0267 & 0.0267 & 0.0000 & 0.0000 & 0.0227 \\
+walking_downstairs & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+walking_upstairs & 0.0098 & 0.0098 & 0.0098 & 0.0098 & 0.0000 & 0.0078 \\
+lie-to-stand & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+  --> test_window: mAP@Avg = 0.0120
+test_full: 0it [00:00, ?it/s]                                📊 [Stats] Time: 10.00ms | Mem: 75.80MB
+standing & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+stand-to-sit & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+sitting & 0.1184 & 0.1184 & 0.0147 & 0.0000 & 0.0000 & 0.0503 \\
+sit-to-stand & 0.0580 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0116 \\
+stand-to-lie & 0.0670 & 0.0625 & 0.0625 & 0.0625 & 0.0625 & 0.0634 \\
+lying & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+lie-to-sit & 0.0392 & 0.0108 & 0.0108 & 0.0108 & 0.0000 & 0.0143 \\
+sit-to-lie & 0.0870 & 0.0185 & 0.0185 & 0.0000 & 0.0000 & 0.0248 \\
+walking & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+walking_downstairs & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+walking_upstairs & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+lie-to-stand & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+  --> test_full: mAP@Avg = 0.0137
+
+>>> [Train DDP] WEAR Fold 8...
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/SBHAR/pre_train/CNN1D/sbhar_CNN1D_pretrained_loso_sbj_8.pth==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/SBHAR/pre_train/CNN1D/sbhar_CNN1D_pretrained_loso_sbj_8.pth
+
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/SBHAR/pre_train/CNN1D/sbhar_CNN1D_pretrained_loso_sbj_8.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/SBHAR/pre_train/CNN1D/sbhar_CNN1D_pretrained_loso_sbj_8.pth
+  Fold 8 Epoch 10 Loss: 0.7178
+  Fold 8 Epoch 20 Loss: 0.7180
+  Fold 8 Epoch 30 Loss: 0.7160
+  Fold 8 Epoch 40 Loss: 0.7162
+  Fold 8 Epoch 50 Loss: 0.7152
+  Fold 8 Epoch 60 Loss: 0.7165
+  Fold 8 Epoch 70 Loss: 0.7161
+  Fold 8 Epoch 80 Loss: 0.7147
+
+>>> [Eval] Inferencing Fold 8...
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/SBHAR/pre_train/CNN1D/sbhar_CNN1D_pretrained_loso_sbj_8.pth
+   -> Loading weights from ./output_sbhar_cola_ddp/seed_2022/seed_2022/fold8/model_final.pth...
+test_window: 0it [00:00, ?it/s]test_window: 1it [00:00,  4.10it/s]                                   standing & 0.3077 & 0.3077 & 0.0565 & 0.0000 & 0.0000 & 0.1344 \\
+stand-to-sit & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+sitting & 0.2625 & 0.2625 & 0.1019 & 0.0083 & 0.0000 & 0.1271 \\
+sit-to-stand & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+stand-to-lie & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+lying & 0.8304 & 0.8304 & 0.8304 & 0.8304 & 0.2500 & 0.7143 \\
+lie-to-sit & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+sit-to-lie & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+lie-to-stand & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+walking & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+walking_downstairs & 0.3869 & 0.3585 & 0.1882 & 0.1296 & 0.0514 & 0.2229 \\
+walking_upstairs & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+  --> test_window: mAP@Avg = 0.0999
+test_full: 0it [00:00, ?it/s]test_full: 1it [00:00,  5.71it/s]                                    📊 [Stats] Time: 9.24ms | Mem: 75.80MB
+standing & 0.4725 & 0.4242 & 0.0455 & 0.0455 & 0.0114 & 0.1998 \\
+stand-to-sit & 0.0278 & 0.0278 & 0.0278 & 0.0000 & 0.0000 & 0.0167 \\
+sitting & 0.4583 & 0.4583 & 0.1208 & 0.0333 & 0.0083 & 0.2158 \\
+sit-to-stand & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+stand-to-lie & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+lying & 0.2500 & 0.2500 & 0.2500 & 0.1406 & 0.0179 & 0.1817 \\
+lie-to-sit & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+sit-to-lie & 0.0135 & 0.0135 & 0.0000 & 0.0000 & 0.0000 & 0.0054 \\
+lie-to-stand & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+walking & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+walking_downstairs & 0.4850 & 0.3772 & 0.3141 & 0.2068 & 0.1223 & 0.3011 \\
+walking_upstairs & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+  --> test_full: mAP@Avg = 0.0767
+
+>>> [Train DDP] WEAR Fold 9...
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/SBHAR/pre_train/CNN1D/sbhar_CNN1D_pretrained_loso_sbj_9.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/SBHAR/pre_train/CNN1D/sbhar_CNN1D_pretrained_loso_sbj_9.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/SBHAR/pre_train/CNN1D/sbhar_CNN1D_pretrained_loso_sbj_9.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/SBHAR/pre_train/CNN1D/sbhar_CNN1D_pretrained_loso_sbj_9.pth
+  Fold 9 Epoch 10 Loss: 0.7154
+  Fold 9 Epoch 20 Loss: 0.7146
+  Fold 9 Epoch 30 Loss: 0.7119
+  Fold 9 Epoch 40 Loss: 0.7153
+  Fold 9 Epoch 50 Loss: 0.7134
+  Fold 9 Epoch 60 Loss: 0.7129
+  Fold 9 Epoch 70 Loss: 0.7128
+  Fold 9 Epoch 80 Loss: 0.7130
+
+>>> [Eval] Inferencing Fold 9...
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/SBHAR/pre_train/CNN1D/sbhar_CNN1D_pretrained_loso_sbj_9.pth
+   -> Loading weights from ./output_sbhar_cola_ddp/seed_2022/seed_2022/fold9/model_final.pth...
+test_window: 0it [00:00, ?it/s]test_window: 1it [00:00,  2.13it/s]                                   standing & 0.0156 & 0.0049 & 0.0000 & 0.0000 & 0.0000 & 0.0041 \\
+stand-to-sit & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+sitting & 0.0899 & 0.0899 & 0.0899 & 0.0227 & 0.0000 & 0.0585 \\
+sit-to-stand & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+stand-to-lie & 0.0230 & 0.0071 & 0.0000 & 0.0000 & 0.0000 & 0.0060 \\
+lying & 0.0323 & 0.0323 & 0.0089 & 0.0089 & 0.0000 & 0.0165 \\
+lie-to-sit & 0.0299 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0060 \\
+sit-to-lie & 0.0385 & 0.0385 & 0.0000 & 0.0000 & 0.0000 & 0.0154 \\
+lie-to-stand & 0.0256 & 0.0064 & 0.0064 & 0.0064 & 0.0064 & 0.0103 \\
+walking & 0.3480 & 0.3333 & 0.0542 & 0.0542 & 0.0542 & 0.1688 \\
+walking_downstairs & 0.0926 & 0.0926 & 0.0593 & 0.0593 & 0.0333 & 0.0674 \\
+walking_upstairs & 0.2011 & 0.1839 & 0.0259 & 0.0030 & 0.0030 & 0.0834 \\
+  --> test_window: mAP@Avg = 0.0364
+test_full: 0it [00:00, ?it/s]test_full: 1it [00:00,  8.50it/s]                                    📊 [Stats] Time: 19.04ms | Mem: 64.31MB
+standing & 0.0078 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0016 \\
+stand-to-sit & 0.0089 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0018 \\
+sitting & 0.0563 & 0.0563 & 0.0563 & 0.0000 & 0.0000 & 0.0338 \\
+sit-to-stand & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+stand-to-lie & 0.0351 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0070 \\
+lying & 0.0172 & 0.0172 & 0.0074 & 0.0074 & 0.0000 & 0.0098 \\
+lie-to-sit & 0.0076 & 0.0076 & 0.0076 & 0.0000 & 0.0000 & 0.0045 \\
+sit-to-lie & 0.0085 & 0.0085 & 0.0085 & 0.0085 & 0.0000 & 0.0068 \\
+lie-to-stand & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+walking & 0.0833 & 0.0833 & 0.0833 & 0.0833 & 0.0208 & 0.0708 \\
+walking_downstairs & 0.0455 & 0.0455 & 0.0202 & 0.0051 & 0.0000 & 0.0232 \\
+walking_upstairs & 0.0395 & 0.0395 & 0.0395 & 0.0180 & 0.0048 & 0.0282 \\
+  --> test_full: mAP@Avg = 0.0156
+
+>>> [Train DDP] WEAR Fold 10...
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/SBHAR/pre_train/CNN1D/sbhar_CNN1D_pretrained_loso_sbj_10.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/SBHAR/pre_train/CNN1D/sbhar_CNN1D_pretrained_loso_sbj_10.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/SBHAR/pre_train/CNN1D/sbhar_CNN1D_pretrained_loso_sbj_10.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/SBHAR/pre_train/CNN1D/sbhar_CNN1D_pretrained_loso_sbj_10.pth
+  Fold 10 Epoch 10 Loss: 0.7164
+  Fold 10 Epoch 20 Loss: 0.7169
+  Fold 10 Epoch 30 Loss: 0.7149
+  Fold 10 Epoch 40 Loss: 0.7153
+  Fold 10 Epoch 50 Loss: 0.7143
+  Fold 10 Epoch 60 Loss: 0.7161
+  Fold 10 Epoch 70 Loss: 0.7148
+  Fold 10 Epoch 80 Loss: 0.7145
+
+>>> [Eval] Inferencing Fold 10...
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/SBHAR/pre_train/CNN1D/sbhar_CNN1D_pretrained_loso_sbj_10.pth
+   -> Loading weights from ./output_sbhar_cola_ddp/seed_2022/seed_2022/fold10/model_final.pth...
+test_window: 0it [00:00, ?it/s]test_window: 1it [00:00,  4.58it/s]                                   standing & 0.4444 & 0.4444 & 0.1429 & 0.0625 & 0.0000 & 0.2188 \\
+stand-to-sit & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+sitting & 0.6667 & 0.6667 & 0.5682 & 0.2955 & 0.0000 & 0.4394 \\
+sit-to-stand & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+stand-to-lie & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+lying & 0.8304 & 0.8304 & 0.8304 & 0.3571 & 0.2500 & 0.6196 \\
+lie-to-sit & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+sit-to-lie & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+lie-to-stand & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+walking & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+walking_downstairs & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+walking_upstairs & 0.5787 & 0.5787 & 0.2361 & 0.1567 & 0.0317 & 0.3164 \\
+  --> test_window: mAP@Avg = 0.1329
+test_full: 0it [00:00, ?it/s]                                📊 [Stats] Time: 18.78ms | Mem: 76.06MB
+standing & 0.3077 & 0.1184 & 0.0769 & 0.0000 & 0.0000 & 0.1006 \\
+stand-to-sit & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+sitting & 0.6548 & 0.6548 & 0.1607 & 0.0179 & 0.0000 & 0.2976 \\
+sit-to-stand & 0.0263 & 0.0263 & 0.0000 & 0.0000 & 0.0000 & 0.0105 \\
+stand-to-lie & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+lying & 0.7500 & 0.7500 & 0.7500 & 0.5667 & 0.0000 & 0.5633 \\
+lie-to-sit & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+sit-to-lie & 0.0217 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0043 \\
+lie-to-stand & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+walking & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+walking_downstairs & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+walking_upstairs & 0.2848 & 0.2756 & 0.2308 & 0.1603 & 0.0600 & 0.2023 \\
+  --> test_full: mAP@Avg = 0.0982
+
+>>> [Train DDP] WEAR Fold 11...
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/SBHAR/pre_train/CNN1D/sbhar_CNN1D_pretrained_loso_sbj_11.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/SBHAR/pre_train/CNN1D/sbhar_CNN1D_pretrained_loso_sbj_11.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/SBHAR/pre_train/CNN1D/sbhar_CNN1D_pretrained_loso_sbj_11.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/SBHAR/pre_train/CNN1D/sbhar_CNN1D_pretrained_loso_sbj_11.pth
+  Fold 11 Epoch 10 Loss: 0.7167
+  Fold 11 Epoch 20 Loss: 0.7163
+  Fold 11 Epoch 30 Loss: 0.7142
+  Fold 11 Epoch 40 Loss: 0.7139
+  Fold 11 Epoch 50 Loss: 0.7129
+  Fold 11 Epoch 60 Loss: 0.7145
+  Fold 11 Epoch 70 Loss: 0.7124
+  Fold 11 Epoch 80 Loss: 0.7127
+
+>>> [Eval] Inferencing Fold 11...
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/SBHAR/pre_train/CNN1D/sbhar_CNN1D_pretrained_loso_sbj_11.pth
+   -> Loading weights from ./output_sbhar_cola_ddp/seed_2022/seed_2022/fold11/model_final.pth...
+test_window: 0it [00:00, ?it/s]test_window: 1it [00:00,  2.76it/s]                                   standing & 0.5741 & 0.5326 & 0.1467 & 0.0109 & 0.0109 & 0.2550 \\
+stand-to-sit & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+sitting & 0.0676 & 0.0299 & 0.0299 & 0.0299 & 0.0138 & 0.0342 \\
+sit-to-stand & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+stand-to-lie & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+lying & 0.8542 & 0.6250 & 0.5104 & 0.3438 & 0.0521 & 0.4771 \\
+lie-to-sit & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+sit-to-lie & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+lie-to-stand & 0.0132 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0026 \\
+walking & 0.1739 & 0.1739 & 0.0556 & 0.0556 & 0.0000 & 0.0918 \\
+walking_downstairs & 0.8958 & 0.7271 & 0.4611 & 0.2889 & 0.0069 & 0.4760 \\
+walking_upstairs & 0.5664 & 0.4717 & 0.1813 & 0.1804 & 0.0627 & 0.2925 \\
+  --> test_window: mAP@Avg = 0.1358
+test_full: 0it [00:00, ?it/s]test_full: 1it [00:00,  9.45it/s]                                    📊 [Stats] Time: 7.32ms | Mem: 76.06MB
+standing & 0.2992 & 0.2525 & 0.2525 & 0.0711 & 0.0000 & 0.1750 \\
+stand-to-sit & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+sitting & 0.0907 & 0.0907 & 0.0466 & 0.0466 & 0.0466 & 0.0642 \\
+sit-to-stand & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+stand-to-lie & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+lying & 1.0000 & 1.0000 & 1.0000 & 0.6875 & 0.0625 & 0.7500 \\
+lie-to-sit & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+sit-to-lie & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+lie-to-stand & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+walking & 0.0900 & 0.0900 & 0.0400 & 0.0400 & 0.0100 & 0.0540 \\
+walking_downstairs & 0.6864 & 0.6864 & 0.4509 & 0.2350 & 0.2037 & 0.4525 \\
+walking_upstairs & 0.6933 & 0.6933 & 0.3162 & 0.1923 & 0.0128 & 0.3816 \\
+  --> test_full: mAP@Avg = 0.1564
+
+>>> [Train DDP] WEAR Fold 12...
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/SBHAR/pre_train/CNN1D/sbhar_CNN1D_pretrained_loso_sbj_12.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/SBHAR/pre_train/CNN1D/sbhar_CNN1D_pretrained_loso_sbj_12.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/SBHAR/pre_train/CNN1D/sbhar_CNN1D_pretrained_loso_sbj_12.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/SBHAR/pre_train/CNN1D/sbhar_CNN1D_pretrained_loso_sbj_12.pth
+  Fold 12 Epoch 10 Loss: 0.7154
+  Fold 12 Epoch 20 Loss: 0.7158
+  Fold 12 Epoch 30 Loss: 0.7132
+  Fold 12 Epoch 40 Loss: 0.7160
+  Fold 12 Epoch 50 Loss: 0.7146
+  Fold 12 Epoch 60 Loss: 0.7126
+  Fold 12 Epoch 70 Loss: 0.7140
+  Fold 12 Epoch 80 Loss: 0.7143
+
+>>> [Eval] Inferencing Fold 12...
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/SBHAR/pre_train/CNN1D/sbhar_CNN1D_pretrained_loso_sbj_12.pth
+   -> Loading weights from ./output_sbhar_cola_ddp/seed_2022/seed_2022/fold12/model_final.pth...
+test_window: 0it [00:00, ?it/s]test_window: 1it [00:00,  4.53it/s]                                   standing & 0.2222 & 0.2222 & 0.0139 & 0.0139 & 0.0139 & 0.0972 \\
+stand-to-sit & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+sitting & 0.4812 & 0.3929 & 0.1071 & 0.0476 & 0.0476 & 0.2153 \\
+sit-to-stand & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+stand-to-lie & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+lying & 0.8500 & 0.8500 & 0.2000 & 0.0500 & 0.0000 & 0.3900 \\
+lie-to-sit & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+sit-to-lie & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+lie-to-stand & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+walking & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+walking_downstairs & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+walking_upstairs & 0.0222 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0044 \\
+  --> test_window: mAP@Avg = 0.0589
+test_full: 0it [00:00, ?it/s]                                📊 [Stats] Time: 20.02ms | Mem: 78.34MB
+standing & 0.4481 & 0.3929 & 0.1080 & 0.0000 & 0.0000 & 0.1898 \\
+stand-to-sit & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+sitting & 0.7644 & 0.7644 & 0.5577 & 0.2885 & 0.0000 & 0.4750 \\
+sit-to-stand & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+stand-to-lie & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+lying & 0.6667 & 0.6667 & 0.6667 & 0.1667 & 0.0000 & 0.4333 \\
+lie-to-sit & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+sit-to-lie & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+lie-to-stand & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+walking & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+walking_downstairs & 0.0083 & 0.0083 & 0.0083 & 0.0000 & 0.0000 & 0.0050 \\
+walking_upstairs & 0.0064 & 0.0064 & 0.0000 & 0.0000 & 0.0000 & 0.0026 \\
+  --> test_full: mAP@Avg = 0.0921
+
+>>> [Train DDP] WEAR Fold 13...
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/SBHAR/pre_train/CNN1D/sbhar_CNN1D_pretrained_loso_sbj_13.pth==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/SBHAR/pre_train/CNN1D/sbhar_CNN1D_pretrained_loso_sbj_13.pth
+
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/SBHAR/pre_train/CNN1D/sbhar_CNN1D_pretrained_loso_sbj_13.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/SBHAR/pre_train/CNN1D/sbhar_CNN1D_pretrained_loso_sbj_13.pth
+  Fold 13 Epoch 10 Loss: 0.7158
+  Fold 13 Epoch 20 Loss: 0.7147
+  Fold 13 Epoch 30 Loss: 0.7135
+  Fold 13 Epoch 40 Loss: 0.7135
+  Fold 13 Epoch 50 Loss: 0.7134
+  Fold 13 Epoch 60 Loss: 0.7138
+  Fold 13 Epoch 70 Loss: 0.7129
+  Fold 13 Epoch 80 Loss: 0.7145
+
+>>> [Eval] Inferencing Fold 13...
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/SBHAR/pre_train/CNN1D/sbhar_CNN1D_pretrained_loso_sbj_13.pth
+   -> Loading weights from ./output_sbhar_cola_ddp/seed_2022/seed_2022/fold13/model_final.pth...
+test_window: 0it [00:00, ?it/s]test_window: 1it [00:00,  4.17it/s]                                   standing & 0.4510 & 0.1468 & 0.0359 & 0.0359 & 0.0359 & 0.1411 \\
+stand-to-sit & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+sitting & 0.6635 & 0.1987 & 0.0865 & 0.0417 & 0.0417 & 0.2064 \\
+sit-to-stand & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+stand-to-lie & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+lying & 0.4444 & 0.4444 & 0.4444 & 0.4444 & 0.4444 & 0.4444 \\
+lie-to-sit & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+sit-to-lie & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+lie-to-stand & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+walking & 0.0152 & 0.0069 & 0.0069 & 0.0069 & 0.0000 & 0.0072 \\
+walking_downstairs & 0.1935 & 0.1935 & 0.0920 & 0.0230 & 0.0057 & 0.1016 \\
+walking_upstairs & 0.0395 & 0.0395 & 0.0256 & 0.0256 & 0.0000 & 0.0260 \\
+  --> test_window: mAP@Avg = 0.0772
+test_full: 0it [00:00, ?it/s]                                📊 [Stats] Time: 20.39ms | Mem: 77.20MB
+standing & 0.3141 & 0.3141 & 0.0192 & 0.0192 & 0.0000 & 0.1333 \\
+stand-to-sit & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+sitting & 0.4338 & 0.2904 & 0.2904 & 0.2904 & 0.0556 & 0.2721 \\
+sit-to-stand & 0.0238 & 0.0238 & 0.0000 & 0.0000 & 0.0000 & 0.0095 \\
+stand-to-lie & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+lying & 0.5000 & 0.5000 & 0.5000 & 0.5000 & 0.5000 & 0.5000 \\
+lie-to-sit & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+sit-to-lie & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+lie-to-stand & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+walking & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+walking_downstairs & 0.1404 & 0.1046 & 0.1046 & 0.0577 & 0.0256 & 0.0866 \\
+walking_upstairs & 0.0088 & 0.0088 & 0.0088 & 0.0000 & 0.0000 & 0.0053 \\
+  --> test_full: mAP@Avg = 0.0839
+
+>>> [Train DDP] WEAR Fold 14...
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/SBHAR/pre_train/CNN1D/sbhar_CNN1D_pretrained_loso_sbj_14.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/SBHAR/pre_train/CNN1D/sbhar_CNN1D_pretrained_loso_sbj_14.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/SBHAR/pre_train/CNN1D/sbhar_CNN1D_pretrained_loso_sbj_14.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/SBHAR/pre_train/CNN1D/sbhar_CNN1D_pretrained_loso_sbj_14.pth
+  Fold 14 Epoch 10 Loss: 0.7164
+  Fold 14 Epoch 20 Loss: 0.7145
+  Fold 14 Epoch 30 Loss: 0.7130
+  Fold 14 Epoch 40 Loss: 0.7126
+  Fold 14 Epoch 50 Loss: 0.7128
+  Fold 14 Epoch 60 Loss: 0.7130
+  Fold 14 Epoch 70 Loss: 0.7121
+  Fold 14 Epoch 80 Loss: 0.7129
+
+>>> [Eval] Inferencing Fold 14...
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/SBHAR/pre_train/CNN1D/sbhar_CNN1D_pretrained_loso_sbj_14.pth
+   -> Loading weights from ./output_sbhar_cola_ddp/seed_2022/seed_2022/fold14/model_final.pth...
+test_window: 0it [00:00, ?it/s]test_window: 1it [00:00,  2.65it/s]                                   standing & 0.7409 & 0.4414 & 0.0344 & 0.0344 & 0.0058 & 0.2514 \\
+stand-to-sit & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+sitting & 0.0580 & 0.0430 & 0.0326 & 0.0179 & 0.0179 & 0.0339 \\
+sit-to-stand & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+stand-to-lie & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+lying & 0.8542 & 0.7275 & 0.7275 & 0.0825 & 0.0825 & 0.4948 \\
+lie-to-sit & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+sit-to-lie & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+lie-to-stand & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+walking & 0.2870 & 0.2245 & 0.2245 & 0.1278 & 0.1000 & 0.1928 \\
+walking_downstairs & 0.7667 & 0.4667 & 0.2206 & 0.1889 & 0.0185 & 0.3323 \\
+walking_upstairs & 0.8284 & 0.8284 & 0.7091 & 0.5111 & 0.2306 & 0.6215 \\
+  --> test_window: mAP@Avg = 0.1606
+test_full: 0it [00:00, ?it/s]test_full: 1it [00:00,  7.96it/s]                                    📊 [Stats] Time: 18.59ms | Mem: 61.40MB
+standing & 0.4861 & 0.4861 & 0.3656 & 0.0439 & 0.0439 & 0.2851 \\
+stand-to-sit & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+sitting & 0.0952 & 0.0952 & 0.0952 & 0.0536 & 0.0357 & 0.0750 \\
+sit-to-stand & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+stand-to-lie & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+lying & 0.8929 & 0.8929 & 0.8929 & 0.8929 & 0.1964 & 0.7536 \\
+lie-to-sit & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+sit-to-lie & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+lie-to-stand & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+walking & 0.3350 & 0.1150 & 0.1150 & 0.1150 & 0.0587 & 0.1477 \\
+walking_downstairs & 0.6397 & 0.1759 & 0.1759 & 0.0611 & 0.0139 & 0.2133 \\
+walking_upstairs & 0.9583 & 0.7653 & 0.5463 & 0.5000 & 0.2222 & 0.5984 \\
+  --> test_full: mAP@Avg = 0.1728
+
+>>> [Train DDP] WEAR Fold 15...
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/SBHAR/pre_train/CNN1D/sbhar_CNN1D_pretrained_loso_sbj_15.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/SBHAR/pre_train/CNN1D/sbhar_CNN1D_pretrained_loso_sbj_15.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/SBHAR/pre_train/CNN1D/sbhar_CNN1D_pretrained_loso_sbj_15.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/SBHAR/pre_train/CNN1D/sbhar_CNN1D_pretrained_loso_sbj_15.pth
+  Fold 15 Epoch 10 Loss: 0.7160
+  Fold 15 Epoch 20 Loss: 0.7144
+  Fold 15 Epoch 30 Loss: 0.7157
+  Fold 15 Epoch 40 Loss: 0.7143
+  Fold 15 Epoch 50 Loss: 0.7144
+  Fold 15 Epoch 60 Loss: 0.7138
+  Fold 15 Epoch 70 Loss: 0.7138
+  Fold 15 Epoch 80 Loss: 0.7114
+
+>>> [Eval] Inferencing Fold 15...
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/SBHAR/pre_train/CNN1D/sbhar_CNN1D_pretrained_loso_sbj_15.pth
+   -> Loading weights from ./output_sbhar_cola_ddp/seed_2022/seed_2022/fold15/model_final.pth...
+test_window: 0it [00:00, ?it/s]test_window: 1it [00:00,  2.05it/s]                                   standing & 0.2964 & 0.2964 & 0.2964 & 0.0949 & 0.0096 & 0.1987 \\
+stand-to-sit & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+sitting & 0.0417 & 0.0412 & 0.0232 & 0.0104 & 0.0033 & 0.0240 \\
+sit-to-stand & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+stand-to-lie & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+lying & 0.4444 & 0.4444 & 0.4444 & 0.4444 & 0.4444 & 0.4444 \\
+lie-to-sit & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+sit-to-lie & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+lie-to-stand & 0.0093 & 0.0093 & 0.0000 & 0.0000 & 0.0000 & 0.0037 \\
+walking & 0.0500 & 0.0500 & 0.0500 & 0.0125 & 0.0000 & 0.0325 \\
+walking_downstairs & 1.0000 & 1.0000 & 1.0000 & 1.0000 & 1.0000 & 1.0000 \\
+walking_upstairs & 0.4455 & 0.4455 & 0.4455 & 0.2111 & 0.0185 & 0.3132 \\
+  --> test_window: mAP@Avg = 0.1680
+test_full: 0it [00:00, ?it/s]test_full: 1it [00:00,  6.40it/s]                                    📊 [Stats] Time: 19.95ms | Mem: 86.98MB
+standing & 0.5036 & 0.5036 & 0.5036 & 0.3152 & 0.0109 & 0.3674 \\
+stand-to-sit & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+sitting & 0.0625 & 0.0352 & 0.0352 & 0.0352 & 0.0189 & 0.0374 \\
+sit-to-stand & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+stand-to-lie & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+lying & 0.3353 & 0.3353 & 0.3353 & 0.3353 & 0.2525 & 0.3188 \\
+lie-to-sit & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+sit-to-lie & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+lie-to-stand & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+walking & 0.0755 & 0.0755 & 0.0425 & 0.0425 & 0.0058 & 0.0483 \\
+walking_downstairs & 1.0000 & 1.0000 & 1.0000 & 1.0000 & 1.0000 & 1.0000 \\
+walking_upstairs & 0.5000 & 0.5000 & 0.3788 & 0.2424 & 0.1500 & 0.3542 \\
+  --> test_full: mAP@Avg = 0.1772
+
+>>> [Train DDP] WEAR Fold 16...
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/SBHAR/pre_train/CNN1D/sbhar_CNN1D_pretrained_loso_sbj_16.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/SBHAR/pre_train/CNN1D/sbhar_CNN1D_pretrained_loso_sbj_16.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/SBHAR/pre_train/CNN1D/sbhar_CNN1D_pretrained_loso_sbj_16.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/SBHAR/pre_train/CNN1D/sbhar_CNN1D_pretrained_loso_sbj_16.pth
+  Fold 16 Epoch 10 Loss: 0.7163
+  Fold 16 Epoch 20 Loss: 0.7150
+  Fold 16 Epoch 30 Loss: 0.7159
+  Fold 16 Epoch 40 Loss: 0.7145
+  Fold 16 Epoch 50 Loss: 0.7141
+  Fold 16 Epoch 60 Loss: 0.7139
+  Fold 16 Epoch 70 Loss: 0.7139
+  Fold 16 Epoch 80 Loss: 0.7116
+
+>>> [Eval] Inferencing Fold 16...
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/SBHAR/pre_train/CNN1D/sbhar_CNN1D_pretrained_loso_sbj_16.pth
+   -> Loading weights from ./output_sbhar_cola_ddp/seed_2022/seed_2022/fold16/model_final.pth...
+test_window: 0it [00:00, ?it/s]test_window: 1it [00:00,  1.67it/s]                                   standing & 0.2353 & 0.2353 & 0.0588 & 0.0179 & 0.0179 & 0.1130 \\
+stand-to-sit & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+sitting & 0.0500 & 0.0500 & 0.0500 & 0.0000 & 0.0000 & 0.0300 \\
+sit-to-stand & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+stand-to-lie & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+lying & 0.5333 & 0.5333 & 0.2625 & 0.2625 & 0.1042 & 0.3392 \\
+lie-to-sit & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+sit-to-lie & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+lie-to-stand & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+walking & 1.0000 & 1.0000 & 0.6875 & 0.6875 & 0.6875 & 0.8125 \\
+walking_downstairs & 0.4615 & 0.4615 & 0.4615 & 0.4615 & 0.4615 & 0.4615 \\
+walking_upstairs & 1.0000 & 1.0000 & 1.0000 & 1.0000 & 1.0000 & 1.0000 \\
+  --> test_window: mAP@Avg = 0.2297
+test_full: 0it [00:00, ?it/s]test_full: 1it [00:00,  6.64it/s]                                    📊 [Stats] Time: 18.62ms | Mem: 67.07MB
+standing & 0.1818 & 0.1818 & 0.1023 & 0.0455 & 0.0125 & 0.1048 \\
+stand-to-sit & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+sitting & 0.0667 & 0.0667 & 0.0667 & 0.0667 & 0.0185 & 0.0570 \\
+sit-to-stand & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+stand-to-lie & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+lying & 0.6190 & 0.6190 & 0.6190 & 0.6190 & 0.4583 & 0.5869 \\
+lie-to-sit & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+sit-to-lie & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+lie-to-stand & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+walking & 0.8750 & 0.8750 & 0.8750 & 0.8750 & 0.8750 & 0.8750 \\
+walking_downstairs & 0.5455 & 0.5000 & 0.5000 & 0.5000 & 0.3472 & 0.4785 \\
+walking_upstairs & 0.9583 & 0.9583 & 0.8750 & 0.8750 & 0.8750 & 0.9083 \\
+  --> test_full: mAP@Avg = 0.2509
+
+>>> [Train DDP] WEAR Fold 17...
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/SBHAR/pre_train/CNN1D/sbhar_CNN1D_pretrained_loso_sbj_17.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/SBHAR/pre_train/CNN1D/sbhar_CNN1D_pretrained_loso_sbj_17.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/SBHAR/pre_train/CNN1D/sbhar_CNN1D_pretrained_loso_sbj_17.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/SBHAR/pre_train/CNN1D/sbhar_CNN1D_pretrained_loso_sbj_17.pth
+  Fold 17 Epoch 10 Loss: 0.7151
+  Fold 17 Epoch 20 Loss: 0.7168
+  Fold 17 Epoch 30 Loss: 0.7149
+  Fold 17 Epoch 40 Loss: 0.7144
+  Fold 17 Epoch 50 Loss: 0.7142
+  Fold 17 Epoch 60 Loss: 0.7144
+  Fold 17 Epoch 70 Loss: 0.7149
+  Fold 17 Epoch 80 Loss: 0.7132
+
+>>> [Eval] Inferencing Fold 17...
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/SBHAR/pre_train/CNN1D/sbhar_CNN1D_pretrained_loso_sbj_17.pth
+   -> Loading weights from ./output_sbhar_cola_ddp/seed_2022/seed_2022/fold17/model_final.pth...
+test_window: 0it [00:00, ?it/s]test_window: 1it [00:00,  2.66it/s]                                   standing & 0.2053 & 0.2053 & 0.1011 & 0.1011 & 0.0081 & 0.1242 \\
+stand-to-sit & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+sitting & 0.3681 & 0.3681 & 0.1458 & 0.0139 & 0.0000 & 0.1792 \\
+sit-to-stand & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+stand-to-lie & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+lying & 0.5833 & 0.5833 & 0.5833 & 0.5833 & 0.5833 & 0.5833 \\
+lie-to-sit & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+sit-to-lie & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+lie-to-stand & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+walking & 0.0133 & 0.0133 & 0.0000 & 0.0000 & 0.0000 & 0.0053 \\
+walking_downstairs & 0.7452 & 0.1904 & 0.1904 & 0.1904 & 0.1904 & 0.3014 \\
+walking_upstairs & 0.4960 & 0.2420 & 0.1132 & 0.0567 & 0.0408 & 0.1897 \\
+  --> test_window: mAP@Avg = 0.1153
+test_full: 0it [00:00, ?it/s]test_full: 1it [00:00,  7.75it/s]                                    📊 [Stats] Time: 20.57ms | Mem: 68.87MB
+standing & 0.2964 & 0.2964 & 0.2964 & 0.2964 & 0.0179 & 0.2407 \\
+stand-to-sit & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+sitting & 0.4583 & 0.4583 & 0.4583 & 0.0500 & 0.0000 & 0.2850 \\
+sit-to-stand & 0.0172 & 0.0172 & 0.0000 & 0.0000 & 0.0000 & 0.0069 \\
+stand-to-lie & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+lying & 1.0000 & 1.0000 & 1.0000 & 1.0000 & 0.7500 & 0.9500 \\
+lie-to-sit & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+sit-to-lie & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+lie-to-stand & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+walking & 0.0056 & 0.0056 & 0.0000 & 0.0000 & 0.0000 & 0.0022 \\
+walking_downstairs & 0.2851 & 0.2392 & 0.1785 & 0.1042 & 0.0667 & 0.1747 \\
+walking_upstairs & 0.7889 & 0.4455 & 0.2273 & 0.1808 & 0.1364 & 0.3558 \\
+  --> test_full: mAP@Avg = 0.1679
+
+>>> [Train DDP] WEAR Fold 18...
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/SBHAR/pre_train/CNN1D/sbhar_CNN1D_pretrained_loso_sbj_18.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/SBHAR/pre_train/CNN1D/sbhar_CNN1D_pretrained_loso_sbj_18.pth==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/SBHAR/pre_train/CNN1D/sbhar_CNN1D_pretrained_loso_sbj_18.pth
+
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/SBHAR/pre_train/CNN1D/sbhar_CNN1D_pretrained_loso_sbj_18.pth
+  Fold 18 Epoch 10 Loss: 0.7175
+  Fold 18 Epoch 20 Loss: 0.7111
+  Fold 18 Epoch 30 Loss: 0.7144
+  Fold 18 Epoch 40 Loss: 0.7126
+  Fold 18 Epoch 50 Loss: 0.7129
+  Fold 18 Epoch 60 Loss: 0.7124
+  Fold 18 Epoch 70 Loss: 0.7134
+  Fold 18 Epoch 80 Loss: 0.7118
+
+>>> [Eval] Inferencing Fold 18...
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/SBHAR/pre_train/CNN1D/sbhar_CNN1D_pretrained_loso_sbj_18.pth
+   -> Loading weights from ./output_sbhar_cola_ddp/seed_2022/seed_2022/fold18/model_final.pth...
+test_window: 0it [00:00, ?it/s]test_window: 1it [00:00,  2.35it/s]                                   standing & 0.4870 & 0.4500 & 0.4500 & 0.4500 & 0.0000 & 0.3674 \\
+stand-to-sit & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+sitting & 0.0533 & 0.0300 & 0.0230 & 0.0230 & 0.0044 & 0.0267 \\
+sit-to-stand & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+stand-to-lie & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+lying & 0.7292 & 0.7292 & 0.4583 & 0.2083 & 0.1250 & 0.4500 \\
+lie-to-sit & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+sit-to-lie & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+lie-to-stand & 0.0058 & 0.0058 & 0.0000 & 0.0000 & 0.0000 & 0.0023 \\
+walking & 1.0000 & 1.0000 & 1.0000 & 0.7500 & 0.0000 & 0.7500 \\
+walking_downstairs & 0.6026 & 0.6026 & 0.6026 & 0.5749 & 0.5556 & 0.5877 \\
+walking_upstairs & 0.0845 & 0.0483 & 0.0375 & 0.0375 & 0.0167 & 0.0449 \\
+  --> test_window: mAP@Avg = 0.1858
+test_full: 0it [00:00, ?it/s]test_full: 1it [00:00,  7.67it/s]                                    📊 [Stats] Time: 15.28ms | Mem: 81.17MB
+standing & 0.1739 & 0.1739 & 0.1739 & 0.0556 & 0.0139 & 0.1182 \\
+stand-to-sit & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+sitting & 0.0571 & 0.0571 & 0.0571 & 0.0571 & 0.0571 & 0.0571 \\
+sit-to-stand & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+stand-to-lie & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+lying & 0.8333 & 0.8333 & 0.8333 & 0.8333 & 0.6250 & 0.7917 \\
+lie-to-sit & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+sit-to-lie & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+lie-to-stand & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+walking & 0.8542 & 0.8542 & 0.8542 & 0.0000 & 0.0000 & 0.5125 \\
+walking_downstairs & 0.4681 & 0.4681 & 0.4488 & 0.4488 & 0.3611 & 0.4390 \\
+walking_upstairs & 0.2702 & 0.0583 & 0.0312 & 0.0040 & 0.0040 & 0.0735 \\
+  --> test_full: mAP@Avg = 0.1660
+
+>>> [Train DDP] WEAR Fold 19...
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/SBHAR/pre_train/CNN1D/sbhar_CNN1D_pretrained_loso_sbj_19.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/SBHAR/pre_train/CNN1D/sbhar_CNN1D_pretrained_loso_sbj_19.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/SBHAR/pre_train/CNN1D/sbhar_CNN1D_pretrained_loso_sbj_19.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/SBHAR/pre_train/CNN1D/sbhar_CNN1D_pretrained_loso_sbj_19.pth
+  Fold 19 Epoch 10 Loss: 0.7159
+  Fold 19 Epoch 20 Loss: 0.7152
+  Fold 19 Epoch 30 Loss: 0.7166
+  Fold 19 Epoch 40 Loss: 0.7141
+  Fold 19 Epoch 50 Loss: 0.7144
+  Fold 19 Epoch 60 Loss: 0.7154
+  Fold 19 Epoch 70 Loss: 0.7133
+  Fold 19 Epoch 80 Loss: 0.7140
+
+>>> [Eval] Inferencing Fold 19...
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/SBHAR/pre_train/CNN1D/sbhar_CNN1D_pretrained_loso_sbj_19.pth
+   -> Loading weights from ./output_sbhar_cola_ddp/seed_2022/seed_2022/fold19/model_final.pth...
+test_window: 0it [00:00, ?it/s]test_window: 1it [00:00,  3.86it/s]                                   standing & 0.2000 & 0.2000 & 0.1371 & 0.0500 & 0.0000 & 0.1174 \\
+stand-to-sit & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+sitting & 0.1995 & 0.1625 & 0.0667 & 0.0167 & 0.0000 & 0.0891 \\
+sit-to-stand & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+stand-to-lie & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+lying & 0.8000 & 0.8000 & 0.8000 & 0.8000 & 0.8000 & 0.8000 \\
+lie-to-sit & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+sit-to-lie & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+lie-to-stand & 0.0139 & 0.0139 & 0.0000 & 0.0000 & 0.0000 & 0.0056 \\
+walking & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+walking_downstairs & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+walking_upstairs & 0.0405 & 0.0405 & 0.0256 & 0.0000 & 0.0000 & 0.0213 \\
+  --> test_window: mAP@Avg = 0.0861
+test_full: 0it [00:00, ?it/s]                                📊 [Stats] Time: 19.86ms | Mem: 64.56MB
+standing & 0.2857 & 0.2857 & 0.1607 & 0.0714 & 0.0179 & 0.1643 \\
+stand-to-sit & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+sitting & 0.3839 & 0.3214 & 0.1429 & 0.1429 & 0.0500 & 0.2082 \\
+sit-to-stand & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+stand-to-lie & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+lying & 1.0000 & 1.0000 & 1.0000 & 1.0000 & 1.0000 & 1.0000 \\
+lie-to-sit & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+sit-to-lie & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+lie-to-stand & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+walking & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+walking_downstairs & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+walking_upstairs & 0.0417 & 0.0111 & 0.0111 & 0.0000 & 0.0000 & 0.0128 \\
+  --> test_full: mAP@Avg = 0.1154
+
+>>> [Train DDP] WEAR Fold 20...
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/SBHAR/pre_train/CNN1D/sbhar_CNN1D_pretrained_loso_sbj_20.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/SBHAR/pre_train/CNN1D/sbhar_CNN1D_pretrained_loso_sbj_20.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/SBHAR/pre_train/CNN1D/sbhar_CNN1D_pretrained_loso_sbj_20.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/SBHAR/pre_train/CNN1D/sbhar_CNN1D_pretrained_loso_sbj_20.pth
+  Fold 20 Epoch 10 Loss: 0.7169
+  Fold 20 Epoch 20 Loss: 0.7152
+  Fold 20 Epoch 30 Loss: 0.7156
+  Fold 20 Epoch 40 Loss: 0.7144
+  Fold 20 Epoch 50 Loss: 0.7155
+  Fold 20 Epoch 60 Loss: 0.7117
+  Fold 20 Epoch 70 Loss: 0.7124
+  Fold 20 Epoch 80 Loss: 0.7139
+
+>>> [Eval] Inferencing Fold 20...
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/SBHAR/pre_train/CNN1D/sbhar_CNN1D_pretrained_loso_sbj_20.pth
+   -> Loading weights from ./output_sbhar_cola_ddp/seed_2022/seed_2022/fold20/model_final.pth...
+test_window: 0it [00:00, ?it/s]test_window: 1it [00:00,  1.92it/s]                                   standing & 0.3636 & 0.1875 & 0.0833 & 0.0208 & 0.0208 & 0.1352 \\
+stand-to-sit & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+sitting & 0.0833 & 0.0571 & 0.0571 & 0.0571 & 0.0369 & 0.0583 \\
+sit-to-stand & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+stand-to-lie & 0.0066 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0013 \\
+lying & 0.4250 & 0.4250 & 0.2250 & 0.2250 & 0.0250 & 0.2650 \\
+lie-to-sit & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+sit-to-lie & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+lie-to-stand & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+walking & 0.1667 & 0.1667 & 0.1160 & 0.0133 & 0.0034 & 0.0932 \\
+walking_downstairs & 0.9524 & 0.8264 & 0.8264 & 0.6667 & 0.5000 & 0.7544 \\
+walking_upstairs & 0.2706 & 0.2378 & 0.2143 & 0.2143 & 0.0952 & 0.2064 \\
+  --> test_window: mAP@Avg = 0.1262
+test_full: 0it [00:00, ?it/s]test_full: 1it [00:00,  7.34it/s]                                    📊 [Stats] Time: 20.27ms | Mem: 66.87MB
+standing & 0.3333 & 0.3333 & 0.3333 & 0.2250 & 0.1111 & 0.2672 \\
+stand-to-sit & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+sitting & 0.1047 & 0.1047 & 0.1047 & 0.1047 & 0.1047 & 0.1047 \\
+sit-to-stand & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+stand-to-lie & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+lying & 0.2500 & 0.2500 & 0.2500 & 0.2500 & 0.1250 & 0.2250 \\
+lie-to-sit & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+sit-to-lie & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+lie-to-stand & 0.0079 & 0.0079 & 0.0000 & 0.0000 & 0.0000 & 0.0032 \\
+walking & 0.1143 & 0.0856 & 0.0856 & 0.0856 & 0.0479 & 0.0838 \\
+walking_downstairs & 0.7650 & 0.7650 & 0.7650 & 0.7650 & 0.5000 & 0.7120 \\
+walking_upstairs & 0.7131 & 0.5938 & 0.5694 & 0.3750 & 0.1667 & 0.4836 \\
+  --> test_full: mAP@Avg = 0.1566
+
+>>> [Train DDP] WEAR Fold 21...
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/SBHAR/pre_train/CNN1D/sbhar_CNN1D_pretrained_loso_sbj_21.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/SBHAR/pre_train/CNN1D/sbhar_CNN1D_pretrained_loso_sbj_21.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/SBHAR/pre_train/CNN1D/sbhar_CNN1D_pretrained_loso_sbj_21.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/SBHAR/pre_train/CNN1D/sbhar_CNN1D_pretrained_loso_sbj_21.pth
+  Fold 21 Epoch 10 Loss: 0.7168
+  Fold 21 Epoch 20 Loss: 0.7149
+  Fold 21 Epoch 30 Loss: 0.7132
+  Fold 21 Epoch 40 Loss: 0.7149
+  Fold 21 Epoch 50 Loss: 0.7123
+  Fold 21 Epoch 60 Loss: 0.7129
+  Fold 21 Epoch 70 Loss: 0.7133
+  Fold 21 Epoch 80 Loss: 0.7129
+
+>>> [Eval] Inferencing Fold 21...
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/SBHAR/pre_train/CNN1D/sbhar_CNN1D_pretrained_loso_sbj_21.pth
+   -> Loading weights from ./output_sbhar_cola_ddp/seed_2022/seed_2022/fold21/model_final.pth...
+test_window: 0it [00:00, ?it/s]test_window: 1it [00:00,  2.28it/s]                                   standing & 0.0952 & 0.0577 & 0.0286 & 0.0286 & 0.0071 & 0.0434 \\
+stand-to-sit & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+sitting & 0.0490 & 0.0392 & 0.0221 & 0.0098 & 0.0000 & 0.0240 \\
+sit-to-stand & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+stand-to-lie & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+lying & 0.2105 & 0.1818 & 0.1818 & 0.1023 & 0.0114 & 0.1376 \\
+lie-to-sit & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+sit-to-lie & 0.0096 & 0.0096 & 0.0096 & 0.0096 & 0.0096 & 0.0096 \\
+walking & 0.8542 & 0.8542 & 0.8542 & 0.8542 & 0.0000 & 0.6833 \\
+walking_downstairs & 0.6508 & 0.5198 & 0.2508 & 0.2508 & 0.2050 & 0.3754 \\
+walking_upstairs & 0.4028 & 0.3873 & 0.2248 & 0.2248 & 0.1667 & 0.2813 \\
+lie-to-stand & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+  --> test_window: mAP@Avg = 0.1296
+test_full: 0it [00:00, ?it/s]test_full: 1it [00:00,  7.61it/s]                                    📊 [Stats] Time: 19.18ms | Mem: 62.29MB
+standing & 0.1081 & 0.1081 & 0.0608 & 0.0270 & 0.0000 & 0.0608 \\
+stand-to-sit & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+sitting & 0.0625 & 0.0625 & 0.0625 & 0.0625 & 0.0185 & 0.0537 \\
+sit-to-stand & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+stand-to-lie & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+lying & 0.2000 & 0.2000 & 0.2000 & 0.2000 & 0.2000 & 0.2000 \\
+lie-to-sit & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+sit-to-lie & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+walking & 0.5833 & 0.5833 & 0.5833 & 0.3500 & 0.2500 & 0.4700 \\
+walking_downstairs & 0.3186 & 0.3063 & 0.3063 & 0.2787 & 0.2787 & 0.2977 \\
+walking_upstairs & 0.3778 & 0.3753 & 0.2730 & 0.2238 & 0.1825 & 0.2865 \\
+lie-to-stand & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+  --> test_full: mAP@Avg = 0.1141
+
+>>> [Train DDP] WEAR Fold 22...
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/SBHAR/pre_train/CNN1D/sbhar_CNN1D_pretrained_loso_sbj_22.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/SBHAR/pre_train/CNN1D/sbhar_CNN1D_pretrained_loso_sbj_22.pth==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/SBHAR/pre_train/CNN1D/sbhar_CNN1D_pretrained_loso_sbj_22.pth
+
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/SBHAR/pre_train/CNN1D/sbhar_CNN1D_pretrained_loso_sbj_22.pth
+  Fold 22 Epoch 10 Loss: 0.7155
+  Fold 22 Epoch 20 Loss: 0.7152
+  Fold 22 Epoch 30 Loss: 0.7171
+  Fold 22 Epoch 40 Loss: 0.7143
+  Fold 22 Epoch 50 Loss: 0.7146
+  Fold 22 Epoch 60 Loss: 0.7151
+  Fold 22 Epoch 70 Loss: 0.7140
+  Fold 22 Epoch 80 Loss: 0.7136
+
+>>> [Eval] Inferencing Fold 22...
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/SBHAR/pre_train/CNN1D/sbhar_CNN1D_pretrained_loso_sbj_22.pth
+   -> Loading weights from ./output_sbhar_cola_ddp/seed_2022/seed_2022/fold22/model_final.pth...
+test_window: 0it [00:00, ?it/s]test_window: 1it [00:00,  3.40it/s]                                   standing & 0.6667 & 0.1717 & 0.1458 & 0.1458 & 0.0000 & 0.2260 \\
+stand-to-sit & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+sitting & 0.2367 & 0.2367 & 0.2367 & 0.2367 & 0.0000 & 0.1893 \\
+sit-to-stand & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+stand-to-lie & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+lying & 0.5714 & 0.5714 & 0.3750 & 0.3750 & 0.0417 & 0.3869 \\
+lie-to-sit & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+sit-to-lie & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+lie-to-stand & 0.0116 & 0.0116 & 0.0000 & 0.0000 & 0.0000 & 0.0047 \\
+walking & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+walking_downstairs & 0.0180 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0036 \\
+walking_upstairs & 0.0288 & 0.0288 & 0.0128 & 0.0128 & 0.0032 & 0.0173 \\
+  --> test_window: mAP@Avg = 0.0690
+test_full: 0it [00:00, ?it/s]                                📊 [Stats] Time: 19.98ms | Mem: 81.94MB
+standing & 0.3582 & 0.3582 & 0.3582 & 0.0769 & 0.0192 & 0.2341 \\
+stand-to-sit & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+sitting & 0.2522 & 0.2522 & 0.2522 & 0.1357 & 0.0119 & 0.1808 \\
+sit-to-stand & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+stand-to-lie & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+lying & 1.0000 & 1.0000 & 1.0000 & 1.0000 & 0.7500 & 0.9500 \\
+lie-to-sit & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+sit-to-lie & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+lie-to-stand & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+walking & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+walking_downstairs & 0.0406 & 0.0278 & 0.0076 & 0.0076 & 0.0000 & 0.0167 \\
+walking_upstairs & 0.0455 & 0.0455 & 0.0290 & 0.0290 & 0.0072 & 0.0312 \\
+  --> test_full: mAP@Avg = 0.1177
+
+>>> [Train DDP] WEAR Fold 23...
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/SBHAR/pre_train/CNN1D/sbhar_CNN1D_pretrained_loso_sbj_23.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/SBHAR/pre_train/CNN1D/sbhar_CNN1D_pretrained_loso_sbj_23.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/SBHAR/pre_train/CNN1D/sbhar_CNN1D_pretrained_loso_sbj_23.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/SBHAR/pre_train/CNN1D/sbhar_CNN1D_pretrained_loso_sbj_23.pth
+  Fold 23 Epoch 10 Loss: 0.7171
+  Fold 23 Epoch 20 Loss: 0.7152
+  Fold 23 Epoch 30 Loss: 0.7154
+  Fold 23 Epoch 40 Loss: 0.7146
+  Fold 23 Epoch 50 Loss: 0.7158
+  Fold 23 Epoch 60 Loss: 0.7122
+  Fold 23 Epoch 70 Loss: 0.7126
+  Fold 23 Epoch 80 Loss: 0.7136
+
+>>> [Eval] Inferencing Fold 23...
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/SBHAR/pre_train/CNN1D/sbhar_CNN1D_pretrained_loso_sbj_23.pth
+   -> Loading weights from ./output_sbhar_cola_ddp/seed_2022/seed_2022/fold23/model_final.pth...
+test_window: 0it [00:00, ?it/s]test_window: 1it [00:00,  2.16it/s]                                   standing & 0.1538 & 0.0643 & 0.0286 & 0.0286 & 0.0286 & 0.0608 \\
+stand-to-sit & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+sitting & 0.0500 & 0.0500 & 0.0500 & 0.0281 & 0.0031 & 0.0363 \\
+sit-to-stand & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+stand-to-lie & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+lying & 0.4000 & 0.4000 & 0.4000 & 0.2812 & 0.0312 & 0.3025 \\
+lie-to-sit & 0.0089 & 0.0089 & 0.0000 & 0.0000 & 0.0000 & 0.0036 \\
+sit-to-lie & 0.0070 & 0.0070 & 0.0000 & 0.0000 & 0.0000 & 0.0028 \\
+lie-to-stand & 0.0070 & 0.0070 & 0.0070 & 0.0070 & 0.0000 & 0.0056 \\
+walking & 0.4667 & 0.4667 & 0.4667 & 0.4667 & 0.0357 & 0.3805 \\
+walking_downstairs & 0.6095 & 0.5840 & 0.3318 & 0.1645 & 0.0000 & 0.3380 \\
+walking_upstairs & 0.5823 & 0.4374 & 0.1750 & 0.1363 & 0.0833 & 0.2829 \\
+  --> test_window: mAP@Avg = 0.1177
+test_full: 0it [00:00, ?it/s]test_full: 1it [00:00,  6.77it/s]                                    📊 [Stats] Time: 20.26ms | Mem: 84.52MB
+standing & 0.1818 & 0.1818 & 0.1818 & 0.1071 & 0.0147 & 0.1335 \\
+stand-to-sit & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+sitting & 0.0727 & 0.0727 & 0.0727 & 0.0409 & 0.0000 & 0.0518 \\
+sit-to-stand & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+stand-to-lie & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+lying & 0.2667 & 0.2667 & 0.2667 & 0.2667 & 0.0167 & 0.2167 \\
+lie-to-sit & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+sit-to-lie & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+lie-to-stand & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+walking & 0.3965 & 0.3965 & 0.3182 & 0.3182 & 0.0000 & 0.2859 \\
+walking_downstairs & 0.5089 & 0.5089 & 0.3990 & 0.3633 & 0.0804 & 0.3721 \\
+walking_upstairs & 0.2185 & 0.2185 & 0.1157 & 0.0247 & 0.0000 & 0.1155 \\
+  --> test_full: mAP@Avg = 0.0979
+
+>>> [Train DDP] WEAR Fold 24...
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/SBHAR/pre_train/CNN1D/sbhar_CNN1D_pretrained_loso_sbj_24.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/SBHAR/pre_train/CNN1D/sbhar_CNN1D_pretrained_loso_sbj_24.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/SBHAR/pre_train/CNN1D/sbhar_CNN1D_pretrained_loso_sbj_24.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/SBHAR/pre_train/CNN1D/sbhar_CNN1D_pretrained_loso_sbj_24.pth
+  Fold 24 Epoch 10 Loss: 0.7156
+  Fold 24 Epoch 20 Loss: 0.7151
+  Fold 24 Epoch 30 Loss: 0.7150
+  Fold 24 Epoch 40 Loss: 0.7151
+  Fold 24 Epoch 50 Loss: 0.7138
+  Fold 24 Epoch 60 Loss: 0.7145
+  Fold 24 Epoch 70 Loss: 0.7133
+  Fold 24 Epoch 80 Loss: 0.7126
+
+>>> [Eval] Inferencing Fold 24...
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/SBHAR/pre_train/CNN1D/sbhar_CNN1D_pretrained_loso_sbj_24.pth
+   -> Loading weights from ./output_sbhar_cola_ddp/seed_2022/seed_2022/fold24/model_final.pth...
+test_window: 0it [00:00, ?it/s]test_window: 1it [00:00,  2.31it/s]                                   standing & 0.3167 & 0.1611 & 0.1111 & 0.1111 & 0.0000 & 0.1400 \\
+stand-to-sit & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+sitting & 0.0465 & 0.0465 & 0.0304 & 0.0135 & 0.0135 & 0.0301 \\
+sit-to-stand & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+stand-to-lie & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+lying & 0.9000 & 0.8542 & 0.8542 & 0.8542 & 0.0417 & 0.7008 \\
+lie-to-sit & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+sit-to-lie & 0.0106 & 0.0106 & 0.0000 & 0.0000 & 0.0000 & 0.0043 \\
+lie-to-stand & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+walking & 0.1026 & 0.1026 & 0.0577 & 0.0577 & 0.0256 & 0.0692 \\
+walking_downstairs & 0.8708 & 0.8708 & 0.6970 & 0.2869 & 0.1667 & 0.5784 \\
+walking_upstairs & 0.8524 & 0.8524 & 0.8524 & 0.8524 & 0.4048 & 0.7629 \\
+  --> test_window: mAP@Avg = 0.1905
+test_full: 0it [00:00, ?it/s]test_full: 1it [00:00,  7.69it/s]                                    📊 [Stats] Time: 13.91ms | Mem: 68.48MB
+standing & 0.7644 & 0.7644 & 0.7644 & 0.7644 & 0.2500 & 0.6615 \\
+stand-to-sit & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+sitting & 0.0635 & 0.0635 & 0.0635 & 0.0635 & 0.0635 & 0.0635 \\
+sit-to-stand & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+stand-to-lie & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+lying & 0.8000 & 0.8000 & 0.8000 & 0.8000 & 0.8000 & 0.8000 \\
+lie-to-sit & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+sit-to-lie & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+lie-to-stand & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+walking & 0.0833 & 0.0833 & 0.0833 & 0.0833 & 0.0833 & 0.0833 \\
+walking_downstairs & 0.9583 & 0.9583 & 0.3028 & 0.2188 & 0.0778 & 0.5032 \\
+walking_upstairs & 0.8284 & 0.8284 & 0.3621 & 0.2644 & 0.2170 & 0.5001 \\
+  --> test_full: mAP@Avg = 0.2176
+
+>>> [Train DDP] WEAR Fold 25...
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/SBHAR/pre_train/CNN1D/sbhar_CNN1D_pretrained_loso_sbj_25.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/SBHAR/pre_train/CNN1D/sbhar_CNN1D_pretrained_loso_sbj_25.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/SBHAR/pre_train/CNN1D/sbhar_CNN1D_pretrained_loso_sbj_25.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/SBHAR/pre_train/CNN1D/sbhar_CNN1D_pretrained_loso_sbj_25.pth
+  Fold 25 Epoch 10 Loss: 0.7158
+  Fold 25 Epoch 20 Loss: 0.7150
+  Fold 25 Epoch 30 Loss: 0.7151
+  Fold 25 Epoch 40 Loss: 0.7152
+  Fold 25 Epoch 50 Loss: 0.7136
+  Fold 25 Epoch 60 Loss: 0.7144
+  Fold 25 Epoch 70 Loss: 0.7132
+  Fold 25 Epoch 80 Loss: 0.7122
+
+>>> [Eval] Inferencing Fold 25...
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/SBHAR/pre_train/CNN1D/sbhar_CNN1D_pretrained_loso_sbj_25.pth
+   -> Loading weights from ./output_sbhar_cola_ddp/seed_2022/seed_2022/fold25/model_final.pth...
+test_window: 0it [00:00, ?it/s]test_window: 1it [00:00,  2.00it/s]                                   standing & 0.1529 & 0.1529 & 0.0086 & 0.0086 & 0.0086 & 0.0663 \\
+stand-to-sit & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+sitting & 0.0526 & 0.0526 & 0.0212 & 0.0212 & 0.0033 & 0.0302 \\
+sit-to-stand & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+stand-to-lie & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+lying & 0.2105 & 0.2105 & 0.2105 & 0.2105 & 0.0526 & 0.1789 \\
+lie-to-sit & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+sit-to-lie & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+lie-to-stand & 0.0091 & 0.0091 & 0.0000 & 0.0000 & 0.0000 & 0.0036 \\
+walking & 1.0000 & 1.0000 & 1.0000 & 1.0000 & 1.0000 & 1.0000 \\
+walking_downstairs & 0.8778 & 0.8778 & 0.8778 & 0.8194 & 0.8194 & 0.8544 \\
+walking_upstairs & 0.6046 & 0.6046 & 0.5288 & 0.4839 & 0.4839 & 0.5412 \\
+  --> test_window: mAP@Avg = 0.2229
+test_full: 0it [00:00, ?it/s]test_full: 1it [00:00,  6.31it/s]                                    📊 [Stats] Time: 19.06ms | Mem: 85.16MB
+standing & 0.2000 & 0.2000 & 0.2000 & 0.2000 & 0.0500 & 0.1700 \\
+stand-to-sit & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+sitting & 0.0329 & 0.0329 & 0.0321 & 0.0321 & 0.0056 & 0.0271 \\
+sit-to-stand & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+stand-to-lie & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+lying & 0.2222 & 0.2222 & 0.2222 & 0.2222 & 0.2222 & 0.2222 \\
+lie-to-sit & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+sit-to-lie & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+lie-to-stand & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+walking & 1.0000 & 1.0000 & 1.0000 & 1.0000 & 0.2500 & 0.8500 \\
+walking_downstairs & 0.8333 & 0.8333 & 0.6364 & 0.6364 & 0.6364 & 0.7152 \\
+walking_upstairs & 0.7506 & 0.7506 & 0.4944 & 0.4944 & 0.4944 & 0.5969 \\
+  --> test_full: mAP@Avg = 0.2151
+
+>>> [Train DDP] WEAR Fold 26...
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/SBHAR/pre_train/CNN1D/sbhar_CNN1D_pretrained_loso_sbj_26.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/SBHAR/pre_train/CNN1D/sbhar_CNN1D_pretrained_loso_sbj_26.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/SBHAR/pre_train/CNN1D/sbhar_CNN1D_pretrained_loso_sbj_26.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/SBHAR/pre_train/CNN1D/sbhar_CNN1D_pretrained_loso_sbj_26.pth
+  Fold 26 Epoch 10 Loss: 0.7183
+  Fold 26 Epoch 20 Loss: 0.7131
+  Fold 26 Epoch 30 Loss: 0.7143
+  Fold 26 Epoch 40 Loss: 0.7143
+  Fold 26 Epoch 50 Loss: 0.7142
+  Fold 26 Epoch 60 Loss: 0.7128
+  Fold 26 Epoch 70 Loss: 0.7131
+  Fold 26 Epoch 80 Loss: 0.7136
+
+>>> [Eval] Inferencing Fold 26...
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/SBHAR/pre_train/CNN1D/sbhar_CNN1D_pretrained_loso_sbj_26.pth
+   -> Loading weights from ./output_sbhar_cola_ddp/seed_2022/seed_2022/fold26/model_final.pth...
+test_window: 0it [00:00, ?it/s]test_window: 1it [00:00,  3.42it/s]                                   standing & 0.5389 & 0.5389 & 0.4833 & 0.2000 & 0.0000 & 0.3522 \\
+stand-to-sit & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+sitting & 0.4000 & 0.4000 & 0.4000 & 0.0625 & 0.0000 & 0.2525 \\
+sit-to-stand & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+stand-to-lie & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+lying & 0.8611 & 0.8611 & 0.8611 & 0.8611 & 0.5000 & 0.7889 \\
+lie-to-sit & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+sit-to-lie & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+lie-to-stand & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+walking & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+walking_downstairs & 0.0947 & 0.0887 & 0.0616 & 0.0222 & 0.0222 & 0.0579 \\
+walking_upstairs & 0.5076 & 0.2996 & 0.2996 & 0.2996 & 0.0818 & 0.2976 \\
+  --> test_window: mAP@Avg = 0.1458
+test_full: 0it [00:00, ?it/s]                                📊 [Stats] Time: 6.10ms | Mem: 64.30MB
+standing & 0.4444 & 0.2500 & 0.2500 & 0.2500 & 0.1111 & 0.2611 \\
+stand-to-sit & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+sitting & 0.2857 & 0.2857 & 0.2857 & 0.1647 & 0.0179 & 0.2079 \\
+sit-to-stand & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+stand-to-lie & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+lying & 1.0000 & 1.0000 & 1.0000 & 1.0000 & 1.0000 & 1.0000 \\
+lie-to-sit & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+sit-to-lie & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+lie-to-stand & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+walking & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+walking_downstairs & 0.1196 & 0.0571 & 0.0571 & 0.0321 & 0.0321 & 0.0596 \\
+walking_upstairs & 0.5000 & 0.5000 & 0.3889 & 0.1956 & 0.0306 & 0.3230 \\
+  --> test_full: mAP@Avg = 0.1543
+
+>>> [Train DDP] WEAR Fold 27...
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/SBHAR/pre_train/CNN1D/sbhar_CNN1D_pretrained_loso_sbj_27.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/SBHAR/pre_train/CNN1D/sbhar_CNN1D_pretrained_loso_sbj_27.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/SBHAR/pre_train/CNN1D/sbhar_CNN1D_pretrained_loso_sbj_27.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/SBHAR/pre_train/CNN1D/sbhar_CNN1D_pretrained_loso_sbj_27.pth
+  Fold 27 Epoch 10 Loss: 0.7174
+  Fold 27 Epoch 20 Loss: 0.7152
+  Fold 27 Epoch 30 Loss: 0.7143
+  Fold 27 Epoch 40 Loss: 0.7140
+  Fold 27 Epoch 50 Loss: 0.7166
+  Fold 27 Epoch 60 Loss: 0.7128
+  Fold 27 Epoch 70 Loss: 0.7129
+  Fold 27 Epoch 80 Loss: 0.7135
+
+>>> [Eval] Inferencing Fold 27...
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/SBHAR/pre_train/CNN1D/sbhar_CNN1D_pretrained_loso_sbj_27.pth
+   -> Loading weights from ./output_sbhar_cola_ddp/seed_2022/seed_2022/fold27/model_final.pth...
+test_window: 0it [00:00, ?it/s]test_window: 1it [00:00,  2.05it/s]                                   standing & 0.2462 & 0.2045 & 0.1411 & 0.1111 & 0.0000 & 0.1406 \\
+stand-to-sit & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+sitting & 0.2679 & 0.1561 & 0.1561 & 0.0625 & 0.0156 & 0.1316 \\
+sit-to-stand & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+lying & 1.0000 & 1.0000 & 0.5938 & 0.5938 & 0.5938 & 0.7562 \\
+sit-to-lie & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+lie-to-stand & 0.0074 & 0.0074 & 0.0074 & 0.0074 & 0.0074 & 0.0074 \\
+walking & 0.1298 & 0.0940 & 0.0940 & 0.0155 & 0.0038 & 0.0674 \\
+walking_downstairs & 0.5322 & 0.3750 & 0.1667 & 0.0938 & 0.0104 & 0.2356 \\
+walking_upstairs & 0.1087 & 0.0427 & 0.0130 & 0.0130 & 0.0019 & 0.0359 \\
+  --> test_window: mAP@Avg = 0.1375
+test_full: 0it [00:00, ?it/s]test_full: 1it [00:00,  7.62it/s]                                    📊 [Stats] Time: 19.04ms | Mem: 66.49MB
+standing & 0.1469 & 0.1469 & 0.1469 & 0.1469 & 0.0670 & 0.1309 \\
+stand-to-sit & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+sitting & 0.1811 & 0.1811 & 0.1811 & 0.0867 & 0.0867 & 0.1434 \\
+sit-to-stand & 0.0081 & 0.0081 & 0.0081 & 0.0081 & 0.0081 & 0.0081 \\
+lying & 1.0000 & 1.0000 & 1.0000 & 1.0000 & 0.6875 & 0.9375 \\
+sit-to-lie & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+lie-to-stand & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+walking & 0.1167 & 0.1115 & 0.0611 & 0.0157 & 0.0056 & 0.0621 \\
+walking_downstairs & 0.4216 & 0.1389 & 0.1078 & 0.0341 & 0.0000 & 0.1405 \\
+walking_upstairs & 0.1722 & 0.1722 & 0.1158 & 0.0812 & 0.0128 & 0.1108 \\
+  --> test_full: mAP@Avg = 0.1533
+
+>>> [Train DDP] WEAR Fold 28...
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/SBHAR/pre_train/CNN1D/sbhar_CNN1D_pretrained_loso_sbj_28.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/SBHAR/pre_train/CNN1D/sbhar_CNN1D_pretrained_loso_sbj_28.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/SBHAR/pre_train/CNN1D/sbhar_CNN1D_pretrained_loso_sbj_28.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/SBHAR/pre_train/CNN1D/sbhar_CNN1D_pretrained_loso_sbj_28.pth
+  Fold 28 Epoch 10 Loss: 0.7185
+  Fold 28 Epoch 20 Loss: 0.7136
+  Fold 28 Epoch 30 Loss: 0.7135
+  Fold 28 Epoch 40 Loss: 0.7134
+  Fold 28 Epoch 50 Loss: 0.7134
+  Fold 28 Epoch 60 Loss: 0.7122
+  Fold 28 Epoch 70 Loss: 0.7126
+  Fold 28 Epoch 80 Loss: 0.7133
+
+>>> [Eval] Inferencing Fold 28...
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/SBHAR/pre_train/CNN1D/sbhar_CNN1D_pretrained_loso_sbj_28.pth
+   -> Loading weights from ./output_sbhar_cola_ddp/seed_2022/seed_2022/fold28/model_final.pth...
+test_window: 0it [00:00, ?it/s]test_window: 1it [00:00,  2.24it/s]                                   standing & 0.1538 & 0.1538 & 0.1538 & 0.0385 & 0.0096 & 0.1019 \\
+stand-to-sit & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+sitting & 0.0519 & 0.0519 & 0.0296 & 0.0132 & 0.0132 & 0.0320 \\
+sit-to-stand & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+stand-to-lie & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+lying & 0.2667 & 0.2667 & 0.2667 & 0.2667 & 0.0769 & 0.2287 \\
+lie-to-sit & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+sit-to-lie & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+lie-to-stand & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+walking & 0.8542 & 0.8542 & 0.8542 & 0.8542 & 0.0000 & 0.6833 \\
+walking_downstairs & 0.6401 & 0.5006 & 0.3504 & 0.3504 & 0.3504 & 0.4383 \\
+walking_upstairs & 0.6681 & 0.4042 & 0.1686 & 0.1555 & 0.1239 & 0.3041 \\
+  --> test_window: mAP@Avg = 0.1490
+test_full: 0it [00:00, ?it/s]test_full: 1it [00:00,  7.19it/s]                                    📊 [Stats] Time: 18.30ms | Mem: 63.92MB
+standing & 0.2222 & 0.2222 & 0.2222 & 0.2222 & 0.0227 & 0.1823 \\
+stand-to-sit & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+sitting & 0.0741 & 0.0741 & 0.0741 & 0.0741 & 0.0000 & 0.0593 \\
+sit-to-stand & 0.0172 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0034 \\
+stand-to-lie & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+lying & 0.3333 & 0.3333 & 0.3333 & 0.1000 & 0.0250 & 0.2250 \\
+lie-to-sit & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+sit-to-lie & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+lie-to-stand & 0.0096 & 0.0096 & 0.0096 & 0.0000 & 0.0000 & 0.0058 \\
+walking & 0.6429 & 0.6429 & 0.6429 & 0.5625 & 0.2500 & 0.5482 \\
+walking_downstairs & 0.4214 & 0.4080 & 0.4080 & 0.4080 & 0.3317 & 0.3954 \\
+walking_upstairs & 0.2721 & 0.2721 & 0.1752 & 0.1752 & 0.1389 & 0.2067 \\
+  --> test_full: mAP@Avg = 0.1355
+
+>>> [Train DDP] WEAR Fold 29...
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/SBHAR/pre_train/CNN1D/sbhar_CNN1D_pretrained_loso_sbj_29.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/SBHAR/pre_train/CNN1D/sbhar_CNN1D_pretrained_loso_sbj_29.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/SBHAR/pre_train/CNN1D/sbhar_CNN1D_pretrained_loso_sbj_29.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/SBHAR/pre_train/CNN1D/sbhar_CNN1D_pretrained_loso_sbj_29.pth
+  Fold 29 Epoch 10 Loss: 0.7160
+  Fold 29 Epoch 20 Loss: 0.7136
+  Fold 29 Epoch 30 Loss: 0.7149
+  Fold 29 Epoch 40 Loss: 0.7142
+  Fold 29 Epoch 50 Loss: 0.7132
+  Fold 29 Epoch 60 Loss: 0.7147
+  Fold 29 Epoch 70 Loss: 0.7139
+  Fold 29 Epoch 80 Loss: 0.7129
+
+>>> [Eval] Inferencing Fold 29...
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/SBHAR/pre_train/CNN1D/sbhar_CNN1D_pretrained_loso_sbj_29.pth
+   -> Loading weights from ./output_sbhar_cola_ddp/seed_2022/seed_2022/fold29/model_final.pth...
+test_window: 0it [00:00, ?it/s]test_window: 1it [00:00,  1.99it/s]                                   standing & 0.3073 & 0.2962 & 0.0346 & 0.0346 & 0.0154 & 0.1376 \\
+stand-to-sit & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+sitting & 0.0476 & 0.0449 & 0.0449 & 0.0257 & 0.0257 & 0.0378 \\
+sit-to-stand & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+stand-to-lie & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+lying & 0.9500 & 0.9500 & 0.9500 & 0.9500 & 0.7500 & 0.9100 \\
+lie-to-sit & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+sit-to-lie & 0.0082 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0016 \\
+lie-to-stand & 0.0052 & 0.0052 & 0.0052 & 0.0052 & 0.0052 & 0.0052 \\
+walking & 0.3214 & 0.2500 & 0.2500 & 0.2500 & 0.1406 & 0.2424 \\
+walking_downstairs & 0.8079 & 0.7530 & 0.6667 & 0.6667 & 0.3667 & 0.6522 \\
+walking_upstairs & 0.6633 & 0.4023 & 0.4023 & 0.4023 & 0.2121 & 0.4164 \\
+  --> test_window: mAP@Avg = 0.2003
+test_full: 0it [00:00, ?it/s]test_full: 1it [00:00,  6.92it/s]                                    📊 [Stats] Time: 15.17ms | Mem: 68.99MB
+standing & 0.3152 & 0.3152 & 0.3152 & 0.0489 & 0.0217 & 0.2033 \\
+stand-to-sit & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+sitting & 0.0580 & 0.0580 & 0.0580 & 0.0580 & 0.0326 & 0.0529 \\
+sit-to-stand & 0.0081 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0016 \\
+stand-to-lie & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+lying & 1.0000 & 1.0000 & 1.0000 & 1.0000 & 0.7500 & 0.9500 \\
+lie-to-sit & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+sit-to-lie & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+lie-to-stand & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+walking & 0.6838 & 0.3297 & 0.3297 & 0.3297 & 0.1324 & 0.3610 \\
+walking_downstairs & 0.7278 & 0.7278 & 0.7278 & 0.7278 & 0.4111 & 0.6644 \\
+walking_upstairs & 0.7857 & 0.7857 & 0.6310 & 0.6310 & 0.5131 & 0.6693 \\
+  --> test_full: mAP@Avg = 0.2419

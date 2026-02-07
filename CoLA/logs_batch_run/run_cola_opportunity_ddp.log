@@ -1,0 +1,684 @@
+W0131 14:30:10.323511 14297 site-packages/torch/distributed/run.py:792] 
+W0131 14:30:10.323511 14297 site-packages/torch/distributed/run.py:792] *****************************************
+W0131 14:30:10.323511 14297 site-packages/torch/distributed/run.py:792] Setting OMP_NUM_THREADS environment variable for each process to be 1 in default, to avoid your system being overloaded, please further tune the variable for optimal performance in your application as needed. 
+W0131 14:30:10.323511 14297 site-packages/torch/distributed/run.py:792] *****************************************
+
+
+### SEED: 2022 ###
+
+>>> [Train DDP] Starting Fold 0...
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/Opportunity/pre_train/CNN1D/opportunity_CNN1D_pretrained_loso_sbj_0.pth==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/Opportunity/pre_train/CNN1D/opportunity_CNN1D_pretrained_loso_sbj_0.pth==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/Opportunity/pre_train/CNN1D/opportunity_CNN1D_pretrained_loso_sbj_0.pth
+
+
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/Opportunity/pre_train/CNN1D/opportunity_CNN1D_pretrained_loso_sbj_0.pth
+  Fold 0 Epoch 10 Loss: 0.7368
+  Fold 0 Epoch 20 Loss: 0.7203
+  Fold 0 Epoch 30 Loss: 0.7214
+  Fold 0 Epoch 40 Loss: 0.7206
+  Fold 0 Epoch 50 Loss: 0.7198
+  Fold 0 Epoch 60 Loss: 0.7183
+  Fold 0 Epoch 70 Loss: 0.7180
+  Fold 0 Epoch 80 Loss: 0.7167
+
+>>> [Eval] Inferencing Fold 0...
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/Opportunity/pre_train/CNN1D/opportunity_CNN1D_pretrained_loso_sbj_0.pth
+   -> Loading weights from ./output_opportunity_cola_ddp/seed_2022/fold0/model_final.pth...
+test_window: 0it [00:00, ?it/s]test_window: 1it [00:11, 11.92s/it]                                   open_fridge & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+close_fridge & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+open_dishwasher & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+close_dishwasher & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+open_drawer_1 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+close_drawer_1 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+open_drawer_2 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+close_drawer_2 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+open_drawer_3 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+close_drawer_3 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+close_door_1 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+open_door_1 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+close_door_2 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+open_door_2 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+toggle_switch & 0.0001 & 0.0001 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+clean_table & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+drink_from_cup & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+  --> test_window: mAP@Avg = 0.0000
+test_full: 0it [00:00, ?it/s]test_full: 1it [00:04,  4.07s/it]                                    📊 [Stats] Time: 657.79ms | Mem: 279.65MB
+open_fridge & 0.0002 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0001 \\
+close_fridge & 0.0003 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0001 \\
+open_dishwasher & 0.0001 & 0.0001 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+close_dishwasher & 0.0019 & 0.0006 & 0.0003 & 0.0001 & 0.0000 & 0.0006 \\
+open_drawer_1 & 0.0038 & 0.0012 & 0.0002 & 0.0001 & 0.0000 & 0.0011 \\
+close_drawer_1 & 0.0187 & 0.0113 & 0.0054 & 0.0026 & 0.0004 & 0.0077 \\
+open_drawer_2 & 0.0026 & 0.0016 & 0.0002 & 0.0000 & 0.0000 & 0.0009 \\
+close_drawer_2 & 0.0109 & 0.0040 & 0.0012 & 0.0000 & 0.0000 & 0.0032 \\
+open_drawer_3 & 0.2255 & 0.1805 & 0.1500 & 0.0882 & 0.0471 & 0.1383 \\
+close_drawer_3 & 0.0090 & 0.0037 & 0.0007 & 0.0000 & 0.0000 & 0.0027 \\
+close_door_1 & 0.1530 & 0.0228 & 0.0077 & 0.0030 & 0.0008 & 0.0374 \\
+open_door_1 & 0.0164 & 0.0058 & 0.0041 & 0.0009 & 0.0000 & 0.0054 \\
+close_door_2 & 0.0047 & 0.0007 & 0.0003 & 0.0001 & 0.0001 & 0.0012 \\
+open_door_2 & 0.0135 & 0.0036 & 0.0005 & 0.0004 & 0.0002 & 0.0036 \\
+toggle_switch & 0.1597 & 0.1062 & 0.0578 & 0.0376 & 0.0372 & 0.0797 \\
+clean_table & 0.0054 & 0.0031 & 0.0005 & 0.0001 & 0.0001 & 0.0018 \\
+drink_from_cup & 0.0006 & 0.0001 & 0.0000 & 0.0000 & 0.0000 & 0.0001 \\
+  --> test_full: mAP@Avg = 0.0167
+
+>>> [Train DDP] Starting Fold 1...
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/Opportunity/pre_train/CNN1D/opportunity_CNN1D_pretrained_loso_sbj_1.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/Opportunity/pre_train/CNN1D/opportunity_CNN1D_pretrained_loso_sbj_1.pth==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/Opportunity/pre_train/CNN1D/opportunity_CNN1D_pretrained_loso_sbj_1.pth
+
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/Opportunity/pre_train/CNN1D/opportunity_CNN1D_pretrained_loso_sbj_1.pth
+  Fold 1 Epoch 10 Loss: 0.7385
+  Fold 1 Epoch 20 Loss: 0.7210
+  Fold 1 Epoch 30 Loss: 0.7206
+  Fold 1 Epoch 40 Loss: 0.7207
+  Fold 1 Epoch 50 Loss: 0.7206
+  Fold 1 Epoch 60 Loss: 0.7205
+  Fold 1 Epoch 70 Loss: 0.7191
+  Fold 1 Epoch 80 Loss: 0.7188
+
+>>> [Eval] Inferencing Fold 1...
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/Opportunity/pre_train/CNN1D/opportunity_CNN1D_pretrained_loso_sbj_1.pth
+   -> Loading weights from ./output_opportunity_cola_ddp/seed_2022/fold1/model_final.pth...
+   Generating GT...
+test_window: 0it [00:00, ?it/s]test_window: 1it [00:12, 12.53s/it]                                   open_fridge & 0.0001 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+close_fridge & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+open_dishwasher & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+close_dishwasher & 0.0001 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+open_drawer_1 & 0.0002 & 0.0001 & 0.0001 & 0.0001 & 0.0000 & 0.0001 \\
+close_drawer_1 & 0.0002 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+open_drawer_2 & 0.0001 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+close_drawer_2 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+open_drawer_3 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+close_drawer_3 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+close_door_1 & 0.0001 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+open_door_1 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+close_door_2 & 0.0002 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+open_door_2 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+toggle_switch & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+clean_table & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+drink_from_cup & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+  --> test_window: mAP@Avg = 0.0000
+test_full: 0it [00:00, ?it/s]test_full: 1it [00:04,  4.22s/it]                                    📊 [Stats] Time: 381.34ms | Mem: 268.96MB
+open_fridge & 0.0043 & 0.0017 & 0.0002 & 0.0001 & 0.0000 & 0.0013 \\
+close_fridge & 0.0080 & 0.0045 & 0.0010 & 0.0003 & 0.0000 & 0.0028 \\
+open_dishwasher & 0.0053 & 0.0016 & 0.0005 & 0.0001 & 0.0000 & 0.0015 \\
+close_dishwasher & 0.0091 & 0.0028 & 0.0006 & 0.0001 & 0.0000 & 0.0025 \\
+open_drawer_1 & 0.0165 & 0.0093 & 0.0031 & 0.0015 & 0.0008 & 0.0062 \\
+close_drawer_1 & 0.0025 & 0.0017 & 0.0007 & 0.0001 & 0.0000 & 0.0010 \\
+open_drawer_2 & 0.0064 & 0.0045 & 0.0011 & 0.0005 & 0.0003 & 0.0026 \\
+close_drawer_2 & 0.0120 & 0.0036 & 0.0019 & 0.0018 & 0.0003 & 0.0039 \\
+open_drawer_3 & 0.0912 & 0.0682 & 0.0494 & 0.0176 & 0.0027 & 0.0458 \\
+close_drawer_3 & 0.0150 & 0.0037 & 0.0014 & 0.0003 & 0.0002 & 0.0041 \\
+close_door_1 & 0.0270 & 0.0191 & 0.0073 & 0.0050 & 0.0034 & 0.0124 \\
+open_door_1 & 0.0008 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0002 \\
+close_door_2 & 0.0804 & 0.0388 & 0.0092 & 0.0008 & 0.0002 & 0.0259 \\
+open_door_2 & 0.0038 & 0.0015 & 0.0001 & 0.0000 & 0.0000 & 0.0011 \\
+toggle_switch & 0.0909 & 0.0416 & 0.0234 & 0.0053 & 0.0034 & 0.0329 \\
+clean_table & 0.0148 & 0.0108 & 0.0077 & 0.0042 & 0.0005 & 0.0076 \\
+drink_from_cup & 0.0039 & 0.0017 & 0.0005 & 0.0001 & 0.0000 & 0.0013 \\
+  --> test_full: mAP@Avg = 0.0090
+
+>>> [Train DDP] Starting Fold 2...
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/Opportunity/pre_train/CNN1D/opportunity_CNN1D_pretrained_loso_sbj_2.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/Opportunity/pre_train/CNN1D/opportunity_CNN1D_pretrained_loso_sbj_2.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/Opportunity/pre_train/CNN1D/opportunity_CNN1D_pretrained_loso_sbj_2.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/Opportunity/pre_train/CNN1D/opportunity_CNN1D_pretrained_loso_sbj_2.pth
+  Fold 2 Epoch 10 Loss: 0.7414
+  Fold 2 Epoch 20 Loss: 0.7215
+  Fold 2 Epoch 30 Loss: 0.7204
+  Fold 2 Epoch 40 Loss: 0.7212
+  Fold 2 Epoch 50 Loss: 0.7207
+  Fold 2 Epoch 60 Loss: 0.7202
+  Fold 2 Epoch 70 Loss: 0.7194
+  Fold 2 Epoch 80 Loss: 0.7197
+
+>>> [Eval] Inferencing Fold 2...
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/Opportunity/pre_train/CNN1D/opportunity_CNN1D_pretrained_loso_sbj_2.pth
+   -> Loading weights from ./output_opportunity_cola_ddp/seed_2022/fold2/model_final.pth...
+   Generating GT...
+test_window: 0it [00:00, ?it/s]test_window: 1it [00:11, 11.81s/it]                                   open_fridge & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+close_fridge & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+open_dishwasher & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+close_dishwasher & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+open_drawer_1 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+close_drawer_1 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+open_drawer_2 & 0.0001 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+close_drawer_2 & 0.0002 & 0.0001 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+open_drawer_3 & 0.0001 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+close_drawer_3 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+close_door_1 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+open_door_1 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+close_door_2 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+open_door_2 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+toggle_switch & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+clean_table & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+drink_from_cup & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+  --> test_window: mAP@Avg = 0.0000
+test_full: 0it [00:00, ?it/s]test_full: 1it [00:03,  3.81s/it]                                    📊 [Stats] Time: 342.50ms | Mem: 261.08MB
+open_fridge & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+close_fridge & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+open_dishwasher & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+close_dishwasher & 0.0001 & 0.0001 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+open_drawer_1 & 0.0076 & 0.0067 & 0.0009 & 0.0007 & 0.0002 & 0.0032 \\
+close_drawer_1 & 0.0014 & 0.0006 & 0.0002 & 0.0000 & 0.0000 & 0.0004 \\
+open_drawer_2 & 0.0016 & 0.0013 & 0.0013 & 0.0002 & 0.0000 & 0.0009 \\
+close_drawer_2 & 0.0033 & 0.0004 & 0.0001 & 0.0000 & 0.0000 & 0.0008 \\
+open_drawer_3 & 0.0245 & 0.0146 & 0.0099 & 0.0057 & 0.0011 & 0.0112 \\
+close_drawer_3 & 0.0053 & 0.0006 & 0.0000 & 0.0000 & 0.0000 & 0.0012 \\
+close_door_1 & 0.0136 & 0.0036 & 0.0005 & 0.0000 & 0.0000 & 0.0035 \\
+open_door_1 & 0.0060 & 0.0030 & 0.0015 & 0.0003 & 0.0000 & 0.0021 \\
+close_door_2 & 0.0520 & 0.0368 & 0.0251 & 0.0137 & 0.0050 & 0.0265 \\
+open_door_2 & 0.0208 & 0.0106 & 0.0047 & 0.0020 & 0.0005 & 0.0077 \\
+toggle_switch & 0.0145 & 0.0076 & 0.0018 & 0.0009 & 0.0001 & 0.0050 \\
+clean_table & 0.0127 & 0.0049 & 0.0012 & 0.0003 & 0.0002 & 0.0039 \\
+drink_from_cup & 0.0685 & 0.0517 & 0.0248 & 0.0053 & 0.0005 & 0.0302 \\
+  --> test_full: mAP@Avg = 0.0057
+
+>>> [Train DDP] Starting Fold 3...
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/Opportunity/pre_train/CNN1D/opportunity_CNN1D_pretrained_loso_sbj_3.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/Opportunity/pre_train/CNN1D/opportunity_CNN1D_pretrained_loso_sbj_3.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/Opportunity/pre_train/CNN1D/opportunity_CNN1D_pretrained_loso_sbj_3.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/Opportunity/pre_train/CNN1D/opportunity_CNN1D_pretrained_loso_sbj_3.pth
+  Fold 3 Epoch 10 Loss: 0.7475
+  Fold 3 Epoch 20 Loss: 0.7218
+  Fold 3 Epoch 30 Loss: 0.7215
+  Fold 3 Epoch 40 Loss: 0.7207
+  Fold 3 Epoch 50 Loss: 0.7213
+  Fold 3 Epoch 60 Loss: 0.7201
+  Fold 3 Epoch 70 Loss: 0.7202
+  Fold 3 Epoch 80 Loss: 0.7187
+
+>>> [Eval] Inferencing Fold 3...
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/Opportunity/pre_train/CNN1D/opportunity_CNN1D_pretrained_loso_sbj_3.pth
+   -> Loading weights from ./output_opportunity_cola_ddp/seed_2022/fold3/model_final.pth...
+   Generating GT...
+test_window: 0it [00:00, ?it/s]test_window: 1it [00:12, 12.50s/it]                                   open_fridge & 0.0001 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+close_fridge & 0.0002 & 0.0001 & 0.0000 & 0.0000 & 0.0000 & 0.0001 \\
+open_dishwasher & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+close_dishwasher & 0.0001 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+open_drawer_1 & 0.0001 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+close_drawer_1 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+open_drawer_2 & 0.0002 & 0.0002 & 0.0001 & 0.0001 & 0.0000 & 0.0001 \\
+close_drawer_2 & 0.0003 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0001 \\
+open_drawer_3 & 0.0001 & 0.0001 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+close_drawer_3 & 0.0002 & 0.0002 & 0.0001 & 0.0001 & 0.0001 & 0.0001 \\
+close_door_1 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+open_door_1 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+close_door_2 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+open_door_2 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+toggle_switch & 0.0001 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+clean_table & 0.0001 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+drink_from_cup & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+  --> test_window: mAP@Avg = 0.0000
+test_full: 0it [00:00, ?it/s]test_full: 1it [00:04,  4.43s/it]                                    📊 [Stats] Time: 303.24ms | Mem: 236.98MB
+open_fridge & 0.0133 & 0.0115 & 0.0059 & 0.0037 & 0.0006 & 0.0070 \\
+close_fridge & 0.0157 & 0.0056 & 0.0026 & 0.0012 & 0.0003 & 0.0051 \\
+open_dishwasher & 0.0068 & 0.0034 & 0.0023 & 0.0002 & 0.0001 & 0.0026 \\
+close_dishwasher & 0.0012 & 0.0005 & 0.0003 & 0.0000 & 0.0000 & 0.0004 \\
+open_drawer_1 & 0.0176 & 0.0071 & 0.0032 & 0.0020 & 0.0016 & 0.0063 \\
+close_drawer_1 & 0.0106 & 0.0046 & 0.0031 & 0.0006 & 0.0003 & 0.0038 \\
+open_drawer_2 & 0.0047 & 0.0014 & 0.0013 & 0.0002 & 0.0000 & 0.0015 \\
+close_drawer_2 & 0.0170 & 0.0108 & 0.0039 & 0.0008 & 0.0008 & 0.0066 \\
+open_drawer_3 & 0.0406 & 0.0191 & 0.0079 & 0.0050 & 0.0006 & 0.0146 \\
+close_drawer_3 & 0.0006 & 0.0004 & 0.0001 & 0.0001 & 0.0001 & 0.0002 \\
+close_door_1 & 0.0258 & 0.0080 & 0.0035 & 0.0009 & 0.0002 & 0.0077 \\
+open_door_1 & 0.0149 & 0.0097 & 0.0055 & 0.0016 & 0.0004 & 0.0064 \\
+close_door_2 & 0.0247 & 0.0128 & 0.0063 & 0.0014 & 0.0008 & 0.0092 \\
+open_door_2 & 0.1282 & 0.0741 & 0.0471 & 0.0192 & 0.0077 & 0.0553 \\
+toggle_switch & 0.0081 & 0.0039 & 0.0014 & 0.0007 & 0.0005 & 0.0029 \\
+clean_table & 0.0352 & 0.0273 & 0.0130 & 0.0034 & 0.0030 & 0.0164 \\
+drink_from_cup & 0.0004 & 0.0002 & 0.0001 & 0.0001 & 0.0000 & 0.0002 \\
+  --> test_full: mAP@Avg = 0.0086
+
+
+### SEED: 2024 ###
+
+>>> [Train DDP] Starting Fold 0...
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/Opportunity/pre_train/CNN1D/opportunity_CNN1D_pretrained_loso_sbj_0.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/Opportunity/pre_train/CNN1D/opportunity_CNN1D_pretrained_loso_sbj_0.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/Opportunity/pre_train/CNN1D/opportunity_CNN1D_pretrained_loso_sbj_0.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/Opportunity/pre_train/CNN1D/opportunity_CNN1D_pretrained_loso_sbj_0.pth
+  Fold 0 Epoch 10 Loss: 0.7351
+  Fold 0 Epoch 20 Loss: 0.7207
+  Fold 0 Epoch 30 Loss: 0.7209
+  Fold 0 Epoch 40 Loss: 0.7207
+  Fold 0 Epoch 50 Loss: 0.7211
+  Fold 0 Epoch 60 Loss: 0.7200
+  Fold 0 Epoch 70 Loss: 0.7191
+  Fold 0 Epoch 80 Loss: 0.7179
+
+>>> [Eval] Inferencing Fold 0...
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/Opportunity/pre_train/CNN1D/opportunity_CNN1D_pretrained_loso_sbj_0.pth
+   -> Loading weights from ./output_opportunity_cola_ddp/seed_2024/fold0/model_final.pth...
+   Generating GT...
+test_window: 0it [00:00, ?it/s]test_window: 1it [00:14, 14.11s/it]                                   open_fridge & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+close_fridge & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+open_dishwasher & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+close_dishwasher & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+open_drawer_1 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+close_drawer_1 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+open_drawer_2 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+close_drawer_2 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+open_drawer_3 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+close_drawer_3 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+close_door_1 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+open_door_1 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+close_door_2 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+open_door_2 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+toggle_switch & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+clean_table & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+drink_from_cup & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+  --> test_window: mAP@Avg = 0.0000
+test_full: 0it [00:00, ?it/s]test_full: 1it [00:04,  4.83s/it]                                    📊 [Stats] Time: 370.47ms | Mem: 279.82MB
+open_fridge & 0.0024 & 0.0010 & 0.0002 & 0.0002 & 0.0000 & 0.0008 \\
+close_fridge & 0.0005 & 0.0001 & 0.0000 & 0.0000 & 0.0000 & 0.0001 \\
+open_dishwasher & 0.0004 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0001 \\
+close_dishwasher & 0.0040 & 0.0005 & 0.0003 & 0.0000 & 0.0000 & 0.0010 \\
+open_drawer_1 & 0.0018 & 0.0009 & 0.0004 & 0.0000 & 0.0000 & 0.0006 \\
+close_drawer_1 & 0.0239 & 0.0142 & 0.0072 & 0.0047 & 0.0027 & 0.0105 \\
+open_drawer_2 & 0.0049 & 0.0024 & 0.0000 & 0.0000 & 0.0000 & 0.0015 \\
+close_drawer_2 & 0.0086 & 0.0060 & 0.0014 & 0.0002 & 0.0000 & 0.0032 \\
+open_drawer_3 & 0.1742 & 0.1147 & 0.0934 & 0.0596 & 0.0241 & 0.0932 \\
+close_drawer_3 & 0.0178 & 0.0012 & 0.0004 & 0.0001 & 0.0001 & 0.0039 \\
+close_door_1 & 0.0352 & 0.0114 & 0.0083 & 0.0048 & 0.0015 & 0.0122 \\
+open_door_1 & 0.0070 & 0.0017 & 0.0006 & 0.0003 & 0.0001 & 0.0019 \\
+close_door_2 & 0.0271 & 0.0068 & 0.0029 & 0.0018 & 0.0009 & 0.0079 \\
+open_door_2 & 0.0056 & 0.0023 & 0.0009 & 0.0008 & 0.0004 & 0.0020 \\
+toggle_switch & 0.2770 & 0.1846 & 0.1391 & 0.0664 & 0.0536 & 0.1442 \\
+clean_table & 0.0090 & 0.0060 & 0.0040 & 0.0016 & 0.0005 & 0.0042 \\
+drink_from_cup & 0.0204 & 0.0054 & 0.0030 & 0.0013 & 0.0001 & 0.0060 \\
+  --> test_full: mAP@Avg = 0.0173
+
+>>> [Train DDP] Starting Fold 1...
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/Opportunity/pre_train/CNN1D/opportunity_CNN1D_pretrained_loso_sbj_1.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/Opportunity/pre_train/CNN1D/opportunity_CNN1D_pretrained_loso_sbj_1.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/Opportunity/pre_train/CNN1D/opportunity_CNN1D_pretrained_loso_sbj_1.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/Opportunity/pre_train/CNN1D/opportunity_CNN1D_pretrained_loso_sbj_1.pth
+  Fold 1 Epoch 10 Loss: 0.7384
+  Fold 1 Epoch 20 Loss: 0.7211
+  Fold 1 Epoch 30 Loss: 0.7211
+  Fold 1 Epoch 40 Loss: 0.7203
+  Fold 1 Epoch 50 Loss: 0.7202
+  Fold 1 Epoch 60 Loss: 0.7201
+  Fold 1 Epoch 70 Loss: 0.7191
+  Fold 1 Epoch 80 Loss: 0.7186
+
+>>> [Eval] Inferencing Fold 1...
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/Opportunity/pre_train/CNN1D/opportunity_CNN1D_pretrained_loso_sbj_1.pth
+   -> Loading weights from ./output_opportunity_cola_ddp/seed_2024/fold1/model_final.pth...
+   Generating GT...
+test_window: 0it [00:00, ?it/s]test_window: 1it [00:13, 13.66s/it]                                   open_fridge & 0.0002 & 0.0001 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+close_fridge & 0.0001 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+open_dishwasher & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+close_dishwasher & 0.0001 & 0.0001 & 0.0000 & 0.0000 & 0.0000 & 0.0001 \\
+open_drawer_1 & 0.0007 & 0.0004 & 0.0002 & 0.0001 & 0.0000 & 0.0003 \\
+close_drawer_1 & 0.0001 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+open_drawer_2 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+close_drawer_2 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+open_drawer_3 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+close_drawer_3 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+close_door_1 & 0.0003 & 0.0002 & 0.0001 & 0.0000 & 0.0000 & 0.0001 \\
+open_door_1 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+close_door_2 & 0.0002 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+open_door_2 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+toggle_switch & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+clean_table & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+drink_from_cup & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+  --> test_window: mAP@Avg = 0.0000
+test_full: 0it [00:00, ?it/s]test_full: 1it [00:04,  4.85s/it]                                    📊 [Stats] Time: 364.29ms | Mem: 268.96MB
+open_fridge & 0.0040 & 0.0011 & 0.0002 & 0.0001 & 0.0000 & 0.0011 \\
+close_fridge & 0.0132 & 0.0063 & 0.0012 & 0.0002 & 0.0001 & 0.0042 \\
+open_dishwasher & 0.0034 & 0.0015 & 0.0006 & 0.0000 & 0.0000 & 0.0011 \\
+close_dishwasher & 0.0049 & 0.0019 & 0.0005 & 0.0002 & 0.0000 & 0.0015 \\
+open_drawer_1 & 0.0159 & 0.0061 & 0.0026 & 0.0009 & 0.0002 & 0.0051 \\
+close_drawer_1 & 0.0030 & 0.0006 & 0.0003 & 0.0002 & 0.0001 & 0.0008 \\
+open_drawer_2 & 0.0059 & 0.0047 & 0.0009 & 0.0003 & 0.0000 & 0.0024 \\
+close_drawer_2 & 0.0086 & 0.0055 & 0.0023 & 0.0004 & 0.0000 & 0.0034 \\
+open_drawer_3 & 0.1031 & 0.0759 & 0.0483 & 0.0129 & 0.0006 & 0.0481 \\
+close_drawer_3 & 0.0098 & 0.0040 & 0.0012 & 0.0002 & 0.0001 & 0.0031 \\
+close_door_1 & 0.0305 & 0.0237 & 0.0115 & 0.0075 & 0.0015 & 0.0149 \\
+open_door_1 & 0.0016 & 0.0005 & 0.0001 & 0.0000 & 0.0000 & 0.0004 \\
+close_door_2 & 0.0560 & 0.0423 & 0.0151 & 0.0030 & 0.0002 & 0.0233 \\
+open_door_2 & 0.0026 & 0.0015 & 0.0001 & 0.0001 & 0.0000 & 0.0009 \\
+toggle_switch & 0.0455 & 0.0389 & 0.0213 & 0.0121 & 0.0074 & 0.0250 \\
+clean_table & 0.0113 & 0.0087 & 0.0060 & 0.0047 & 0.0010 & 0.0063 \\
+drink_from_cup & 0.0185 & 0.0150 & 0.0022 & 0.0006 & 0.0000 & 0.0072 \\
+  --> test_full: mAP@Avg = 0.0088
+
+>>> [Train DDP] Starting Fold 2...
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/Opportunity/pre_train/CNN1D/opportunity_CNN1D_pretrained_loso_sbj_2.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/Opportunity/pre_train/CNN1D/opportunity_CNN1D_pretrained_loso_sbj_2.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/Opportunity/pre_train/CNN1D/opportunity_CNN1D_pretrained_loso_sbj_2.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/Opportunity/pre_train/CNN1D/opportunity_CNN1D_pretrained_loso_sbj_2.pth
+  Fold 2 Epoch 10 Loss: 0.7406
+  Fold 2 Epoch 20 Loss: 0.7207
+  Fold 2 Epoch 30 Loss: 0.7211
+  Fold 2 Epoch 40 Loss: 0.7212
+  Fold 2 Epoch 50 Loss: 0.7202
+  Fold 2 Epoch 60 Loss: 0.7195
+  Fold 2 Epoch 70 Loss: 0.7196
+  Fold 2 Epoch 80 Loss: 0.7182
+
+>>> [Eval] Inferencing Fold 2...
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/Opportunity/pre_train/CNN1D/opportunity_CNN1D_pretrained_loso_sbj_2.pth
+   -> Loading weights from ./output_opportunity_cola_ddp/seed_2024/fold2/model_final.pth...
+   Generating GT...
+test_window: 0it [00:00, ?it/s]test_window: 1it [00:09,  9.14s/it]                                   open_fridge & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+close_fridge & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+open_dishwasher & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+close_dishwasher & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+open_drawer_1 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+close_drawer_1 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+open_drawer_2 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+close_drawer_2 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+open_drawer_3 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+close_drawer_3 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+close_door_1 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+open_door_1 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+close_door_2 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+open_door_2 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+toggle_switch & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+clean_table & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+drink_from_cup & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+  --> test_window: mAP@Avg = 0.0000
+test_full: 0it [00:00, ?it/s]test_full: 1it [00:03,  3.03s/it]                                    📊 [Stats] Time: 341.04ms | Mem: 261.08MB
+open_fridge & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+close_fridge & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+open_dishwasher & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+close_dishwasher & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+open_drawer_1 & 0.0033 & 0.0029 & 0.0004 & 0.0002 & 0.0001 & 0.0014 \\
+close_drawer_1 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+open_drawer_2 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+close_drawer_2 & 0.0001 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0001 \\
+open_drawer_3 & 0.1280 & 0.1142 & 0.1139 & 0.0547 & 0.0094 & 0.0841 \\
+close_drawer_3 & 0.0079 & 0.0030 & 0.0000 & 0.0000 & 0.0000 & 0.0022 \\
+close_door_1 & 0.0034 & 0.0010 & 0.0000 & 0.0000 & 0.0000 & 0.0009 \\
+open_door_1 & 0.0071 & 0.0045 & 0.0028 & 0.0007 & 0.0002 & 0.0031 \\
+close_door_2 & 0.0541 & 0.0422 & 0.0241 & 0.0087 & 0.0027 & 0.0263 \\
+open_door_2 & 0.0931 & 0.0083 & 0.0033 & 0.0007 & 0.0001 & 0.0211 \\
+toggle_switch & 0.0027 & 0.0009 & 0.0007 & 0.0001 & 0.0000 & 0.0009 \\
+clean_table & 0.0143 & 0.0037 & 0.0015 & 0.0015 & 0.0001 & 0.0042 \\
+drink_from_cup & 0.0122 & 0.0062 & 0.0036 & 0.0006 & 0.0000 & 0.0045 \\
+  --> test_full: mAP@Avg = 0.0087
+
+>>> [Train DDP] Starting Fold 3...
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/Opportunity/pre_train/CNN1D/opportunity_CNN1D_pretrained_loso_sbj_3.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/Opportunity/pre_train/CNN1D/opportunity_CNN1D_pretrained_loso_sbj_3.pth==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/Opportunity/pre_train/CNN1D/opportunity_CNN1D_pretrained_loso_sbj_3.pth
+
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/Opportunity/pre_train/CNN1D/opportunity_CNN1D_pretrained_loso_sbj_3.pth
+  Fold 3 Epoch 10 Loss: 0.7638
+  Fold 3 Epoch 20 Loss: 0.7212
+  Fold 3 Epoch 30 Loss: 0.7218
+  Fold 3 Epoch 40 Loss: 0.7230
+  Fold 3 Epoch 50 Loss: 0.7217
+  Fold 3 Epoch 60 Loss: 0.7213
+  Fold 3 Epoch 70 Loss: 0.7210
+  Fold 3 Epoch 80 Loss: 0.7201
+
+>>> [Eval] Inferencing Fold 3...
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/Opportunity/pre_train/CNN1D/opportunity_CNN1D_pretrained_loso_sbj_3.pth
+   -> Loading weights from ./output_opportunity_cola_ddp/seed_2024/fold3/model_final.pth...
+   Generating GT...
+test_window: 0it [00:00, ?it/s]test_window: 1it [00:13, 13.24s/it]                                   open_fridge & 0.0001 & 0.0001 & 0.0001 & 0.0001 & 0.0001 & 0.0001 \\
+close_fridge & 0.0001 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+open_dishwasher & 0.0001 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+close_dishwasher & 0.0002 & 0.0001 & 0.0000 & 0.0000 & 0.0000 & 0.0001 \\
+open_drawer_1 & 0.0002 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+close_drawer_1 & 0.0001 & 0.0001 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+open_drawer_2 & 0.0002 & 0.0001 & 0.0001 & 0.0000 & 0.0000 & 0.0001 \\
+close_drawer_2 & 0.0003 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0001 \\
+open_drawer_3 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+close_drawer_3 & 0.0003 & 0.0002 & 0.0001 & 0.0001 & 0.0001 & 0.0002 \\
+close_door_1 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+open_door_1 & 0.0001 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+close_door_2 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+open_door_2 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+toggle_switch & 0.0001 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+clean_table & 0.0001 & 0.0001 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+drink_from_cup & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+  --> test_window: mAP@Avg = 0.0000
+test_full: 0it [00:00, ?it/s]test_full: 1it [00:04,  4.41s/it]                                    📊 [Stats] Time: 306.51ms | Mem: 236.98MB
+open_fridge & 0.0187 & 0.0086 & 0.0032 & 0.0029 & 0.0006 & 0.0068 \\
+close_fridge & 0.0201 & 0.0107 & 0.0073 & 0.0025 & 0.0004 & 0.0082 \\
+open_dishwasher & 0.0054 & 0.0034 & 0.0016 & 0.0003 & 0.0001 & 0.0022 \\
+close_dishwasher & 0.0017 & 0.0004 & 0.0003 & 0.0001 & 0.0000 & 0.0005 \\
+open_drawer_1 & 0.0316 & 0.0215 & 0.0069 & 0.0028 & 0.0004 & 0.0126 \\
+close_drawer_1 & 0.0042 & 0.0015 & 0.0015 & 0.0006 & 0.0000 & 0.0016 \\
+open_drawer_2 & 0.0083 & 0.0017 & 0.0009 & 0.0006 & 0.0002 & 0.0023 \\
+close_drawer_2 & 0.0066 & 0.0012 & 0.0005 & 0.0001 & 0.0000 & 0.0017 \\
+open_drawer_3 & 0.0449 & 0.0154 & 0.0133 & 0.0045 & 0.0024 & 0.0161 \\
+close_drawer_3 & 0.0003 & 0.0003 & 0.0002 & 0.0001 & 0.0000 & 0.0002 \\
+close_door_1 & 0.0580 & 0.0169 & 0.0134 & 0.0033 & 0.0008 & 0.0185 \\
+open_door_1 & 0.0137 & 0.0066 & 0.0034 & 0.0003 & 0.0001 & 0.0048 \\
+close_door_2 & 0.1646 & 0.1280 & 0.0377 & 0.0157 & 0.0072 & 0.0707 \\
+open_door_2 & 0.0484 & 0.0143 & 0.0062 & 0.0034 & 0.0012 & 0.0147 \\
+toggle_switch & 0.0066 & 0.0035 & 0.0015 & 0.0009 & 0.0003 & 0.0026 \\
+clean_table & 0.0278 & 0.0243 & 0.0203 & 0.0071 & 0.0009 & 0.0161 \\
+drink_from_cup & 0.0054 & 0.0010 & 0.0009 & 0.0004 & 0.0004 & 0.0016 \\
+  --> test_full: mAP@Avg = 0.0107
+
+
+### SEED: 2026 ###
+
+>>> [Train DDP] Starting Fold 0...
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/Opportunity/pre_train/CNN1D/opportunity_CNN1D_pretrained_loso_sbj_0.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/Opportunity/pre_train/CNN1D/opportunity_CNN1D_pretrained_loso_sbj_0.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/Opportunity/pre_train/CNN1D/opportunity_CNN1D_pretrained_loso_sbj_0.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/Opportunity/pre_train/CNN1D/opportunity_CNN1D_pretrained_loso_sbj_0.pth
+  Fold 0 Epoch 10 Loss: 0.7514
+  Fold 0 Epoch 20 Loss: 0.7211
+  Fold 0 Epoch 30 Loss: 0.7205
+  Fold 0 Epoch 40 Loss: 0.7207
+  Fold 0 Epoch 50 Loss: 0.7202
+  Fold 0 Epoch 60 Loss: 0.7186
+  Fold 0 Epoch 70 Loss: 0.7175
+  Fold 0 Epoch 80 Loss: 0.7186
+
+>>> [Eval] Inferencing Fold 0...
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/Opportunity/pre_train/CNN1D/opportunity_CNN1D_pretrained_loso_sbj_0.pth
+   -> Loading weights from ./output_opportunity_cola_ddp/seed_2026/fold0/model_final.pth...
+   Generating GT...
+test_window: 0it [00:00, ?it/s]test_window: 1it [00:12, 12.52s/it]                                   open_fridge & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+close_fridge & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+open_dishwasher & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+close_dishwasher & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+open_drawer_1 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+close_drawer_1 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+open_drawer_2 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+close_drawer_2 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+open_drawer_3 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+close_drawer_3 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+close_door_1 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+open_door_1 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+close_door_2 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+open_door_2 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+toggle_switch & 0.0001 & 0.0001 & 0.0001 & 0.0000 & 0.0000 & 0.0000 \\
+clean_table & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+drink_from_cup & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+  --> test_window: mAP@Avg = 0.0000
+test_full: 0it [00:00, ?it/s]test_full: 1it [00:04,  4.17s/it]                                    📊 [Stats] Time: 374.38ms | Mem: 279.82MB
+open_fridge & 0.0019 & 0.0007 & 0.0001 & 0.0001 & 0.0000 & 0.0005 \\
+close_fridge & 0.0005 & 0.0003 & 0.0001 & 0.0000 & 0.0000 & 0.0002 \\
+open_dishwasher & 0.0003 & 0.0001 & 0.0000 & 0.0000 & 0.0000 & 0.0001 \\
+close_dishwasher & 0.0024 & 0.0020 & 0.0016 & 0.0002 & 0.0001 & 0.0013 \\
+open_drawer_1 & 0.0018 & 0.0012 & 0.0001 & 0.0000 & 0.0000 & 0.0006 \\
+close_drawer_1 & 0.0207 & 0.0150 & 0.0067 & 0.0031 & 0.0016 & 0.0094 \\
+open_drawer_2 & 0.0020 & 0.0011 & 0.0001 & 0.0001 & 0.0000 & 0.0007 \\
+close_drawer_2 & 0.0168 & 0.0064 & 0.0022 & 0.0000 & 0.0000 & 0.0051 \\
+open_drawer_3 & 0.0719 & 0.0463 & 0.0356 & 0.0147 & 0.0081 & 0.0353 \\
+close_drawer_3 & 0.0031 & 0.0007 & 0.0004 & 0.0001 & 0.0001 & 0.0009 \\
+close_door_1 & 0.0990 & 0.0260 & 0.0208 & 0.0143 & 0.0108 & 0.0342 \\
+open_door_1 & 0.0111 & 0.0024 & 0.0012 & 0.0001 & 0.0001 & 0.0030 \\
+close_door_2 & 0.0096 & 0.0017 & 0.0006 & 0.0002 & 0.0001 & 0.0024 \\
+open_door_2 & 0.0085 & 0.0016 & 0.0006 & 0.0001 & 0.0000 & 0.0022 \\
+toggle_switch & 0.0351 & 0.0174 & 0.0062 & 0.0015 & 0.0009 & 0.0122 \\
+clean_table & 0.0052 & 0.0038 & 0.0010 & 0.0002 & 0.0002 & 0.0021 \\
+drink_from_cup & 0.0140 & 0.0023 & 0.0011 & 0.0006 & 0.0000 & 0.0036 \\
+  --> test_full: mAP@Avg = 0.0067
+
+>>> [Train DDP] Starting Fold 1...
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/Opportunity/pre_train/CNN1D/opportunity_CNN1D_pretrained_loso_sbj_1.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/Opportunity/pre_train/CNN1D/opportunity_CNN1D_pretrained_loso_sbj_1.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/Opportunity/pre_train/CNN1D/opportunity_CNN1D_pretrained_loso_sbj_1.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/Opportunity/pre_train/CNN1D/opportunity_CNN1D_pretrained_loso_sbj_1.pth
+  Fold 1 Epoch 10 Loss: 0.7402
+  Fold 1 Epoch 20 Loss: 0.7215
+  Fold 1 Epoch 30 Loss: 0.7206
+  Fold 1 Epoch 40 Loss: 0.7206
+  Fold 1 Epoch 50 Loss: 0.7218
+  Fold 1 Epoch 60 Loss: 0.7205
+  Fold 1 Epoch 70 Loss: 0.7201
+  Fold 1 Epoch 80 Loss: 0.7201
+
+>>> [Eval] Inferencing Fold 1...
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/Opportunity/pre_train/CNN1D/opportunity_CNN1D_pretrained_loso_sbj_1.pth
+   -> Loading weights from ./output_opportunity_cola_ddp/seed_2026/fold1/model_final.pth...
+   Generating GT...
+test_window: 0it [00:00, ?it/s]test_window: 1it [00:13, 13.95s/it]                                   open_fridge & 0.0012 & 0.0004 & 0.0002 & 0.0000 & 0.0000 & 0.0004 \\
+close_fridge & 0.0005 & 0.0004 & 0.0003 & 0.0001 & 0.0000 & 0.0003 \\
+open_dishwasher & 0.0001 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+close_dishwasher & 0.0007 & 0.0004 & 0.0002 & 0.0000 & 0.0000 & 0.0003 \\
+open_drawer_1 & 0.0020 & 0.0015 & 0.0007 & 0.0005 & 0.0003 & 0.0010 \\
+close_drawer_1 & 0.0002 & 0.0001 & 0.0000 & 0.0000 & 0.0000 & 0.0001 \\
+open_drawer_2 & 0.0002 & 0.0001 & 0.0001 & 0.0001 & 0.0000 & 0.0001 \\
+close_drawer_2 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+open_drawer_3 & 0.0001 & 0.0001 & 0.0001 & 0.0001 & 0.0001 & 0.0001 \\
+close_drawer_3 & 0.0002 & 0.0002 & 0.0000 & 0.0000 & 0.0000 & 0.0001 \\
+close_door_1 & 0.0015 & 0.0009 & 0.0007 & 0.0000 & 0.0000 & 0.0006 \\
+open_door_1 & 0.0004 & 0.0002 & 0.0001 & 0.0000 & 0.0000 & 0.0001 \\
+close_door_2 & 0.0010 & 0.0001 & 0.0000 & 0.0000 & 0.0000 & 0.0002 \\
+open_door_2 & 0.0011 & 0.0004 & 0.0001 & 0.0000 & 0.0000 & 0.0003 \\
+toggle_switch & 0.0004 & 0.0002 & 0.0002 & 0.0001 & 0.0000 & 0.0002 \\
+clean_table & 0.0004 & 0.0001 & 0.0001 & 0.0001 & 0.0000 & 0.0001 \\
+drink_from_cup & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+  --> test_window: mAP@Avg = 0.0002
+test_full: 0it [00:00, ?it/s]test_full: 1it [00:04,  4.06s/it]                                    📊 [Stats] Time: 355.43ms | Mem: 268.96MB
+open_fridge & 0.0178 & 0.0092 & 0.0044 & 0.0023 & 0.0003 & 0.0068 \\
+close_fridge & 0.0384 & 0.0294 & 0.0130 & 0.0047 & 0.0014 & 0.0174 \\
+open_dishwasher & 0.0054 & 0.0037 & 0.0001 & 0.0000 & 0.0000 & 0.0018 \\
+close_dishwasher & 0.0035 & 0.0023 & 0.0001 & 0.0000 & 0.0000 & 0.0012 \\
+open_drawer_1 & 0.0219 & 0.0117 & 0.0063 & 0.0031 & 0.0004 & 0.0087 \\
+close_drawer_1 & 0.0019 & 0.0016 & 0.0005 & 0.0001 & 0.0001 & 0.0008 \\
+open_drawer_2 & 0.0072 & 0.0067 & 0.0026 & 0.0005 & 0.0002 & 0.0034 \\
+close_drawer_2 & 0.0038 & 0.0018 & 0.0005 & 0.0003 & 0.0000 & 0.0013 \\
+open_drawer_3 & 0.0724 & 0.0614 & 0.0355 & 0.0041 & 0.0001 & 0.0347 \\
+close_drawer_3 & 0.0131 & 0.0036 & 0.0002 & 0.0000 & 0.0000 & 0.0034 \\
+close_door_1 & 0.1655 & 0.1556 & 0.1260 & 0.0341 & 0.0005 & 0.0963 \\
+open_door_1 & 0.0047 & 0.0011 & 0.0001 & 0.0001 & 0.0000 & 0.0012 \\
+close_door_2 & 0.0910 & 0.0852 & 0.0413 & 0.0302 & 0.0099 & 0.0515 \\
+open_door_2 & 0.0050 & 0.0011 & 0.0002 & 0.0000 & 0.0000 & 0.0013 \\
+toggle_switch & 0.1163 & 0.0684 & 0.0295 & 0.0265 & 0.0207 & 0.0523 \\
+clean_table & 0.0811 & 0.0597 & 0.0491 & 0.0487 & 0.0268 & 0.0531 \\
+drink_from_cup & 0.0611 & 0.0448 & 0.0201 & 0.0087 & 0.0005 & 0.0270 \\
+  --> test_full: mAP@Avg = 0.0213
+
+>>> [Train DDP] Starting Fold 2...
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/Opportunity/pre_train/CNN1D/opportunity_CNN1D_pretrained_loso_sbj_2.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/Opportunity/pre_train/CNN1D/opportunity_CNN1D_pretrained_loso_sbj_2.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/Opportunity/pre_train/CNN1D/opportunity_CNN1D_pretrained_loso_sbj_2.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/Opportunity/pre_train/CNN1D/opportunity_CNN1D_pretrained_loso_sbj_2.pth
+  Fold 2 Epoch 10 Loss: 0.7481
+  Fold 2 Epoch 20 Loss: 0.7220
+  Fold 2 Epoch 30 Loss: 0.7211
+  Fold 2 Epoch 40 Loss: 0.7225
+  Fold 2 Epoch 50 Loss: 0.7207
+  Fold 2 Epoch 60 Loss: 0.7215
+  Fold 2 Epoch 70 Loss: 0.7202
+  Fold 2 Epoch 80 Loss: 0.7194
+
+>>> [Eval] Inferencing Fold 2...
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/Opportunity/pre_train/CNN1D/opportunity_CNN1D_pretrained_loso_sbj_2.pth
+   -> Loading weights from ./output_opportunity_cola_ddp/seed_2026/fold2/model_final.pth...
+   Generating GT...
+test_window: 0it [00:00, ?it/s]test_window: 1it [00:10, 10.56s/it]                                   open_fridge & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+close_fridge & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+open_dishwasher & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+close_dishwasher & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+open_drawer_1 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+close_drawer_1 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+open_drawer_2 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+close_drawer_2 & 0.0002 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+open_drawer_3 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+close_drawer_3 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+close_door_1 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+open_door_1 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+close_door_2 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+open_door_2 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+toggle_switch & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+clean_table & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+drink_from_cup & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+  --> test_window: mAP@Avg = 0.0000
+test_full: 0it [00:00, ?it/s]test_full: 1it [00:03,  3.48s/it]                                    📊 [Stats] Time: 342.76ms | Mem: 261.08MB
+open_fridge & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+close_fridge & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+open_dishwasher & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+close_dishwasher & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+open_drawer_1 & 0.0041 & 0.0035 & 0.0009 & 0.0007 & 0.0002 & 0.0019 \\
+close_drawer_1 & 0.0001 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+open_drawer_2 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+close_drawer_2 & 0.0012 & 0.0006 & 0.0003 & 0.0001 & 0.0000 & 0.0004 \\
+open_drawer_3 & 0.0066 & 0.0037 & 0.0014 & 0.0008 & 0.0003 & 0.0026 \\
+close_drawer_3 & 0.0001 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+close_door_1 & 0.0140 & 0.0100 & 0.0058 & 0.0030 & 0.0003 & 0.0067 \\
+open_door_1 & 0.0166 & 0.0057 & 0.0029 & 0.0005 & 0.0001 & 0.0052 \\
+close_door_2 & 0.0338 & 0.0261 & 0.0173 & 0.0104 & 0.0040 & 0.0183 \\
+open_door_2 & 0.0256 & 0.0067 & 0.0024 & 0.0017 & 0.0001 & 0.0073 \\
+toggle_switch & 0.0052 & 0.0011 & 0.0003 & 0.0001 & 0.0000 & 0.0014 \\
+clean_table & 0.0125 & 0.0091 & 0.0025 & 0.0014 & 0.0000 & 0.0051 \\
+drink_from_cup & 0.0362 & 0.0196 & 0.0110 & 0.0057 & 0.0019 & 0.0149 \\
+  --> test_full: mAP@Avg = 0.0037
+
+>>> [Train DDP] Starting Fold 3...
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/Opportunity/pre_train/CNN1D/opportunity_CNN1D_pretrained_loso_sbj_3.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/Opportunity/pre_train/CNN1D/opportunity_CNN1D_pretrained_loso_sbj_3.pth
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/Opportunity/pre_train/CNN1D/opportunity_CNN1D_pretrained_loso_sbj_3.pth==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/Opportunity/pre_train/CNN1D/opportunity_CNN1D_pretrained_loso_sbj_3.pth
+
+  Fold 3 Epoch 10 Loss: 0.7536
+  Fold 3 Epoch 20 Loss: 0.7227
+  Fold 3 Epoch 30 Loss: 0.7217
+  Fold 3 Epoch 40 Loss: 0.7217
+  Fold 3 Epoch 50 Loss: 0.7216
+  Fold 3 Epoch 60 Loss: 0.7202
+  Fold 3 Epoch 70 Loss: 0.7209
+  Fold 3 Epoch 80 Loss: 0.7197
+
+>>> [Eval] Inferencing Fold 3...
+==> Loading XRFV2 cnn1d weights from /home/lipei/project/WSDDN/OtherData/Opportunity/pre_train/CNN1D/opportunity_CNN1D_pretrained_loso_sbj_3.pth
+   -> Loading weights from ./output_opportunity_cola_ddp/seed_2026/fold3/model_final.pth...
+   Generating GT...
+test_window: 0it [00:00, ?it/s]test_window: 1it [00:12, 12.22s/it]                                   open_fridge & 0.0001 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+close_fridge & 0.0001 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+open_dishwasher & 0.0001 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+close_dishwasher & 0.0001 & 0.0001 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+open_drawer_1 & 0.0003 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0001 \\
+close_drawer_1 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+open_drawer_2 & 0.0001 & 0.0001 & 0.0001 & 0.0001 & 0.0000 & 0.0001 \\
+close_drawer_2 & 0.0002 & 0.0001 & 0.0001 & 0.0001 & 0.0000 & 0.0001 \\
+open_drawer_3 & 0.0001 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+close_drawer_3 & 0.0002 & 0.0002 & 0.0001 & 0.0001 & 0.0000 & 0.0001 \\
+close_door_1 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+open_door_1 & 0.0001 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+close_door_2 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+open_door_2 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+toggle_switch & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+clean_table & 0.0001 & 0.0001 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+drink_from_cup & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+  --> test_window: mAP@Avg = 0.0000
+test_full: 0it [00:00, ?it/s]test_full: 1it [00:04,  4.27s/it]                                    📊 [Stats] Time: 305.59ms | Mem: 236.98MB
+open_fridge & 0.0173 & 0.0107 & 0.0035 & 0.0020 & 0.0007 & 0.0068 \\
+close_fridge & 0.0193 & 0.0097 & 0.0051 & 0.0022 & 0.0007 & 0.0074 \\
+open_dishwasher & 0.0080 & 0.0046 & 0.0022 & 0.0008 & 0.0008 & 0.0033 \\
+close_dishwasher & 0.0024 & 0.0012 & 0.0004 & 0.0000 & 0.0000 & 0.0008 \\
+open_drawer_1 & 0.0212 & 0.0120 & 0.0044 & 0.0013 & 0.0003 & 0.0078 \\
+close_drawer_1 & 0.0042 & 0.0009 & 0.0004 & 0.0002 & 0.0000 & 0.0011 \\
+open_drawer_2 & 0.0066 & 0.0020 & 0.0013 & 0.0000 & 0.0000 & 0.0020 \\
+close_drawer_2 & 0.0032 & 0.0007 & 0.0003 & 0.0000 & 0.0000 & 0.0008 \\
+open_drawer_3 & 0.0365 & 0.0148 & 0.0077 & 0.0041 & 0.0004 & 0.0127 \\
+close_drawer_3 & 0.0006 & 0.0002 & 0.0002 & 0.0000 & 0.0000 & 0.0002 \\
+close_door_1 & 0.0144 & 0.0080 & 0.0034 & 0.0014 & 0.0003 & 0.0055 \\
+open_door_1 & 0.0181 & 0.0110 & 0.0043 & 0.0015 & 0.0010 & 0.0072 \\
+close_door_2 & 0.0721 & 0.0498 & 0.0058 & 0.0019 & 0.0005 & 0.0260 \\
+open_door_2 & 0.0797 & 0.0297 & 0.0183 & 0.0047 & 0.0000 & 0.0265 \\
+toggle_switch & 0.0089 & 0.0046 & 0.0019 & 0.0011 & 0.0005 & 0.0034 \\
+clean_table & 0.0223 & 0.0193 & 0.0104 & 0.0037 & 0.0006 & 0.0113 \\
+drink_from_cup & 0.0034 & 0.0018 & 0.0017 & 0.0000 & 0.0000 & 0.0014 \\
+  --> test_full: mAP@Avg = 0.0073

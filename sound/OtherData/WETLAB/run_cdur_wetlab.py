@@ -1,0 +1,371 @@
+# OtherData/WETLAB/run_cdur_wetlab.py
+# -*- coding: utf-8 -*-
+import torch
+
+torch.set_num_threads(8)
+torch.set_num_interop_threads(1)
+import os
+import sys
+import json
+import numpy as np
+import torch.optim as optim
+import torch.nn.functional as F
+from torch.utils.data import DataLoader
+from tqdm import tqdm
+
+# 确保引用路径正确
+from tool import ANETdetection
+from OtherData.WETLAB.dataset_wetlab_ws import WeaklyWetlabDataset
+from OtherData.utils import _meta_get, set_seed, build_gt_for_anet, dump_config
+from models.CDur_model import CDur, MilSEDCNN
+
+os.environ["CUDA_VISIBLE_DEVICES"] = "7"
+
+
+# ============================================================
+# 工具类：用于临时屏蔽 print 输出
+# ============================================================
+class HiddenPrints:
+    def __enter__(self):
+        self._original_stdout = sys.stdout
+        sys.stdout = open(os.devnull, 'w')
+
+    def __exit__(self, exc_type, exc_value, traceback):
+        sys.stdout.close()
+        sys.stdout = self._original_stdout
+
+
+# ============================================================
+# 0) Loss Function
+# ============================================================
+class BCELossWithLabelSmoothing(torch.nn.Module):
+    def __init__(self, label_smoothing=0.1):
+        super().__init__()
+        self.label_smoothing = label_smoothing
+
+    def forward(self, clip_prob, labels):
+        n_classes = clip_prob.shape[-1]
+        with torch.no_grad():
+            tar = labels * (1 - self.label_smoothing) + (1 - labels) * self.label_smoothing / (n_classes - 1)
+        return F.binary_cross_entropy(clip_prob, tar)
+
+
+# ============================================================
+# 1) Utility: Convert Frame Probs to Segments
+# ============================================================
+def frame_probs_to_segments(probs, fps, threshold=0.5, min_duration=0.1):
+    T, C = probs.shape
+    segments = [[] for _ in range(C)]
+    for c in range(C):
+        binary = probs[:, c] > threshold
+        diff = np.diff(np.concatenate(([0], binary.astype(int), [0])))
+        starts = np.where(diff == 1)[0]
+        ends = np.where(diff == -1)[0]
+        for s, e in zip(starts, ends):
+            t_start = s / fps
+            t_end = e / fps
+            duration = t_end - t_start
+            if duration >= min_duration:
+                score = np.mean(probs[s:e, c])
+                segments[c].append([t_start, t_end, score])
+    return segments
+
+
+# ============================================================
+# 2) Train one fold
+# ============================================================
+def train_cdur_one_fold_wetlab(config, fold: int, exp_name: str = "cdur_wetlab"):
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    dataset_dir = config["dataset_dir"]
+    fps = int(config.get("fps", 50))
+    clip_sec = float(config.get("clip_sec", 60.0))
+    in_channels = int(config.get("in_channels", 3))
+    num_classes = int(config["num_classes"])
+
+    if config.get("model_type", "CDur") == "CDur":
+        model = CDur(inputdim=in_channels, outputdim=num_classes,
+                     temppool=config["training"].get("pool_type", "linear"))
+    else:
+        model = MilSEDCNN(inputdim=in_channels, outputdim=num_classes,
+                          temppool=config["training"].get("pool_type", "soft"))
+    model = model.to(device)
+
+    def count_parameters(model):
+        # 统计所有参数
+        total_params = sum(p.numel() for p in model.parameters())
+        # 统计可训练参数 (通常我们关心这个)
+        trainable_params = sum(p.numel() for p in model.parameters() if p.requires_grad)
+        return total_params, trainable_params
+
+    total, trainable = count_parameters(model)
+    print(f"\n" + "-" * 30)
+    # print(f"Model Type: {model_type}")
+    print(f"Total Parameters: {total:,}")
+    print(f"Trainable Parameters: {trainable:,}")
+    print("-" * 30 + "\n")
+
+    loso_json = f"loso_sbj_{fold}.json"
+    train_ds = WeaklyWetlabDataset(
+        dataset_dir=dataset_dir, loso_json=loso_json, mode="train", fps=fps,
+        num_sensors=in_channels, clip_sec=clip_sec, clip_overlap=float(config.get("clip_overlap", 0.5)),
+        num_classes=num_classes, normalize=True, stats_dirname=config.get("stats_dirname", "loso_norm_stats_json"),
+        neg_keep_ratio=float(config.get("neg_keep_ratio", 0.5)), return_meta=False,
+        seed=int(config.get("seed", 2022)) + fold,
+    )
+    bs = int(config["training"].get("batch_size", 16))
+    train_loader = DataLoader(train_ds, batch_size=bs, shuffle=True,
+                              num_workers=int(config["training"].get("num_workers", 4)),
+                              pin_memory=True, drop_last=True)
+
+    optimizer = optim.Adam(model.parameters(), lr=float(config["training"]["lr"]), weight_decay=1e-4)
+    scheduler = optim.lr_scheduler.StepLR(optimizer, step_size=10, gamma=0.5)
+    criterion = BCELossWithLabelSmoothing(label_smoothing=0.1).to(device)
+
+    ckpt_dir = os.path.join(config["checkpoint_dir"], f"fold{fold}")
+    os.makedirs(ckpt_dir, exist_ok=True)
+    ckpt_path = os.path.join(ckpt_dir, f"{exp_name}.pth")
+
+    best_loss = float("inf")
+    num_epochs = int(config["training"]["num_epochs"])
+
+    print(f"\n[Train] fold={fold} | epochs={num_epochs} | device={device}")
+
+    for epoch in range(num_epochs):
+        model.train()
+        epoch_loss = 0.0
+        pbar = tqdm(train_loader, desc=f"[Fold {fold}] Ep {epoch + 1}/{num_epochs}", leave=False)
+
+        for sample_clips, labels in pbar:
+            sample_clips, labels = sample_clips.to(device), labels.to(device).float()
+            inputs = sample_clips.permute(0, 2, 1)
+            optimizer.zero_grad()
+            clip_prob, _ = model(inputs)
+            loss = criterion(clip_prob, labels)
+            loss.backward()
+            optimizer.step()
+            epoch_loss += loss.item() * sample_clips.size(0)
+            pbar.set_postfix({"loss": f"{loss.item():.4f}"})
+
+        avg_loss = epoch_loss / len(train_ds)
+        lr = scheduler.get_last_lr()[0]
+
+        print(f"[Fold {fold}] Epoch {epoch + 1} | avg_loss={avg_loss:.6f} | lr={lr:.6f}")
+
+        if avg_loss < best_loss:
+            best_loss = avg_loss
+            torch.save(model.state_dict(), ckpt_path)
+
+        scheduler.step()
+
+    return ckpt_path
+
+
+# ============================================================
+# 3) Test one fold
+# ============================================================
+@torch.no_grad()
+def test_cdur_wetlab(config, checkpoint_path, fold: int, test_mode: str = "test_window"):
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    dataset_dir = config["dataset_dir"]
+    fps = int(config.get("fps", 50))
+    clip_sec = float(config.get("clip_sec", 60.0))
+    in_channels = int(config.get("in_channels", 3))
+    num_classes = int(config["num_classes"])
+
+    if config.get("model_type", "CDur") == "CDur":
+        model = CDur(inputdim=in_channels, outputdim=num_classes,
+                     temppool=config["training"].get("pool_type", "linear"))
+    else:
+        model = MilSEDCNN(inputdim=in_channels, outputdim=num_classes,
+                          temppool=config["training"].get("pool_type", "soft"))
+
+    model.load_state_dict(torch.load(checkpoint_path, map_location=device))
+    model.to(device)
+    model.eval()
+
+    # Load Labels
+    loso_json = f"loso_sbj_{fold}.json"
+    ann_path = os.path.join(dataset_dir, "annotations", loso_json)
+    with open(ann_path, "r", encoding="utf-8") as f:
+        js = json.load(f)
+    label_dict = js.get("label_dict", {})
+    id2label = {int(v): k for k, v in label_dict.items()}
+
+    # Dataset
+    # 注意：如果 test_mode="test_full"，Dataset 通常会返回未经切片的整段特征
+    # 如果 Wetlab 视频过长导致 OOM，请确保 Dataset 内部处理了 full 模式的分块或采用 window 拼接
+    ds = WeaklyWetlabDataset(
+        dataset_dir=dataset_dir, loso_json=loso_json, mode=test_mode, fps=fps,
+        num_sensors=in_channels, clip_sec=clip_sec, clip_overlap=0.0,
+        num_classes=num_classes, normalize=True,
+        stats_dirname=config.get("stats_dirname", "loso_norm_stats_json"),
+        neg_keep_ratio=1.0, return_meta=True, seed=int(config.get("seed", 2022)) + fold,
+    )
+    loader = DataLoader(ds, batch_size=1, shuffle=False)
+
+    results_cache = {}
+    threshold = float(config["testing"].get("threshold", 0.5))
+    fold_dir = os.path.join(config["result_root"], f"fold{fold}")
+    os.makedirs(fold_dir, exist_ok=True)
+
+    for x, _, meta in tqdm(loader, desc=f"[{test_mode}] fold{fold}", leave=False):
+        sbj = str(_meta_get(meta, "sbj"))
+        clip_start_frame = int(_meta_get(meta, "start"))
+        if sbj not in results_cache: results_cache[sbj] = []
+
+        x = x.to(device)
+        inputs = x.permute(0, 2, 1)
+
+        clip_prob, frame_prob = model(inputs, upsample=True)
+        frame_prob = frame_prob.squeeze(0).cpu().numpy()
+
+        segments_per_class = frame_probs_to_segments(frame_prob, fps, threshold=threshold)
+        for cls_idx, segs in enumerate(segments_per_class):
+            label_name = id2label.get(cls_idx, f"class_{cls_idx}")
+            for (start_sec, end_sec, score) in segs:
+                abs_start = start_sec + (clip_start_frame / fps)
+                abs_end = end_sec + (clip_start_frame / fps)
+                results_cache[sbj].append({
+                    "label": label_name, "score": float(score),
+                    "segment": [float(abs_start), float(abs_end)]
+                })
+
+    # [关键] 保存预测文件，文件名包含 test_mode
+    pred_path = os.path.join(fold_dir, f"predictions_{test_mode}.json")
+    final_results = {"version": "CDur-WETLAB", "results": results_cache, "external_data": {}}
+    with open(pred_path, "w") as f:
+        json.dump(final_results, f, indent=2)
+
+    gt_path = os.path.join(fold_dir, "gt_for_anet.json")
+    if not os.path.exists(gt_path):
+        build_gt_for_anet(ann_path, gt_path)
+
+    # ----------------------------------------------------
+    # Evaluate Fold
+    # ----------------------------------------------------
+    tious = np.linspace(0.3, 0.7, 5)
+    evaluator = ANETdetection(
+        ground_truth_filename=gt_path,
+        prediction_filename=pred_path,
+        subset="test",
+        tiou_thresholds=tious,
+        verbose=False,
+        check_status=False
+    )
+
+    with HiddenPrints():
+        mAPs, avg_mAP, _ = evaluator.evaluate()
+
+    print(f"[{test_mode} Fold {fold}] avg_mAP: {avg_mAP:.4f}")
+
+    if isinstance(mAPs, np.ndarray): mAPs = mAPs.tolist()
+    if isinstance(avg_mAP, np.ndarray): avg_mAP = float(avg_mAP)
+
+    return mAPs, avg_mAP, pred_path, gt_path
+
+
+# ============================================================
+# 4) Main Runner
+# ============================================================
+def run_loso_cdur_wetlab(config):
+    set_seed(int(config.get("seed", 2022)))
+    os.makedirs(config["result_root"], exist_ok=True)
+    dump_config(config, config["result_root"])
+
+    folds = config.get("folds", list(range(22)))
+
+    # 用于全局合并
+    all_pred_paths_win = []
+    all_pred_paths_full = []
+    all_gt_paths = []
+
+    json_report_data = []
+    report_path = os.path.join(config["result_root"], "final_metrics_report.json")
+
+    for fold in folds:
+        # 1. Train
+        ckpt = train_cdur_one_fold_wetlab(config, fold)
+
+        # 2. Test Window (生成 predictions_test_window.json)
+        mAPs_win, avg_mAP_win, pred_p_win, gt_p = test_cdur_wetlab(
+            config, ckpt, fold, test_mode="test_window"
+        )
+
+        # 3. [新增] Test Full (生成 predictions_test_full.json)
+        # 注意：如果 wetlab 数据过大，test_full 可能 OOM，请确保机器显存足够
+        mAPs_full, avg_mAP_full, pred_p_full, _ = test_cdur_wetlab(
+            config, ckpt, fold, test_mode="test_full"
+        )
+
+        all_pred_paths_win.append(pred_p_win)
+        all_pred_paths_full.append(pred_p_full)
+        all_gt_paths.append(gt_p)
+
+        # 记录单个 Fold 的结果
+        fold_entry = {
+            "fold": fold,
+            "window_mode": {
+                "mAPs": mAPs_win,
+                "avg_mAP": avg_mAP_win
+            },
+            "full_mode": {
+                "mAPs": mAPs_full,
+                "avg_mAP": avg_mAP_full
+            }
+        }
+        json_report_data.append(fold_entry)
+
+        # 实时保存报告
+        with open(report_path, 'w') as f:
+            json.dump(json_report_data, f, indent=2)
+
+        print(f">>> Fold {fold} Saved. Win: {avg_mAP_win:.4f} | Full: {avg_mAP_full:.4f}")
+
+    # =========================================================
+    # [新增] 保存所有 Fold 合并后的 Full 预测文件
+    # =========================================================
+    merged_results = {}
+    for p_path in all_pred_paths_full:
+        with open(p_path, 'r') as f:
+            data = json.load(f)
+            merged_results.update(data['results'])
+
+    final_cum_pred_path = os.path.join(config["result_root"], "predictions_test_full_all_folds.json")
+    with open(final_cum_pred_path, 'w') as f:
+        json.dump({"version": "CDur-Wetlab-All", "results": merged_results, "external_data": {}}, f)
+
+    print(f"\n全部完成！")
+    print(f"1. 详细 Metric 报告: {report_path}")
+    print(f"2. 全局 Full 预测文件: {final_cum_pred_path}")
+
+
+if __name__ == "__main__":
+    config = {
+        "seed": 2022,
+        "exp_name": "cdur_wetlab",
+        "model_type": "CDur",
+        "dataset_dir": "/home/lipei/TAL_data/wetlab/",
+        "checkpoint_dir": "/home/yinjiaxi/wstal/WeaklySupervised-master/checkpoints/wetlab_cdur_10_23s_2022",
+        "result_root": "/home/yinjiaxi/wstal/WeaklySupervised-master/result/wetlab_cdur_10_23s_2022/",
+
+        "folds": list(range(22)),
+
+        "fps": 50,
+        "clip_sec": 23.0,
+        "in_channels": 3,
+        "num_classes": 8,
+        "stats_dirname": "loso_norm_stats_json",
+
+        "training": {
+            "batch_size": 32,
+            "num_epochs": 80,
+            "lr": 1e-4,
+            "pool_type": "linear",
+            "num_workers": 4,
+        },
+        "testing": {
+            "threshold": 0.5,
+        }
+    }
+
+    run_loso_cdur_wetlab(config)
