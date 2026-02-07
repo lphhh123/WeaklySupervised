@@ -283,7 +283,7 @@ def macro_prf1(gt_arr, pr_arr, labels):
 # UODIFM: EXACT pasted TAL implementation (do not change)
 # ============================================================
 def compute_misalignment_measures(gt, pred, classes, has_null=True):
-    underfill_ratio, deletion_ratio, merge_ratio, fragmentation_ratio, insertion_ratio, overfill_ratio = \
+    underfill_ratio, deletion_ratio, merge_ratio, fragmentation_ratio, insertion_ratio, overfill_ratio =\
         np.zeros(classes.stop), np.zeros(classes.stop), np.zeros(classes.stop), np.zeros(classes.stop), np.zeros(classes.stop), np.zeros(classes.stop)
     for class_label in classes:
         true_positive_count, true_negative_count, false_positive_count, false_negative_count = 0, 0, 0, 0
@@ -691,23 +691,23 @@ if __name__ == "__main__":
     main()
 
 
-# （1）默认不阈值过滤（标准 mAP + sample-level 都不过滤）
+                                        
 #
 # python eval_folds_metrics.py --exp_dirs wsddn_0105 pcl_0104
 #
-# （2）启用每折 inference_stats 里的 conf_thresh 过滤（推荐用于 sample-level 指标）
+                                                                 
 #
 # python eval_folds_metrics.py --exp_dirs wsddn_0105 pcl_0104 --use_conf_thresh
 #
-# 如果也想让 mAP 按同样阈值过滤（更贴近 bock2024temporal 的 pipeline）
+                                                    
 #
 # python eval_folds_metrics.py --exp_dirs wsddn_0105 pcl_0104 --use_conf_thresh --apply_conf_to_map
 #
-# （3）强制所有实验统一阈值
+               
 #
 # python eval_folds_metrics.py --exp_dirs wsddn_0105 pcl_0104 --use_conf_thresh --conf_thresh_override 0.15
 
 
-# 输出都会写到每个实验目录下的：
+                 
 # metrics_summary_all_folds.json
-# 里面 test_full 和 test_window 都有 每折(per_fold) + 均值(mean_over_folds)
+                                                                  

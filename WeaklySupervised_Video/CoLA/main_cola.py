@@ -94,8 +94,8 @@ def main():
         batch_time.update(time.time() - end)
         end = time.time()
         if step == 1 or step % cfg.PRINT_FREQ == 0:
-            print(('Step: [{0:04d}/{1}]\t' \
-                   'Time {batch_time.val:.3f} ({batch_time.avg:.3f})\t' \
+            print(('Step: [{0:04d}/{1}]\t'\
+                   'Time {batch_time.val:.3f} ({batch_time.avg:.3f})\t'\
                    'Loss {loss.val:.4f} ({loss.avg:.4f})\t'.format(
                     step, cfg.NUM_ITERS, batch_time=batch_time, loss=losses)))
             
@@ -110,11 +110,11 @@ def main():
                 utils.save_best_record_thumos(test_info, 
                     os.path.join(cfg.OUTPUT_PATH, "best_results.txt"))
 
-                torch.save(net.state_dict(), os.path.join(cfg.MODEL_PATH, \
+                torch.save(net.state_dict(), os.path.join(cfg.MODEL_PATH,\
                     "model_best.pth.tar"))
 
-            print(('- Test result: \t' \
-                   'mAP@0.5 {mAP_50:.2%}\t' \
+            print(('- Test result: \t'\
+                   'mAP@0.5 {mAP_50:.2%}\t'\
                    'mAP@AVG {mAP_AVG:.2%} (best: {best_mAP:.2%})'.format(
                    mAP_50=mAP_50, mAP_AVG=mAP_AVG, best_mAP=best_mAP)))
 
@@ -162,13 +162,13 @@ def test_all(net, cfg, test_loader, test_info, step, writter=None, model_file=No
 
         score_np = video_scores[0].cpu().data.numpy()  # [30,]
 
-        # [修改开始] 动态确定 pred 类别
+                             
 
-        # 1. 找到最大置信度
+                    
         max_score = np.max(score_np)
 
-        # 2. 设定相对阈值：只要大于 最大分数的 40% 且 大于 绝对底线 0.01
-        # 0.4 这个系数可以微调，XRFV2 这种密集数据建议低一点 (0.3-0.5)
+                                                 
+                                                  
         dynamic_thresh = max(max_score * 0.4, 0.01)
 
         pred = np.where(score_np >= dynamic_thresh)[0]

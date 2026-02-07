@@ -279,7 +279,7 @@ def macro_prf1(gt_arr, pr_arr, labels):
 # UODIFM: EXACT pasted TAL implementation (do not change)
 # ============================================================
 def compute_misalignment_measures(gt, pred, classes, has_null=True):
-    underfill_ratio, deletion_ratio, merge_ratio, fragmentation_ratio, insertion_ratio, overfill_ratio = \
+    underfill_ratio, deletion_ratio, merge_ratio, fragmentation_ratio, insertion_ratio, overfill_ratio =\
         np.zeros(classes.stop), np.zeros(classes.stop), np.zeros(classes.stop), np.zeros(classes.stop), np.zeros(classes.stop), np.zeros(classes.stop)
     for class_label in classes:
         true_positive_count, true_negative_count, false_positive_count, false_negative_count = 0, 0, 0, 0
@@ -580,5 +580,5 @@ if __name__ == "__main__":
 
 
 # python eval_xrfv2_metrics.py --pred_dir /home/lipei/project/WSDDN/test_results/xrfv2/xxx/
-# 如果要阈值过滤：
+          
 # python eval_xrfv2_metrics.py --use_conf_thresh --conf_thresh 0.15
