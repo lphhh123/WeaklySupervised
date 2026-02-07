@@ -11,11 +11,11 @@ from OtherData.utils import _load_loso_json, _parse_fold_id_from_loso_name, _maj
 # ----------------------------
 class OpportunityDataset_3s(Dataset):
     """
-    NPY-only 预训练 Dataset：
-    - 从 processed/.../sbj_k.npy 还原连续 30Hz raw [T,113]
+    NPY-only pretraining Dataset：
+    -  processed/.../sbj_k.npy  30Hz raw [T,113]
     -  3s window (stride 50%)
-    - window center frame 落在 GT 段内 -> 占比大的label确定为此window的label_id
-    - 归一化：读取 raw/<stats_dirname>/loso_sbj_{fold}_stats.json （mean+var）
+    - window center frame  GT  -> labelwindowlabel_id
+    - ：read raw/<stats_dirname>/loso_sbj_{fold}_stats.json （mean+var）
     """
     def __init__(
         self,
@@ -36,7 +36,7 @@ class OpportunityDataset_3s(Dataset):
 
         normalize: bool = True,
         stats_dirname: str = "loso_norm_stats_json",
-        ignore_zeros_in_stats: bool = False,  # 需要与 stats json 里的字段一致
+        ignore_zeros_in_stats: bool = False,
         eps: float = 1e-6,
         cache_raw: bool = True,
         return_meta: bool = False,
@@ -64,7 +64,6 @@ class OpportunityDataset_3s(Dataset):
         # 3) window settings (frames)
         self.win_len = int(round(win_sec * self.fps))
         self.win_stride = max(1, int(round(self.win_len * (1.0 - win_overlap))))
-        # 窗口内占比阈值（默认 0.0 表示只要有 overlap 就分配 label）
         self.min_label_frac = 0.0
 
         # 4) load raw restored from npy
@@ -103,7 +102,7 @@ class OpportunityDataset_3s(Dataset):
             if fold_id is None:
                 raise RuntimeError(
                     f"Cannot parse fold_id from loso_json name: {loso_json}. "
-                    f"请保持命名如 loso_sbj_0.json"
+                    f" loso_sbj_0.json"
                 )
             self.fold_id = fold_id
 
@@ -136,13 +135,11 @@ class OpportunityDataset_3s(Dataset):
             self.fold_id = None
 
         if self.normalize:
-            # 缓存成 torch tensor，避免每个 __getitem__ 重复 from_numpy
             self.mean_t = torch.from_numpy(self.mean).float().unsqueeze(1)  # [C,1]
             self.std_t = torch.from_numpy(self.std).float().unsqueeze(1)  # [C,1]
         else:
             self.mean_t, self.std_t = None, None
 
-        # 6) build index list: (sbj, s, e, lid) —— 去掉 clip，直接整段滑 3s window
         self.index = []
         for sbj in self.subjects:
             annos = self.loso_db[sbj]["annos"]
@@ -161,7 +158,7 @@ class OpportunityDataset_3s(Dataset):
                     min_frac=getattr(self, "min_label_frac", 0.0),
                 )
                 if lid is None:
-                    continue  # 背景/占比不足 直接丢弃
+                    continue
                 self.index.append((sbj, s, e, lid))
 
         if len(self.index) == 0:
@@ -196,7 +193,7 @@ class OpportunityDataset_3s(Dataset):
         if self.normalize:
             x = (x - self.mean_t) / self.std_t
 
-        y = torch.tensor(lid, dtype=torch.long) #动作编号
+        y = torch.tensor(lid, dtype=torch.long)
 
         if self.return_meta:
             return x, y, {"sbj": sbj, "start": s, "end": e, "fold_id": self.fold_id}

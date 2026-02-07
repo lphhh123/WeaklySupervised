@@ -16,24 +16,24 @@ import random
 
 def load_label_mapping(mapping_path):
     """
-    读取label_mapping.json，返回：
-    - id_to_action: {旧ID: 动作名}
-    - old_to_new: {旧ID: 新ID}
-    - new_to_action: {新ID: 动作名}（新增：方便测试时映射）
+    Read label_mapping.json and return:
+    - id_to_action: {old_id: action_name}
+    - old_to_new: {old_id: new_id}
+    - new_to_action: {new_id: action_name} (added for test-time mapping)
     """
     with open(mapping_path, 'r') as f:
         mapping = json.load(f)
 
-    # 旧ID→动作名（键转为int）
+    # Old ID -> action name (keys cast to int)
     id_to_action = {int(k): v for k, v in mapping["id_to_action"].items()}
-    # 旧ID→新ID（键转为int）
+    # Old ID -> new ID (keys cast to int)
     old_to_new = {int(k): v for k, v in mapping["old_to_new_mapping"].items()}
-    # 新ID→动作名（去重合并）
+    # New ID -> action name (deduplicated)
     new_to_action = {}
     for old_id, act_name in id_to_action.items():
         new_id = old_to_new[old_id]
         if new_id not in new_to_action:
-            new_to_action[new_id] = act_name  # 保留第一个映射的动作名（同组动作名相似）
+            new_to_action[new_id] = act_name  # Keep the first action name in the group
 
     return id_to_action, old_to_new, new_to_action
 
@@ -432,5 +432,4 @@ def softnms_v2(segments, sigma=0.5, top_k=1000, score_threshold=0.001):
     count = done_mask.sum()
     segments = torch.stack([tstart[done_mask], tend[done_mask], tscore[done_mask]], -1)
     return segments, count
-
 
