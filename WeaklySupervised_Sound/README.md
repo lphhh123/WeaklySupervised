@@ -1,64 +1,69 @@
 # WeaklySupervisedTemporalActionLocalization (IMU)
 
-这个仓库是一个 **弱监督时序动作定位（Weakly-Supervised Temporal Action Localization, WS-TAL）** 的研究/实验代码，主要面向 **可穿戴/IMU 等 1D 传感器序列**（支持 IMU + 可选 AirPods 传感器拼接）。
+This repository contains research/experimental code for **Weakly-Supervised Temporal Action Localization (WS-TAL)**, focused on **wearable/IMU 1D sensor sequences** (IMU with optional AirPods sensor concatenation).
 
-当前主干实现：
+Current main implementations:
 
-- **WSDDN-IMU**：WSDDN 双分支（classification + detection）用于弱监督定位，proposal pooling 使用 **1D Temporal SPP**（`TemporalSPP1D`）。
-- **PCL/OICR-IMU**：在 WSDDN/MIL 之上加入 **OICR refine**，并可选 **PCL (Proposal Cluster Learning)**，内部用 **KMeans** 生成 pseudo GT / cluster centers。
-- **推理与评估**：按滑窗对长序列推理，按类做 **Soft-NMS**，用 ActivityNet 风格的 `ANETdetection` 计算 **mAP@tIoU**。
+- **WSDDN-IMU**: WSDDN dual-branch (classification + detection) for weak localization; proposal pooling uses **1D Temporal SPP** (`TemporalSPP1D`).
+- **PCL/OICR-IMU**: Adds **OICR refine** on top of WSDDN/MIL, with optional **PCL (Proposal Cluster Learning)**; internally uses **KMeans** to generate pseudo GT / cluster centers.
+- **Inference & evaluation**: Sliding-window inference on long sequences, per-class **Soft-NMS**, and ActivityNet-style `ANETdetection` for **mAP@tIoU**.
 
 ---
 
-## 1. 环境与安装
+## 1. Environment & installation
 ```bash
 pip install -r requirements.txt
 ```
+
 ---
 
-## 2. 代码结构（核心文件）
-项目分两部分：一部分是xrfv2数据集，另一部分是其他数据集。xrfv2数据集的训练和测试代码在主文件夹下，其他数据集的训练和测试在OtherData文件夹下。（其他数据集的结构都是一样的）
-dataset：xrfv2的在./dataset/dataset_xrfv2.py  ;  其他数据集在各自目录下的dataset_{数据集名称}_ws.py
+## 2. Code structure (core files)
+The project has two parts: the XRFV2 dataset and other datasets. XRFV2 training/testing code lives in the root folder, while other datasets are under `OtherData/` (their structures are consistent).
 
--`run_main_xrfv2.py`：**XRFV2** 主入口（在脚本中直接写 config，并串起训练+测试）。
-- `train_epoch.py`：训练循环
+Datasets:
+- XRFV2: `./dataset/dataset_xrfv2.py`
+- Other datasets: `dataset_{dataset_name}_ws.py` in each dataset folder
+
+Core scripts:
+- `run_main_xrfv2.py`: **XRFV2** main entry (config is defined in the script and it chains training + testing).
+- `train_epoch.py`: training loop
   - `train_wsddn_imu(config)`
   - `train_pcl_imu(config)`
-- `test_epoch.py`：测试/推理与评估
+- `test_epoch.py`: testing/inference and evaluation
   - `test_wsddn_imu(config, checkpoint_path)`
   - `test_pcl_imu(config, checkpoint_path)`
-- `dataset/dataset_xrfv2.py`：XRFV2/WWADL 风格数据集（训练用 `*.h5`，测试用 `test.csv` + per-file h5）
-- `models/WSDDN_model.py`：WSDDN + TemporalSPP1D + proposal 生成等
-- `models/PCL_OICR_model.py`：PCL/OICR 头（KMeans + refine）
-- `builder_pretrainbackbone.py`：预训练 backbone 的注册与加载（`PRETRAINED_ZOO`）
-- `tool.py`：Soft-NMS、ANETdetection(mAP) 等工具
+- `dataset/dataset_xrfv2.py`: XRFV2/WWADL-style datasets (training with `*.h5`, testing with `test.csv` + per-file h5)
+- `models/WSDDN_model.py`: WSDDN + TemporalSPP1D + proposal generation
+- `models/PCL_OICR_model.py`: PCL/OICR heads (KMeans + refine)
+- `builder_pretrainbackbone.py`: register/load pretrained backbones (`PRETRAINED_ZOO`)
+- `tool.py`: Soft-NMS, ANETdetection (mAP), etc.
 
-### 2.1 其他数据集
+### 2.1 Other datasets
 
-`OtherData/` 下提供了多个数据集的弱监督训练/测试脚本（例如 `Opportunity/`、`RWHAR/`、`HANGTIME/`、`WEAR/`、`WETLAB/`、`SBHAR/`），整体流程与根目录类似，但各自的数据组织与 LOSO 划分略有不同。
+`OtherData/` provides weakly supervised training/testing scripts for multiple datasets (e.g., `Opportunity/`, `RWHAR/`, `HANGTIME/`, `WEAR/`, `WETLAB/`, `SBHAR/`). The workflow is similar to the root, but data organization and LOSO splits vary.
 
 ---
 
-## 3. 数据准备（以 XRFV2 为例）
+## 3. Data preparation (XRFV2 example)
 
-### 3.1 训练集目录（`train_dataset_path`）
+### 3.1 Training set directory (`train_dataset_path`)
 
-训练集通过 30s clip 级弱监督进行训练，默认期望：
+Training uses weak supervision at the 30s clip level. Expected files:
 
 - `train_data.h5`
-  - `imu`：形状 **[N, 2048, 5, 6]**（2048 为 30s 的采样点数；5 个设备；每设备 6 维）
-  - `airpods`（可选）：形状 **[N, 2048, 9]**（实际使用 AirPods 的 acc(3) + gyro(3)）
+  - `imu`: shape **[N, 2048, 5, 6]** (2048 samples for 30s; 5 devices; 6 dims/device)
+  - `airpods` (optional): shape **[N, 2048, 9]** (uses AirPods acc(3) + gyro(3))
 - `train_label.json`
-  - JSON 内包含 `imu` 字段：`{sample_idx(str): [ [left_offset, right_offset, old_label_id], ... ] }`
-  - `left_offset/right_offset` 为相对位置
+  - Includes `imu` field: `{sample_idx(str): [ [left_offset, right_offset, old_label_id], ... ] }`
+  - `left_offset/right_offset` are relative positions
 - `global_stats.json`
-  - 包含每个模态的全局均值与方差：
-    - `imu.global_mean/std`：长度应匹配 **30 维**（5×6 展平）
-    - `airpods.global_mean/std`：建议直接保存为 **6 维**（代码只使用 AirPods 的 acc(3) + gyro(3)）
+  - Global mean and variance per modality:
+    - `imu.global_mean/std`: length should match **30 dims** (5×6 flattened)
+    - `airpods.global_mean/std`: recommended **6 dims** (only acc(3) + gyro(3) used)
 
-### 3.2 Label 映射（`mapping_path`）
+### 3.2 Label mapping (`mapping_path`)
 
-需要 `label_mapping.json`，示例字段：
+Requires `label_mapping.json`, example:
 
 ```json
 {
@@ -67,93 +72,95 @@ dataset：xrfv2的在./dataset/dataset_xrfv2.py  ;  其他数据集在各自目�
 }
 ```
 
-- `id_to_action`：旧类别 ID -> 名称
-- `old_to_new_mapping`：旧类别 ID -> 新类别 ID（可用于合并类别）
+- `id_to_action`: old class ID -> name
+- `old_to_new_mapping`: old class ID -> new class ID (used for merging)
 
-### 3.3 测试集目录（`test_dataset_path` + `dataset_root_path`）
+### 3.3 Test set directory (`test_dataset_path` + `dataset_root_path`)
 
-测试阶段按 **文件级长序列** 推理：
+Testing runs inference on **file-level long sequences**:
 
 - `test_dataset_path/test.csv`
-  - 包含 `file_name` 列，用于列出要测试的文件名
+  - Contains `file_name` column listing test file names
 - `test_dataset_path/info.json`
 - `test_dataset_path/{modality}_annotations.json`
-  - 用于 mAP 评估的 GT（ActivityNet 风格 json）
+  - GT for mAP evaluation (ActivityNet-style json)
 - `dataset_root_path/<modality>/<file_name>`
-  - 每个 `file_name` 对应一个 h5，供 `WWADLDatasetTestSingle` 读取
+  - Each `file_name` corresponds to one h5, read by `WWADLDatasetTestSingle`
 
 ---
 
-## 4. 预训练 backbone（可选）
+## 4. Pretrained backbone (optional)
 
-仓库提供了 1D CNN backbone（`pre_train/pre_model.py`），并在 `builder_pretrainbackbone.py` 里通过 `PRETRAINED_ZOO` 注册：
+The repo provides a 1D CNN backbone (`pre_train/pre_model.py`) registered in `builder_pretrainbackbone.py` via `PRETRAINED_ZOO`:
 
-- 需要把 `PRETRAINED_ZOO["CNN1D"]["ckpt"]` 改成你机器上的权重路径。
-- 若找不到 ckpt，训练阶段会自动走 **随机初始化 + train_backbone=True**（见 `train_epoch.py`）。
+- Update `PRETRAINED_ZOO["CNN1D"]["ckpt"]` to the correct path on your machine.
+- If the ckpt is missing, training falls back to **random initialization + train_backbone=True** (see `train_epoch.py`).
 
-> 注意：`pre_train/pre_imu.py` 中引用了未包含的 `pre_tsse_mamba_model_7s`，如果你要运行该脚本，需要补齐对应文件或删掉相关 import。
+> Note: `pre_train/pre_imu.py` references a missing `pre_tsse_mamba_model_7s`. To run that script, add the missing file or remove the import.
 
 ---
 
-## 5. 训练与测试
+## 5. Training and testing
 
-### 5.1 一键运行
-（XRFV2）
+### 5.1 One-click run
 
-直接修改 `run_main_xrfv2.py` 里的 `base_config`（尤其是 `path` 相关字段），然后运行：
+**(XRFV2)**
+
+Edit `base_config` in `run_main_xrfv2.py` (especially the `path` fields), then run:
+
 ```bash
 python run_main_xrfv2.py
 ```
 
-脚本会按 `experiments = [...]` 逐个实验执行：
+The script runs each experiment in `experiments = [...]`:
 
-- WSDDN 训练 → 保存最优 ckpt
-- 加载 ckpt 进行测试 → 生成 `predictions.json` / `train_test_report.txt`
-- PCL/OICR 同理（输出 `predictions_pcl.json` 等）
+- WSDDN training -> save best ckpt
+- Load ckpt for testing -> generate `predictions.json` / `train_test_report.txt`
+- PCL/OICR follows the same pattern (e.g., `predictions_pcl.json`)
 
-（其他数据集）
+**(Other datasets)**
 
-直接修改 `run_wsddn/pcl_{对应数据集名}.py` 里的 `base_config`（尤其是 `path` 相关字段），然后运行：
+Edit `base_config` in `run_wsddn/pcl_{dataset_name}.py` (especially `path`), then run:
+
 ```bash
-python run_wsddn/pcl_{对应数据集名}.py
+python run_wsddn/pcl_{dataset_name}.py
 ```
 
-脚本会按 `experiments = [...]` 逐个实验执行：
+The script runs each experiment in `experiments = [...]`:
 
-- WSDDN 训练 → 保存最优 ckpt
-- 加载 ckpt 进行测试 → 生成 `predictions.json` / `train_test_report.txt`
-- PCL/OICR 同理（输出 `predictions_pcl.json` 等）
+- WSDDN training -> save best ckpt
+- Load ckpt for testing -> generate `predictions.json` / `train_test_report.txt`
+- PCL/OICR follows the same pattern (e.g., `predictions_pcl.json`)
 
-### 5.2 输出文件
+### 5.2 Output files
 
-由 `config["path"]["result_path"]` 控制，典型会生成：
+Controlled by `config["path"]["result_path"]`, typically:
 
-- `inference_stats.json`：推理耗时 / GPU 峰值显存统计
-- `predictions.json` 或 `predictions_pcl.json`：ActivityNet 风格预测结果
-- `train_test_report.txt`：mAP@tIoU 报告
+- `inference_stats.json`: inference time / GPU peak memory stats
+- `predictions.json` or `predictions_pcl.json`: ActivityNet-style prediction results
+- `train_test_report.txt`: mAP@tIoU report
 
-### 5.3 多线程/CPU 竞争（PCL 的 KMeans）
+### 5.3 Multi-threading/CPU contention (PCL KMeans)
 
-PCL 中的 `sklearn.cluster.KMeans` 在 CPU 上运行，若遇到线程打架/速度异常，可尝试：
+`sklearn.cluster.KMeans` runs on CPU. If you see thread contention or slowdowns, try:
 
 ```bash
 export OMP_NUM_THREADS=1
 export MKL_NUM_THREADS=1
 ```
 
-并在代码里减少 `num_workers`。
+and reduce `num_workers` in code.
 
 ---
 
-## 6. 常见问题（FAQ）
+## 6. FAQ
 
-1) **找不到预训练 ckpt**：请修改 `builder_pretrainbackbone.py` 中 `PRETRAINED_ZOO` 的 `ckpt` 路径。
+1) **Pretrained ckpt not found**: update `PRETRAINED_ZOO` `ckpt` path in `builder_pretrainbackbone.py`.
 
-2) **`global_stats.json` 维度不匹配**：
-- IMU 需要 30 维（5×6 展平）
-- AirPods 建议保存为 6 维（acc+gyro），与 `dataset_xrfv2.py::_preprocess_airpods()` 对齐
+2) **`global_stats.json` dimension mismatch**:
+- IMU needs 30 dims (5×6 flattened)
+- AirPods should be 6 dims (acc+gyro), matching `dataset_xrfv2.py::_preprocess_airpods()`
 
-3) **测试集读取失败**：确认 `test_dataset_path/test.csv` 存在且包含 `file_name` 列；并确保 `dataset_root_path/<modality>/<file_name>` 指向实际数据文件。
+3) **Test set loading fails**: ensure `test_dataset_path/test.csv` exists and includes a `file_name` column; verify `dataset_root_path/<modality>/<file_name>` points to actual data files.
 
 ---
-

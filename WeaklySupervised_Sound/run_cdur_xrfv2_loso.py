@@ -8,13 +8,11 @@ import torch.nn as nn
 import torch.optim as optim
 from torch.utils.data import DataLoader, ConcatDataset
 
-# 导入你现有的类
 from dataset.dataset_xrfv2 import WeaklySupervisedXRFV2DatasetTrain, WeaklySupervisedXRFV2DatasetTest
 from models.CDur_model import CDur
 from tool import ANETdetection
 
 # ============================================================
-# 1. 基础配置
 # ============================================================
 data_paths = [
     "/home/lipei/all_6_30_3/",
@@ -40,7 +38,6 @@ config = {
 
 
 # ============================================================
-# 2. 工具函数 (NMS & 帧提取)
 # ============================================================
 def get_segments_by_frames(probs, threshold=0.15, min_len=15):
     T, C = probs.shape
@@ -83,7 +80,6 @@ def soft_nms_functional(dets, sigma=0.5, thresh=0.001):
 
 
 # ============================================================
-# 3. 训练函数（包含实时进度输出）
 # ============================================================
 def run_train_fold(train_paths, save_dir, device):
     os.makedirs(save_dir, exist_ok=True)
@@ -97,13 +93,12 @@ def run_train_fold(train_paths, save_dir, device):
     # criterion = nn.BCEWithLogitsLoss()
     criterion = nn.BCELoss()
 
-    print(f"\n开始训练 [样本总数: {len(combined_train_ds)}]")
+    print(f"\nStarting training [total samples: {len(combined_train_ds)}]")
     for epoch in range(config["training"]["epochs"]):
         model.train()
         epoch_loss = 0
         pbar = tqdm(train_loader, desc=f"Epoch {epoch + 1}/{config['training']['epochs']}", leave=False)
         for x, _, y in pbar:
-            # 维度转置修复：[B, 36, 2048] -> [B, 2048, 36]
             x = x.transpose(1, 2)
             x, y = x.to(device), y.to(device)
 
@@ -118,7 +113,7 @@ def run_train_fold(train_paths, save_dir, device):
             pbar.set_postfix({"loss": f"{loss.item():.4f}"})
 
         avg_loss = epoch_loss / len(train_loader)
-        print(f"Epoch {epoch + 1:03d} 结束 | 平均 Loss: {avg_loss:.4f}")
+        print(f"Epoch {epoch + 1:03d} finished | Avg loss: {avg_loss:.4f}")
 
     save_path = os.path.join(save_dir, "best_model.pth")
     torch.save(model.state_dict(), save_path)
@@ -126,7 +121,6 @@ def run_train_fold(train_paths, save_dir, device):
 
 
 # ============================================================
-# 4. 推理函数（支持 Window/Full 模式）
 # ============================================================
 @torch.no_grad()
 def run_dual_test_fold(test_path, checkpoint_path, device, test_mode="test_full"):
@@ -140,7 +134,7 @@ def run_dual_test_fold(test_path, checkpoint_path, device, test_mode="test_full"
     test_ds = WeaklySupervisedXRFV2DatasetTest(config=fold_config, use_airpods=True)
     results_dict = {}
 
-    for file_name, data_iter in tqdm(test_ds.dataset(), desc=f"推理中 ({test_mode})", leave=False):
+    for file_name, data_iter in tqdm(test_ds.dataset(), desc=f"Inference ({test_mode})", leave=False):
         raw_predictions = [[] for _ in range(config["training"]["num_classes"])]
         video_annotations = []
 
@@ -178,7 +172,6 @@ def run_dual_test_fold(test_path, checkpoint_path, device, test_mode="test_full"
 
 
 # ============================================================
-# 5. 主程序：LOSO 循环
 # ============================================================
 if __name__ == "__main__":
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -188,38 +181,30 @@ if __name__ == "__main__":
         sub_id = os.path.basename(os.path.normpath(test_path))
         train_paths = [p for j, p in enumerate(data_paths) if j != i]
 
-        print(f"\n" + "=" * 70)
-        print(f"FOLD {i + 1}/4 | 测试受试者: {sub_id}")
-        print(f"=" * 70)
+        print(f"\nFOLD {i + 1}/4 | Test subject: {sub_id}")
 
-        # 1. 训练
         fold_ckpt_dir = os.path.join(config["path"]["checkpoint_root"], sub_id)
         best_ckpt = run_train_fold(train_paths, fold_ckpt_dir, device)
 
-        # 2. 双模式测试评估
         for mode in ["test_window", "test_full"]:
             res_dict = run_dual_test_fold(test_path, best_ckpt, device, test_mode=mode)
 
-            # 保存结果文件
             mode_json = os.path.join(config["path"]["result_root"], f"{sub_id}_{mode}.json")
             os.makedirs(os.path.dirname(mode_json), exist_ok=True)
             with open(mode_json, 'w') as f:
-                # 添加 "external_data": None
                 json.dump({
                     "version": "VERSION 1.3",
                     "results": res_dict,
-                    "external_data": {}  # 补齐这个字段
+                    "external_data": {}
                 }, f)
 
-            # 实时评估 mAP
             eval_gt = os.path.join(test_path, "imu_annotations.json")
             evaluator = ANETdetection(eval_gt, mode_json, subset="test", verbose=False, check_status=False)
             mAPs, avg_mAP, _ = evaluator.evaluate()
 
             all_metrics[mode][sub_id] = {"mAP": [round(float(m), 4) for m in mAPs], "avg": round(float(avg_mAP), 4)}
-            print(f"--- [{mode}] 完成 | 平均 mAP: {avg_mAP:.4f}")
+            print(f"[{mode}] Completed | Avg mAP: {avg_mAP:.4f}")
 
-    # 保存最终实验报告
     with open(os.path.join(config["path"]["result_root"], "loso_final_metrics.json"), 'w') as f:
         json.dump(all_metrics, f, indent=4)
-    print("\n>>> LOSO 实验结束。请查看 loso_final_metrics.json。")
+    print("\nLOSO experiment finished. See loso_final_metrics.json.")

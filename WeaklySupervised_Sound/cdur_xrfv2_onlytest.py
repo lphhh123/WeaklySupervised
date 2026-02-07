@@ -9,13 +9,11 @@ from dataset.dataset_xrfv2 import WeaklySupervisedXRFV2DatasetTest
 from models.CDur_model import CDur
 from tool import ANETdetection
 
-# 环境设置
 torch.set_num_threads(8)
 os.environ["CUDA_VISIBLE_DEVICES"] = "7"
 
 
 # ============================================================
-# 1) 工具函数：直接在【帧】上操作
 # ============================================================
 def get_segments_by_frames(probs, threshold=0.15, min_len=10):
     T, C = probs.shape
@@ -58,14 +56,12 @@ def soft_nms_functional(dets, sigma=0.5, thresh=0.001):
 
 
 # ============================================================
-# 2) 核心测试函数
 # ============================================================
 @torch.no_grad()
 def test_dual_logic(config, checkpoint_path, test_mode="test_full"):
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     num_classes = config["training"]["num_classes"]
 
-    # 调优参数（如果28分时你用过其他阈值，请修改此处）
     ACT_THRESHOLD = 0.15
     MIN_FRAME_LEN = 15
 
@@ -120,11 +116,10 @@ def test_dual_logic(config, checkpoint_path, test_mode="test_full"):
                     })
         results_dict[video_id] = video_annotations
 
-    # --- 关键：必须满足 PREDICTION_FIELDS = ['results', 'version', 'external_data'] ---
     final_output = {
         "version": "VERSION 1.3",
         "results": results_dict,
-        "external_data": {}  # 必须包含这个键，否则 tool.py 报错
+        "external_data": {}
     }
 
     out_path = os.path.join(config["path"]["result_path"], f"prediction_{test_mode}.json")
@@ -159,6 +154,6 @@ if __name__ == "__main__":
             metrics[mode] = {"mAP": [round(float(m), 4) for m in mAPs], "avg": round(float(avg), 4)}
         with open(os.path.join(config["path"]["result_path"], "metrics_report.json"), 'w') as f:
             json.dump(metrics, f, indent=4)
-        print("\n>>> 指标已更新，JSON 格式已强行适配 tool.py。")
+        print("\nMetrics updated. JSON format adjusted for tool.py.")
     else:
         print("FileNotFound.")

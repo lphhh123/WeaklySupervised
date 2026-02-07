@@ -13,10 +13,10 @@ from torch.utils.data import Dataset
 # ============================================================
 def _load_loso_json(json_path: str):
     """
-    读取 loso_sbj_k.json
-    输出:
+    Read loso_sbj_k.json.
+    Output:
       loso_db[sbj] = {"subset": "Training"/"Validation", "fps": 50, "annos": [(s,e,lid), ...]}
-    其中 s,e 是 frame index（int），区间按 [s, e) 使用。
+    where s,e are frame indices (int), and ranges use [s, e).
     """
     with open(json_path, "r", encoding="utf-8") as f:
         obj = json.load(f)
@@ -25,7 +25,7 @@ def _load_loso_json(json_path: str):
     parsed = {}
     for sbj, info in db.items():
         subset = info.get("subset", None)
-        fps = int(info.get("fps", 50))  # ★RWHAR 默认 50Hz
+        fps = int(info.get("fps", 50))
         annos = []
         for a in info.get("annotations", []):
             seg_f = a.get("segment (frames)", None)
@@ -60,22 +60,22 @@ def _parse_fold_id_from_loso_name(loso_json: str):
 # ============================================================
 def npy_windows_to_raw_frames(
     npy_path: str,
-    num_sensors: int = 21,     # ★RWHAR: 3轴*7设备=21
-    win_samples: int = 50,     # ★RWHAR: 50_samples
+    num_sensors: int = 21,
+    win_samples: int = 50,     # RWHAR: 50_samples
     overlap: float = 0.5,      # 50% overlap
     dtype=np.float32,
 ):
     """
-    RWHAR npy: shape [N, num_sensors*win_samples]，例如 [8632, 1050] = 21*50
-    flatten 顺序为 sensor-major:
+    RWHAR npy: shape [N, num_sensors*win_samples], e.g. [8632, 1050] = 21*50
+    Flatten order is sensor-major:
       sensor0(win) + sensor1(win) + ... + sensor20(win)
 
     overlap=0.5 -> stride = win_samples*(1-0.5)=25 samples
 
-    还原连续 raw：
-      第一个窗口取完整 win_samples，
-      后续窗口只追加“新出现的那部分帧”（窗口后半段 stride 部分）。
-    返回:
+    Restore continuous raw:
+      First window uses full win_samples.
+      Subsequent windows append only the newly appeared frames (stride portion).
+    Return:
       raw_frames: [T_frames, num_sensors]
     """
     feat = np.load(npy_path, allow_pickle=False).astype(dtype)  # [N, 1050]
@@ -134,7 +134,7 @@ def _compute_mean_var_across_subjects(
     ignore_zeros_in_stats: bool,
 ):
     """
-    基于还原后的连续 raw 序列（50Hz）统计每通道 mean/var。
+    Compute per-channel mean/var from restored continuous raw sequence (50Hz).
     """
     sum_ = np.zeros((num_sensors,), dtype=np.float64)
     sumsq = np.zeros((num_sensors,), dtype=np.float64)
@@ -182,18 +182,18 @@ def _compute_mean_var_across_subjects(
 
 def ensure_all_loso_stats_json(
     dataset_dir: str,
-    folds=tuple(range(15)),  # ★RWHAR: 15 folds
+    folds=tuple(range(15)),  # RWHAR: 15 folds
     annotations_dirname="annotations",
     stats_dirname="loso_norm_stats_json",
-    fps: int = 50,           # ★RWHAR: 50Hz
-    num_sensors: int = 21,   # ★RWHAR: 3*7=21
+    fps: int = 50,           # RWHAR: 50Hz
+    num_sensors: int = 21,   # RWHAR: 3*7=21
     npy_rel_dir: str = os.path.join("processed", "inertial_features", "50_samples_50_overlap"),
-    win_samples: int = 50,   # ★RWHAR: 50_samples
+    win_samples: int = 50,   # RWHAR: 50_samples
     overlap: float = 0.5,
     ignore_zeros_in_stats: bool = False,
 ):
     """
-    确保每个 fold 的 stats 都存在：
+    Ensure stats exist for each fold:
       raw/loso_norm_stats_json/loso_sbj_k_stats.json
     """
     for k in folds:

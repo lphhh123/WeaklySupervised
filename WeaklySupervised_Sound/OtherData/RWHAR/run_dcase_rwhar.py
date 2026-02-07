@@ -17,15 +17,12 @@ from tool import ANETdetection
 from OtherData.utils import _meta_get, set_seed, build_gt_for_anet, dump_config
 
 # ============================================================
-# [修改 1] 导入 RWHAR 数据集类
-# 假设文件名遵循命名规范：OtherData/RWHAR/dataset_rwhar_ws.py
 # ============================================================
 try:
     from OtherData.RWHAR.dataset_rwhar_ws import WeaklyRWHARDataset
 except ImportError:
     print("Error: Could not import 'WeaklyRWHARDataset'. Please check the path.")
 
-# 引入 DCASE CRNN 模型
 try:
     from models.DCASE_CRNN import CRNN
 except ImportError:
@@ -96,19 +93,14 @@ def train_dcase_one_fold_rwhar(config, fold: int, exp_name: str = "dcase_rwhar")
     dataset_dir = config["dataset_dir"]
     fps = int(config.get("fps", 50))
     clip_sec = float(config.get("clip_sec", 10.0))
-    in_channels = int(config.get("in_channels", 21))  # RWHAR 是 21
+    in_channels = int(config.get("in_channels", 21))
     num_classes = int(config["num_classes"])
 
     suffix = f"_{int(clip_sec)}s"
 
-    # CRNN 模型初始化
-    # 提取自定义的 CNN 参数 (针对 21 通道数据的池化保护)
     cnn_kwargs = config["model_args"].get("cnn_kwargs", {})
 
     model = CRNN(
-        # [关键] 必须设置为 in_channels (21)。
-        # 即使 21 很大，但我们为了安全禁止了传感器维度的池化。
-        # 因此 CNN 输出特征维度是 64 * 21 = 1344。
         n_in_channel=in_channels,
 
         nclass=num_classes,
@@ -126,9 +118,7 @@ def train_dcase_one_fold_rwhar(config, fold: int, exp_name: str = "dcase_rwhar")
     model = model.to(device)
 
     def count_parameters(model):
-        # 统计所有参数
         total_params = sum(p.numel() for p in model.parameters())
-        # 统计可训练参数 (通常我们关心这个)
         trainable_params = sum(p.numel() for p in model.parameters() if p.requires_grad)
         return total_params, trainable_params
 
@@ -139,10 +129,9 @@ def train_dcase_one_fold_rwhar(config, fold: int, exp_name: str = "dcase_rwhar")
     print(f"Trainable Parameters: {trainable:,}")
     print("-" * 30 + "\n")
 
-    # [修改 2] 实例化 RWHAR Dataset
     loso_json = f"loso_sbj_{fold}.json"
 
-    train_ds = WeaklyRWHARDataset(  # <--- 修改类名
+    train_ds = WeaklyRWHARDataset(
         dataset_dir=dataset_dir,
         loso_json=loso_json,
         mode="train",
@@ -190,7 +179,6 @@ def train_dcase_one_fold_rwhar(config, fold: int, exp_name: str = "dcase_rwhar")
             sample_clips = sample_clips.to(device)
             labels = labels.to(device).float()
 
-            # 维度适配: (Batch, Time, Channels) -> (Batch, Channels, Time)
             if sample_clips.shape[1] > sample_clips.shape[2]:
                 inputs = sample_clips.permute(0, 2, 1)
             else:
@@ -212,7 +200,7 @@ def train_dcase_one_fold_rwhar(config, fold: int, exp_name: str = "dcase_rwhar")
 
         scheduler.step()
 
-    print(f"  >>> Fold {fold} Finished. Best Loss: {best_loss:.4f} -> {ckpt_path}")
+    print(f"   Fold {fold} Finished. Best Loss: {best_loss:.4f} -> {ckpt_path}")
     return ckpt_path
 
 
@@ -220,7 +208,6 @@ def train_dcase_one_fold_rwhar(config, fold: int, exp_name: str = "dcase_rwhar")
 # 3) Test one fold (RWHAR)
 # ============================================================
 # ============================================================
-# 3) Test one fold (RWHAR) - 调试修复版
 # ============================================================
 @torch.no_grad()
 def test_dcase_rwhar(config, checkpoint_path, fold: int, test_mode: str = "test_window"):
@@ -282,20 +269,17 @@ def test_dcase_rwhar(config, checkpoint_path, fold: int, test_mode: str = "test_
     # Step A: Cache Probabilities
     prob_cache = {}
 
-    # [Debug] 计数器，用于只打印前几个样本的 meta 信息
     debug_cnt = 0
 
     for x, _, meta in tqdm(loader, desc=f"[{test_mode}] fold{fold} inference", leave=False):
         sbj = str(_meta_get(meta, "sbj"))
         clip_start_frame = int(_meta_get(meta, "start"))
 
-        # [Debug] 打印检查：如果 clip_start_frame 一直是 0，说明 Dataset 有问题
         if test_mode == "test_window" and debug_cnt < 5:
             print(f" [Debug] SBJ: {sbj} | Start Frame: {clip_start_frame}")
             debug_cnt += 1
 
         x = x.to(device)
-        # 维度适配
         if x.shape[1] > x.shape[2]:
             inputs = x.permute(0, 2, 1)
         else:
@@ -303,7 +287,6 @@ def test_dcase_rwhar(config, checkpoint_path, fold: int, test_mode: str = "test_
 
         frame_prob, _ = model(inputs)
 
-        # 插值
         target_len = inputs.shape[-1]
         frame_prob = F.interpolate(frame_prob, size=target_len, mode='linear', align_corners=True)
         frame_prob = frame_prob.permute(0, 2, 1).squeeze(0).cpu().numpy()
@@ -336,7 +319,6 @@ def test_dcase_rwhar(config, checkpoint_path, fold: int, test_mode: str = "test_
                 for cls_idx, segs in enumerate(segments_per_class):
                     label_name = id2label.get(cls_idx, f"class_{cls_idx}")
                     for (start_sec, end_sec, score) in segs:
-                        # [核心逻辑] 将相对时间转换为绝对时间
                         abs_start = start_sec + (clip_start_frame / fps)
                         abs_end = end_sec + (clip_start_frame / fps)
 
@@ -370,12 +352,10 @@ def test_dcase_rwhar(config, checkpoint_path, fold: int, test_mode: str = "test_
         with HiddenPrints():
             mAPs, avg_mAP, _ = evaluator.evaluate()
 
-        # 记录最优
         if avg_mAP > best_avg_mAP:
             best_avg_mAP = avg_mAP
             best_thresh = th
             best_mAPs = mAPs
-            # 保存最佳预测结果
             best_pred_path = os.path.join(fold_dir, f"best_predictions_{test_mode}{suffix}.json")
             with open(best_pred_path, "w") as f:
                 json.dump(final_results, f, indent=2)
@@ -438,25 +418,21 @@ def run_loso_dcase_rwhar(config):
 
 if __name__ == "__main__":
     # ============================================================
-    # [修改 4] 配置 RWHAR 专属参数
     # ============================================================
     config = {
         "seed": 2026,
         "exp_name": "dcase_rwhar",
         "model_type": "CRNN",
 
-        # [路径修改]
         "dataset_dir": "/home/lipei/TAL_data/rwhar/",
         "checkpoint_dir": "/home/yinjiaxi/wstal/WeaklySupervised-master/checkpoints/rwhar_dcase_10_500s_2026",
         "result_root": "/home/yinjiaxi/wstal/WeaklySupervised-master/result/rwhar_dcase_10_500s_2026/",
 
-        # [数据修改] RWHAR 15 folds
         "folds": list(range(15)),
 
         "fps": 50,
         "clip_sec": 500.0,
 
-        # [关键修改]
         "in_channels": 21,
         "num_classes": 8,
 
@@ -471,8 +447,6 @@ if __name__ == "__main__":
             "specaugm_f_l": 2,
             "cnn_integration": True,
 
-            # [关键] 防止 21 通道在深层 CNN 中被 Pool 成小数或 0
-            # 策略：只Pool时间(2)，不Pool传感器通道(1)
             "cnn_kwargs": {
                 "pooling": [[2, 1], [2, 1], [2, 1], [1, 1], [1, 1], [1, 1], [1, 1]]
             }
@@ -480,8 +454,8 @@ if __name__ == "__main__":
 
         "training": {
             # "batch_size": 32,
-            "batch_size": 4,  # 从 32 改为 4 (甚至 2)
-            "accum_steps": 8,  # 新增参数：累积 8 次，相当于虚拟 Batch Size = 32
+            "batch_size": 4,
+            "accum_steps": 8,
             "num_epochs": 80,
             "lr": 1e-4,
             "num_workers": 4,
