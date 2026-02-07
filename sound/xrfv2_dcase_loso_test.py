@@ -4,15 +4,16 @@ import torch
 import numpy as np
 from tqdm import tqdm
 
-       
+# 导入工具类
 from tool import ANETdetection, load_label_mapping
 from models.DCASE_CRNN_XRFV2 import CRNN
 from dataset.dataset_XRFV2_loso import WeaklySupervisedXRFV2DatasetTest
 
 
-                                                                   
+# ========================== 1. 后处理与 NMS ==========================
 
 def temporal_nms(predictions, thresh=0.4):
+    """ 时序 NMS：合并跨 window 的重复预测 """
     if len(predictions) == 0: return []
     df = sorted(predictions, key=lambda x: x['score'], reverse=True)
     keep = []
@@ -35,6 +36,7 @@ def temporal_nms(predictions, thresh=0.4):
 
 
 def post_process_for_anet(probs, id_to_label, threshold=0.3, offset_frame=0):
+    """ 将模型输出转化为 ANET 字典格式，单位为帧 """
     n_class, n_frames = probs.shape
     results = []
     for cls_idx in range(n_class):
@@ -60,15 +62,15 @@ def post_process_for_anet(probs, id_to_label, threshold=0.3, offset_frame=0):
     return results
 
 
-                                                                 
+# ========================== 2. 核心评估函数 ==========================
 
 def run_subject_evaluation(config, ckpt_path, mode="window"):
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-            
+    # 加载标签映射
     _, _, id_to_label = load_label_mapping(config["path"]["mapping_path"])
 
-           
+    # 模型初始化
     model = CRNN(n_in_channel=1, nclass=config["training"]["num_classes"], **config["model"]["params"]).to(device)
     model.load_state_dict(torch.load(ckpt_path, map_location=device))
     model.eval()
@@ -83,7 +85,7 @@ def run_subject_evaluation(config, ckpt_path, mode="window"):
             video_raw_segs = []
             for clip_dict, _ in data_iter:
                 data = clip_dict['imu'].unsqueeze(0).to(device)
-                offset = clip_dict.get('offset', 0)                       
+                offset = clip_dict.get('offset', 0)  # 确保 Dataset 返回了起始帧偏移
 
                 strong_out, _ = model(data)
                 # (1, T, C) -> (C, T) + Sigmoid
@@ -92,17 +94,17 @@ def run_subject_evaluation(config, ckpt_path, mode="window"):
                 segs = post_process_for_anet(probs, id_to_label, threshold=0.25, offset_frame=offset)
                 video_raw_segs.extend(segs)
 
-                            
+            # 聚合当前视频结果并做 NMS
             prediction_output["results"][file_name] = temporal_nms(video_raw_segs, thresh=0.4)
 
-               
+    # 保存预测 JSON
     pred_path = os.path.join(config["path"]["result_path"], f"pred_{mode}.json")
     with open(pred_path, 'w') as f:
         json.dump(prediction_output, f, indent=4)
 
-            
+    # 计算 mAP
     tiou_thresholds = np.array([0.3, 0.4, 0.5, 0.6, 0.7])
-                                                         
+    # 假设你的 GT 文件包含了所有 Subject 的标注，或者在各 Subject 路径下有独立的 GT
     gt_path = config["path"]["gt_path"]
 
     evaluator = ANETdetection(
@@ -114,7 +116,7 @@ def run_subject_evaluation(config, ckpt_path, mode="window"):
     )
     mAP_list, avg_mAP, ap_matrix = evaluator.evaluate()
 
-          
+    # 整理结果
     report = {
         "average_mAP": float(avg_mAP),
         "mAP_at_thresholds": {f"mAP@{t}": float(m) for t, m in zip(tiou_thresholds, mAP_list)}
@@ -127,13 +129,13 @@ def run_subject_evaluation(config, ckpt_path, mode="window"):
     return avg_mAP, mAP_list
 
 
-                                                                
+# ========================== 3. 主循环适配 ==========================
 
 def run_loso_test():
     loso_folders = ["all_6_30_3", "all_5_30_3", "all_4_30_3", "all_2_30_3"]
     data_root = "/home/lipei/"
-                                        
-                             
+    # 这里需要指定你之前提到的全局 GT 或 Subject 独立的 GT
+    # 如果每个文件夹下有自己的 gt，请在循环内修改
     global_gt_path = "/home/lipei/XRFV2/imu_annotations.json"
 
     summary_results = {}
@@ -164,19 +166,19 @@ def run_loso_test():
             print(f"跳过 {folder}，未找到权重文件: {best_ckpt}")
             continue
 
-                      
+        # 执行 Window 模式
         avg_w, list_w = run_subject_evaluation(config, best_ckpt, mode="window")
-                    
+        # 执行 Full 模式
         avg_f, list_f = run_subject_evaluation(config, best_ckpt, mode="full")
 
-               
+        # 控制台打印
         print(f"\n[结果汇总 - {folder}]")
         print(f"Window Mode -> Avg mAP: {avg_w:.4f} | mAP@0.5: {list_w[2]:.4f}")
         print(f"Full Mode   -> Avg mAP: {avg_f:.4f} | mAP@0.5: {list_f[2]:.4f}")
 
         summary_results[folder] = {"window": avg_w, "full": avg_f}
 
-          
+    # 最终汇总
     print("\n" + "=" * 60)
     print("LOSO 跨人实验最终 mAP 统计")
     print(f"{'Folder':<15} | {'Window mAP':<12} | {'Full mAP':<12}")

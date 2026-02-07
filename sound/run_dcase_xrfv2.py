@@ -5,14 +5,14 @@ import numpy as np
 from tqdm import tqdm
 import copy
 
-      
+# 设置显卡
 os.environ["CUDA_VISIBLE_DEVICES"] = "3"
 
 from dataset.dataset_xrfv2 import WeaklySupervisedXRFV2DatasetTest
 from models.DCASE_CRNN_XRFV2 import CRNN
 
 
-                                                                          
+# ========================== 1. 时间轴非极大值抑制 (NMS) ==========================
 def temporal_nms(detections, iou_threshold=0.3):
     if not detections: return []
     final_results = []
@@ -38,14 +38,14 @@ def temporal_nms(detections, iou_threshold=0.3):
     return final_results
 
 
-                                                                            
+# ========================== 2. 结构化后处理函数 (加入温度系数) ==========================
 def post_process_to_dict(predictions, threshold, offset_frames, id_to_action):
     n_class, n_frames = predictions.shape
     video_annotations = []
 
     for cls_idx in range(n_class):
         probs = predictions[cls_idx, :]
-                                                      
+        # 💡 如果得分集体都在 0.5 徘徊，可以尝试根据最大值动态调整阈值，或降低阈值到 0.2
         mask = probs > threshold
 
         if not np.any(mask): continue
@@ -68,7 +68,7 @@ def post_process_to_dict(predictions, threshold, offset_frames, id_to_action):
     return video_annotations
 
 
-                                                                          
+# ========================== 3. 核心推理函数 (增加调试诊断) ==========================
 def run_pure_test(config, checkpoint_path, test_mode="window"):
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
@@ -77,7 +77,7 @@ def run_pure_test(config, checkpoint_path, test_mode="window"):
         print(f"❌ 错误: 找不到模型权重文件 {checkpoint_path}")
         return
 
-          
+    # 加载模型
     state_dict = torch.load(checkpoint_path, map_location=device)
     model.load_state_dict(state_dict)
     model.eval()
@@ -99,18 +99,18 @@ def run_pure_test(config, checkpoint_path, test_mode="window"):
             for clip_dict, info in data_iter:
                 data = clip_dict['imu'].unsqueeze(0).to(device)
 
-                                                                      
-                                                    
+                # ------------------- 调试: 检查数据输入分布 -------------------
+                # 如果 mean 接近 0 且 std 接近 1 则是正常的归一化数据
                 # print(f"Input Mean: {data.mean().item():.4f}, Std: {data.std().item():.4f}")
 
                 strong_out, _ = model(data)
 
-                                                                          
-                                                        
+                # ------------------- 调试: 检查 Logits 分布 -------------------
+                # 如果 Logits 全都在 [-0.1, 0.1]，说明模型没能拉开分类间距
                 # print(f"Logits Max: {strong_out.max().item():.4f}, Min: {strong_out.min().item():.4f}")
 
-                                                                   
-                                                                   
+                # 💡 改进：如果是多分类（一类动作），尝试使用 Softmax；如果是多标签，继续用 Sigmoid
+                # 但为了解决 0.5 的问题，这里引入一个 Temperature 参数 T=0.5 (让强者更强)
                 T = 0.5
                 pred_probs = torch.sigmoid(strong_out / T).squeeze(0).cpu().numpy()
 
@@ -122,7 +122,7 @@ def run_pure_test(config, checkpoint_path, test_mode="window"):
 
                 clip_results = post_process_to_dict(
                     pred_probs,
-                    threshold=0.35,                          
+                    threshold=0.35,  # 稍微提高一点点门槛，过滤 0.5 左右的噪音
                     offset_frames=offset_frames,
                     id_to_action=id_to_action
                 )
@@ -140,7 +140,7 @@ def run_pure_test(config, checkpoint_path, test_mode="window"):
     print(f"✅ 结果已保存至: {save_path}")
 
 
-                                                              
+# ========================== 4. 主程序 ==========================
 def main():
     base_config = {
         "path": {
@@ -157,7 +157,7 @@ def main():
             }
         },
         "training": {"use_airpods": True, "num_classes": 30},
-        "testing": {"window_size": 20, "hop_size": 10}                              
+        "testing": {"window_size": 20, "hop_size": 10}  # 💡 建议：窗口太小(10)可能导致模型看不出动作特征
     }
 
     os.makedirs(base_config["path"]["result_path"], exist_ok=True)

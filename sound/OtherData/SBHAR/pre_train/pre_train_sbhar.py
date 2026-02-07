@@ -100,7 +100,7 @@ def train_pretrain_model(
 
         if avg_eval_loss < best_eval_loss:
             best_eval_loss = avg_eval_loss
-                                       
+            # 只保存 backbone（给后续 WSDDN 用）
             best_state = copy.deepcopy(model.backbone.state_dict())
             os.makedirs(os.path.dirname(save_path), exist_ok=True)
             torch.save(best_state, save_path)
@@ -119,9 +119,9 @@ def run_loso_pretrain(config: dict):
     out_dir = config["out_dir"]
     os.makedirs(out_dir, exist_ok=True)
 
-    val_mode = config.get("val_mode", "train_subject")                             
+    val_mode = config.get("val_mode", "train_subject")  # 推荐：train_subject；不推荐 test
 
-    for fold in range(config.get("num_folds", 4)):                                   
+    for fold in range(config.get("num_folds", 4)):  # 把 num_folds 改成 sbhar 实际 folds 数
         loso_json = f"loso_sbj_{fold}.json"
         print("\n" + "=" * 80)
         print(f"[LOSO] Fold {fold} | json={loso_json} | val_mode={val_mode}")
@@ -154,12 +154,12 @@ def run_loso_pretrain(config: dict):
             ignore_zeros_in_stats=config.get("ignore_zeros_in_stats", False),
             cache_raw=config.get("cache_raw", True),
         )
-                                          
-                                        
+        # -------- 3) 选择 eval 数据集 --------
+        # 默认：eval 就用 test（要的“明确训练/测试划分”）
         eval_ds = test_ds
-                                                            
+        # （不用测试集挑最优）——从 Training subjects 里抽一个 subject 做 val
         if val_mode == "train_subject":
-                                                                
+            # 取 train_ds_full.subjects 列表（Dataset 内部已有 subjects）
             train_subjects = list(getattr(train_ds_full, "subjects", []))
             if len(train_subjects) < 2:
                 raise RuntimeError(f"[Fold {fold}] Not enough training subjects for val_mode=train_subject")
@@ -168,7 +168,7 @@ def run_loso_pretrain(config: dict):
             val_sbj = rng.choice(train_subjects)
             tr_subjects = [s for s in train_subjects if s != val_sbj]
 
-                           
+            # 这里仍用 fold 的统计
             train_ds = SBHARDataset_3s(
                 dataset_dir=dataset_dir,
                 loso_json=loso_json,
@@ -197,7 +197,7 @@ def run_loso_pretrain(config: dict):
             )
             eval_ds = val_ds
         else:
-            train_ds = train_ds_full                                 
+            train_ds = train_ds_full  # 直接用 Training subjects 的所有窗口训练
 
         train_loader = DataLoader(
             train_ds,
@@ -245,8 +245,8 @@ def run_loso_pretrain(config: dict):
             lr=config.get("lr", 1e-3),
             save_path=save_backbone_path,
         )
-                                                    
-                                                                                        
+        # -------- 7) 训练结束后，在 test 上跑一遍最终指标 --------
+        # 如果 val_mode="test"，eval 就是 test，这一步可省略；如果 val_mode="train_subject"，建议跑一下 test。
         if val_mode == "train_subject":
             print(f"[Fold {fold}] Final evaluation on LOSO test subject ...")
             model.eval()
@@ -280,7 +280,7 @@ if __name__ == "__main__":
         "task": "single",
         "model_name": "CNN1D",
 
-                    
+        # SBHAR 数据参数
         "fps": 50,
         "num_sensors": 3,
         "in_channels": 3,
@@ -288,11 +288,11 @@ if __name__ == "__main__":
         "win_sec": 3.0,
         "win_overlap": 0.5,    # 3s stride=1.5s
 
-                        
+        # 归一化 stats json
         "stats_dirname": "loso_norm_stats_json",
         "ignore_zeros_in_stats": False,
 
-              
+        # 训练参数
         "batch_size": 32,
         "num_epochs": 60,
         "lr": 1e-3,
@@ -300,10 +300,10 @@ if __name__ == "__main__":
         "seed": 2024,
         "feat_dim": 512,
 
-                                                 
+        # SBHAR 通道少：通常 True 没压力；如果单人序列也很长可改 False
         "cache_raw": True,
 
-                                        
+        # 推荐：train_subject（不要用 test 挑最优）
         "val_mode": "test",
     }
 

@@ -8,6 +8,12 @@ from OtherData.utils import _load_loso_json, _subjects_by_split, _parse_fold_id_
 # Dataset
 # ----------------------------
 class SBHARDataset_3s(Dataset):
+    """
+    SBHAR 预训练 Dataset：
+    - 从 processed/.../sbj_k.npy 还原连续 50Hz raw [T,3]
+    - window center frame 落在 GT 段内 -> label_id
+    - 归一化：读取 raw/<stats_dirname>/loso_sbj_{fold}_stats.json（mean+var）
+    """
     def __init__(
         self,
         dataset_dir: str,
@@ -23,14 +29,14 @@ class SBHARDataset_3s(Dataset):
         overlap: float = 0.5,
 
         win_sec: float = 3.0,
-        win_overlap: float = 0.5,                                     
+        win_overlap: float = 0.5,    # 3s window 默认 50% -> stride=1.5s
 
         normalize: bool = True,
         stats_dirname: str = "loso_norm_stats_json",
         ignore_zeros_in_stats: bool = False,
         eps: float = 1e-6,
 
-        cache_raw: bool = True,                                          
+        cache_raw: bool = True,      # SBHAR 通道少，一般可以 True；如果序列很长也可 False
         return_meta: bool = False,
     ):
         super().__init__()
@@ -118,7 +124,7 @@ class SBHARDataset_3s(Dataset):
             self.fold_id = None
 
         if self.normalize:
-                                                             
+            # 缓存成 torch tensor，避免每个 __getitem__ 重复 from_numpy
             self.mean_t = torch.from_numpy(self.mean).float().unsqueeze(1)  # [C,1]
             self.std_t = torch.from_numpy(self.std).float().unsqueeze(1)  # [C,1]
         else:
@@ -143,7 +149,7 @@ class SBHARDataset_3s(Dataset):
                     min_frac=getattr(self, "min_label_frac", 0.0),
                 )
                 if lid is None:
-                    continue                
+                    continue  # 背景/占比不足 直接丢弃
                 self.index.append((sbj, s, e, lid))
 
         if len(self.index) == 0:

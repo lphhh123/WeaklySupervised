@@ -18,7 +18,7 @@ from tqdm import tqdm
 
 from tool import softnms_v2, ANETdetection
 from OtherData.RWHAR.dataset_rwhar_ws import WeaklyRWHARDataset
-from OtherData.utils import _meta_get, set_seed, featbox_to_time_seconds, build_gt_for_anet, generate_proposal_boxes,\
+from OtherData.utils import _meta_get, set_seed, featbox_to_time_seconds, build_gt_for_anet, generate_proposal_boxes, \
     GlobalBackboneWrapper, ProposalWrappedDataset, dump_config, build_backbone
 
 
@@ -105,7 +105,7 @@ def train_oicrBUAA_one_fold_rwhar(config, fold: int, exp_name: str = "pcl_oicr_r
         return_meta=False,
     )
 
-                                                  
+    # ⚠️ 默认 batch_size=1（避免 mil softmax 跨 batch 混）
     bs = int(config["training"].get("batch_size", 1))
     train_loader = DataLoader(
         train_dataset,
@@ -153,14 +153,14 @@ def train_oicrBUAA_one_fold_rwhar(config, fold: int, exp_name: str = "pcl_oicr_r
             labels = labels.to(device).float()          # [B,K]
             B = sample_30s.shape[0]
 
-                     
+            # 提特征（冻结）
             with torch.no_grad():
                 global_feat = pretrained_backbone(sample_30s)  # [B,512,Tg]
 
             out = model(global_feat, proposal_boxes, labels=labels)
             losses = out.get("losses", {})
 
-                              
+            # 总损失：直接相加（你也可以加权）
             total_loss = None
             for k, v in losses.items():
                 total_loss = v if total_loss is None else (total_loss + v)
@@ -336,7 +336,7 @@ def test_oicrBUAA_rwhar(config, checkpoint_path, fold: int, test_mode: str = "te
             gpu_mem_list.append(torch.cuda.max_memory_allocated() / 1024 / 1024)
         inf_time_list.append((time.time() - t0) * 1000.0)
 
-                              
+        # 用最后一层 refine（去掉背景列0）
         # refine_scores = out["refine_scores"]  # list of [1,P,C+1]
         # final_prob = refine_scores[-1][0, :, 1:]  # [P,C]
         final_prob = out["joint_prob"][0]  # [P,C]
@@ -418,7 +418,7 @@ def test_oicrBUAA_rwhar(config, checkpoint_path, fold: int, test_mode: str = "te
         print(f"  tIoU={tiou:.2f} -> mAP={m:.4f}")
 
     # ===== extra metrics & plots =====
-                                                   
+    # class_names 要和输出label一致：用 id2label（k -> name）
     class_names = [id2label.get(k, f"class_{k}") for k in range(num_classes)]
 
     extra_lines, artifacts = evaluate_extra_metrics_and_plots(
@@ -558,7 +558,7 @@ if __name__ == "__main__":
             "pool_type": "avg",
             "stage0_boost": 3.0,
             "pa_mode": "sigmoid",
-            "enhance_weight": True,                                     
+            "enhance_weight": True,  # 是否做 w = w * exp(w)（强化高分pseudo GT）
         },
 
         "testing": {
@@ -573,7 +573,7 @@ if __name__ == "__main__":
             "min_sec": 80.0,
             "max_sec": 800.0,
 
-            "confusion_tiou": 0.5                   
+            "confusion_tiou": 0.5  # 评价指标混淆矩阵依托的tIoU
         }
     }
 

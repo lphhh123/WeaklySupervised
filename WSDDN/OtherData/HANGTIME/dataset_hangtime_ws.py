@@ -3,12 +3,20 @@ import os
 import numpy as np
 import torch
 from torch.utils.data import Dataset
-from OtherData.utils import load_mean_std_from_stats_json, npy_windows_to_raw_frames, _parse_fold_id_from_loso_name,\
+from OtherData.utils import load_mean_std_from_stats_json, npy_windows_to_raw_frames, _parse_fold_id_from_loso_name, \
     _load_loso_json, _subjects_by_subset, _clip_multihot_label
 
 
 # Dataset
 class WeaklyHangtimeDataset(Dataset):
+    """
+    弱监督dataset：返回 raw clip + video-level multi-hot label
+
+    Return:
+      x: FloatTensor [C, T]
+      y: FloatTensor [num_classes]  multi-hot
+      meta (optional): dict
+    """
     def __init__(
         self,
         dataset_dir: str,
@@ -31,7 +39,7 @@ class WeaklyHangtimeDataset(Dataset):
         min_ov_frames: int = 1,
 
         # keep negative clips (no actions) ratio in TRAIN
-        neg_keep_ratio: float = 0.2,               
+        neg_keep_ratio: float = 0.2,  # 训练建议保留一点负样本
         seed: int = 2024,
 
         # normalization stats

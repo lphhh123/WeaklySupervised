@@ -22,7 +22,7 @@ def test_wsddn_imu(config, checkpoint_path,test_mode: str = "test_window"):
     print(f"\n开始测试，测试设备：{device}")
     print(f"加载模型：{checkpoint_path}")
 
-                                                                         
+    # 加载checkpoint，拿到训练时的 use_airpods / in_channels / pretrained_name ===
     checkpoint = torch.load(checkpoint_path, map_location=device)
     use_airpods = bool(checkpoint.get("use_airpods", config["training"].get("use_airpods", False)))
     in_channels = int(checkpoint.get("in_channels", 30 + (6 if use_airpods else 0)))
@@ -32,7 +32,7 @@ def test_wsddn_imu(config, checkpoint_path,test_mode: str = "test_window"):
     print(f"[Test] pretrained_name = {pretrained_name}")
     print(f"[Test] has backbone_state_dict = {'backbone_state_dict' in checkpoint}")
 
-                 
+    # 1. 初始化测试数据集
     test_dataset = WeaklySupervisedXRFV2DatasetTest(
         config=config,
         modality='imu',
@@ -42,14 +42,14 @@ def test_wsddn_imu(config, checkpoint_path,test_mode: str = "test_window"):
     )
 
 
-                                                                  
+    # 2. 构建 backbone（先按pretrained_name构建+尝试加载预训练；如果ckpt里有训练后权重则覆盖）
     pretrained_backbone, T_global = load_pretrained_backbone(
         pretrained_name=config["model"]["pretrained_name"],
         device=device,
         in_channels=in_channels,
     )
     pretrained_backbone = pretrained_backbone.to(device)
-                                              
+    # 若checkpoint中保存了训练后的backbone权重，则优先使用它 ===
     if "backbone_state_dict" in checkpoint:
         missing, unexpected = pretrained_backbone.load_state_dict(checkpoint["backbone_state_dict"], strict=False)
         print("[Test] 使用训练后的backbone权重（来自checkpoint）")
@@ -60,28 +60,28 @@ def test_wsddn_imu(config, checkpoint_path,test_mode: str = "test_window"):
 
     pretrained_backbone.eval()
 
-                                          
+    # full 模式：用 wrapper 把 backbone 扩展到整条序列
     if test_mode == "test_full":
-        full_win_len = int(config["testing"].get("full_win_len", test_dataset.clip_length))           
-        full_stride = int(config["testing"].get("full_stride", test_dataset.stride))                    
+        full_win_len = int(config["testing"].get("full_win_len", test_dataset.clip_length))  # 默认=2048
+        full_stride = int(config["testing"].get("full_stride", test_dataset.stride))  # 默认=window stride
         full_wrapper = None
         full_wrapper = FullBackboneWrapper1D(pretrained_backbone, win_len=full_win_len, stride=full_stride,in_channels=in_channels).to(device)
         full_wrapper.eval()
         print(f"[Test-Full] FullBackboneWrapper: win_len={full_win_len}, stride={full_stride}")
 
-                    
+    # 3. 标签映射 & 模型构建
     _, _, new_to_action = load_label_mapping(config["path"]["mapping_path"])
     num_classes = len(new_to_action)
     model = build_wsddn_imu_model(config, num_classes, device)
 
-                
+    # 加载head最优权重
     if 'model_state_dict' in checkpoint:
         model.load_state_dict(checkpoint["model_state_dict"])
     else:
-        model.load_state_dict(checkpoint)                     
+        model.load_state_dict(checkpoint)  # 兼容直接保存的state_dict
     model.eval()
 
-               
+    # 3. 测试参数配置
     conf_thresh = config['testing']['conf_thresh']
     nms_sigma = config['testing']['nms_sigma']
     top_k = config['testing']['top_k']
@@ -91,20 +91,20 @@ def test_wsddn_imu(config, checkpoint_path,test_mode: str = "test_window"):
     result_path = config["path"]["result_path"]
     os.makedirs(result_path, exist_ok=True)
 
-                           
+    # 4. 获取全局特征时序长度T_global
     dummy_input = torch.randn(2, in_channels, 2048, device=device)
     with torch.no_grad():
         global_feat = pretrained_backbone(dummy_input)
     T_global = global_feat.shape[2]
     print(f"全局特征时序长度T_global：{T_global}")
 
-                
+    # 5. 生成测试候选框
     proposal_boxes = generate_proposal_boxes(
         T_global=T_global,
         num_proposals=num_proposals
     ).to(device)
 
-               
+    # 6. 开始批量推理
     result_dict = {}
     inf_time_list = []
     gpu_mem_list = []
@@ -137,7 +137,7 @@ def test_wsddn_imu(config, checkpoint_path,test_mode: str = "test_window"):
         #
         #     joint_prob = outputs["joint_prob"][0]  # [P, C]
         #
-                               
+        #     # 映射候选框到原始数据的时间位置
         #     for p in range(num_proposals):
         #         start_idx, end_idx = proposal_boxes[p]
         #         feat_len = end_idx - start_idx
@@ -157,9 +157,9 @@ def test_wsddn_imu(config, checkpoint_path,test_mode: str = "test_window"):
         #         peak_mem = torch.cuda.max_memory_allocated() / 1024 / 1024
         #         gpu_mem_list.append(peak_mem)
 
-                                                          
+        # ========== A) test_full：整条序列只跑一次 head ==========
         if test_mode == "test_full":
-                                                                            
+            # data_iterator 只会 yield 1 次：({'imu': [C,T_total]}, [0,T_total])
             clip, segment = next(iter(data_iterator))
             imu_full = clip['imu'].to(device).unsqueeze(0)  # [1,C,T_total]
             win_start, win_end = segment
@@ -185,7 +185,7 @@ def test_wsddn_imu(config, checkpoint_path,test_mode: str = "test_window"):
                 s_idx = float(proposal_boxes[p, 0].item())
                 e_idx = float(proposal_boxes[p, 1].item())
 
-                                                                
+                # ★映射回 raw：用 win_len，不用 test_dataset.clip_length
                 raw_start = win_start + int(s_idx / T_global * win_len)
                 raw_end = win_start + int(e_idx / T_global * win_len)
                 raw_end = min(raw_end, win_end)
@@ -195,7 +195,7 @@ def test_wsddn_imu(config, checkpoint_path,test_mode: str = "test_window"):
                     if score >= conf_thresh:
                         class_outputs[cl].append([raw_start, raw_end, score])
 
-                                                        
+        # ========== B) test_window：（但修正映射公式） ==========
         else:
             for clip, segment in data_iterator:
                 imu_clip = clip['imu'].to(device).unsqueeze(0)  # [1,C,2048]
@@ -222,7 +222,7 @@ def test_wsddn_imu(config, checkpoint_path,test_mode: str = "test_window"):
                     s_idx = float(proposal_boxes[p, 0].item())
                     e_idx = float(proposal_boxes[p, 1].item())
 
-                                               
+                    # ★统一修正映射：按该 window 的真实长度映射
                     raw_start = win_start + int(s_idx / T_global * win_len)
                     raw_end = win_start + int(e_idx / T_global * win_len)
                     raw_end = min(raw_end, win_end)
@@ -235,11 +235,11 @@ def test_wsddn_imu(config, checkpoint_path,test_mode: str = "test_window"):
             if device.type == 'cuda':
                 gpu_mem_list.append(torch.cuda.max_memory_allocated() / 1024 / 1024)
 
-                        
+        # 每个类别做 Soft-NMS
         final_proposals = []
         for cl in range(num_classes):
             if not class_outputs[cl]:
-                                                                      
+                # print(f"file_name：{file_name}的{cl}类别无有效候选，置信度都低于阈值")
                 continue
 
             segments = torch.tensor(class_outputs[cl], dtype=torch.float32)
@@ -259,7 +259,7 @@ def test_wsddn_imu(config, checkpoint_path,test_mode: str = "test_window"):
 
         result_dict[file_name] = final_proposals
 
-                 
+    # 7. 保存推理性能统计
     avg_inf_time = np.mean(inf_time_list) if inf_time_list else 0.0
     std_inf_time = np.std(inf_time_list) if inf_time_list else 0.0
     avg_gpu_mem = np.mean(gpu_mem_list) if gpu_mem_list else 0.0
@@ -276,7 +276,7 @@ def test_wsddn_imu(config, checkpoint_path,test_mode: str = "test_window"):
     with open(os.path.join(result_path, "inference_stats.json"), "w", encoding="utf-8") as f:
         json.dump(stats_data, f, indent=2, ensure_ascii=False)
 
-               
+    # 8. 保存预测结果
     prediction_data = {
         "version": "WSDDN-IMU-v1.0",
         "results": result_dict,
@@ -287,7 +287,7 @@ def test_wsddn_imu(config, checkpoint_path,test_mode: str = "test_window"):
         json.dump(prediction_data, f, indent=2, ensure_ascii=False)
     print(f"预测结果已保存至：{pred_save_path}")
 
-               
+    # 9. 评估 mAP
     print("\n开始评估动作定位性能...")
     tious = np.linspace(0.3, 0.7, 5)
     anet_evaluator = ANETdetection(
@@ -299,7 +299,7 @@ def test_wsddn_imu(config, checkpoint_path,test_mode: str = "test_window"):
     mAPs, avg_mAP, _ = anet_evaluator.evaluate()
     print(f"[ANET] {test_mode} avg_mAP={avg_mAP:.4f}")
 
-            
+    # 10. 报告
     report_content = [
         "=" * 60,
         "WSDDN-IMU 训练+测试综合报告",
@@ -347,7 +347,7 @@ def test_pcl_imu(config, checkpoint_path,test_mode: str = "test_window"):
     print(f"\n[PCL/OICR] 开始测试，测试设备：{device}")
     print(f"[PCL/OICR] 加载模型：{checkpoint_path}")
 
-                                                                      
+    # 先加载checkpoint，拿到训练时的 use_airpods/in_channels/pretrained_name ===
     checkpoint = torch.load(checkpoint_path, map_location=device)
     use_airpods = bool(checkpoint.get("use_airpods", config["training"].get("use_airpods", False)))
     in_channels = int(checkpoint.get("in_channels", 30 + (6 if use_airpods else 0)))
@@ -357,7 +357,7 @@ def test_pcl_imu(config, checkpoint_path,test_mode: str = "test_window"):
     print(f"[PCL/OICR-Test] pretrained_name = {pretrained_name}")
     print(f"[PCL/OICR-Test] has backbone_state_dict = {'backbone_state_dict' in checkpoint}")
 
-              
+    # 1) 测试数据集
     test_dataset = WeaklySupervisedXRFV2DatasetTest(
         config=config,
         modality='imu',
@@ -366,14 +366,14 @@ def test_pcl_imu(config, checkpoint_path,test_mode: str = "test_window"):
         mode=test_mode,
     )
 
-                               
+    # 2) 加载 pretrained_backbone
     pretrained_backbone, T_global = load_pretrained_backbone(
         pretrained_name=config["model"]["pretrained_name"],
         device=device,
         in_channels=in_channels,
     )
     pretrained_backbone = pretrained_backbone.to(device)
-                                              
+    # 若checkpoint中保存了训练后的backbone权重，则优先使用它 ===
     if "backbone_state_dict" in checkpoint:
         missing, unexpected = pretrained_backbone.load_state_dict(checkpoint["backbone_state_dict"], strict=False)
         print("[PCL/OICR-Test] 使用训练后的backbone权重（来自checkpoint）")
@@ -384,17 +384,17 @@ def test_pcl_imu(config, checkpoint_path,test_mode: str = "test_window"):
 
     pretrained_backbone.eval()
 
-                                          
+    # full 模式：用 wrapper 把 backbone 扩展到整条序列
     if test_mode == "test_full":
-        full_win_len = int(config["testing"].get("full_win_len", test_dataset.clip_length))           
-        full_stride = int(config["testing"].get("full_stride", test_dataset.stride))                    
+        full_win_len = int(config["testing"].get("full_win_len", test_dataset.clip_length))  # 默认=2048
+        full_stride = int(config["testing"].get("full_stride", test_dataset.stride))  # 默认=window stride
         full_wrapper = None
         full_wrapper = FullBackboneWrapper1D(pretrained_backbone, win_len=full_win_len, stride=full_stride,
                                              in_channels=in_channels).to(device)
         full_wrapper.eval()
         print(f"[Test-Full] FullBackboneWrapper: win_len={full_win_len}, stride={full_stride}")
 
-           
+    # 3) 模型
     _, _, new_to_action = load_label_mapping(config["path"]["mapping_path"])
     num_classes = len(new_to_action)
     model = build_pcl_oicr_imu_model(config, num_classes, device)
@@ -405,7 +405,7 @@ def test_pcl_imu(config, checkpoint_path,test_mode: str = "test_window"):
         model.load_state_dict(checkpoint, strict=False)
     model.eval()
 
-             
+    # 4) 测试参数
     conf_thresh = config['testing']['conf_thresh']
     nms_sigma = config['testing']['nms_sigma']
     top_k = config['testing']['top_k']
@@ -422,7 +422,7 @@ def test_pcl_imu(config, checkpoint_path,test_mode: str = "test_window"):
         num_proposals=num_proposals
     ).to(device)  # [P,2]
 
-           
+    # 5) 推理
     result_dict = {}
     inf_time_list, gpu_mem_list = [], []
 
@@ -435,9 +435,9 @@ def test_pcl_imu(config, checkpoint_path,test_mode: str = "test_window"):
         if device.type == 'cuda':
             torch.cuda.reset_peak_memory_stats()
 
-                                                          
+        # ========== A) test_full：整条序列只跑一次 head ==========
         if test_mode == "test_full":
-                                                                            
+            # data_iterator 只会 yield 1 次：({'imu': [C,T_total]}, [0,T_total])
             clip, segment = next(iter(data_iterator))
             imu_full = clip['imu'].to(device).unsqueeze(0)  # [1,C,T_total]
             win_start, win_end = segment
@@ -463,7 +463,7 @@ def test_pcl_imu(config, checkpoint_path,test_mode: str = "test_window"):
                 s_idx = float(proposal_boxes[p, 0].item())
                 e_idx = float(proposal_boxes[p, 1].item())
 
-                                                                
+                # ★映射回 raw：用 win_len，不用 test_dataset.clip_length
                 raw_start = win_start + int(s_idx / T_global * win_len)
                 raw_end = win_start + int(e_idx / T_global * win_len)
                 raw_end = min(raw_end, win_end)
@@ -473,7 +473,7 @@ def test_pcl_imu(config, checkpoint_path,test_mode: str = "test_window"):
                     if score >= conf_thresh:
                         class_outputs[cl].append([raw_start, raw_end, score])
 
-                                                        
+        # ========== B) test_window：（但修正映射公式） ==========
         else:
             for clip, segment in data_iterator:
                 imu_clip = clip['imu'].to(device).unsqueeze(0)  # [1,C,2048]
@@ -500,7 +500,7 @@ def test_pcl_imu(config, checkpoint_path,test_mode: str = "test_window"):
                     s_idx = float(proposal_boxes[p, 0].item())
                     e_idx = float(proposal_boxes[p, 1].item())
 
-                                               
+                    # ★统一修正映射：按该 window 的真实长度映射
                     raw_start = win_start + int(s_idx / T_global * win_len)
                     raw_end = win_start + int(e_idx / T_global * win_len)
                     raw_end = min(raw_end, win_end)
@@ -535,7 +535,7 @@ def test_pcl_imu(config, checkpoint_path,test_mode: str = "test_window"):
 
         result_dict[file_name] = final_proposals
 
-           
+    # 6) 统计
     avg_inf_time = np.mean(inf_time_list) if inf_time_list else 0.0
     std_inf_time = np.std(inf_time_list) if inf_time_list else 0.0
     avg_gpu_mem = np.mean(gpu_mem_list) if gpu_mem_list else 0.0

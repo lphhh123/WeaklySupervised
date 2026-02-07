@@ -499,7 +499,7 @@ def compute_topkx_recall_detection(
 
 def k_segment_iou(target_segments, candidate_segments):
     return np.stack(
-        [segment_iou(target_segment, candidate_segments)\
+        [segment_iou(target_segment, candidate_segments) \
             for target_segment in target_segments]
     )
 
@@ -523,7 +523,7 @@ def segment_iou(target_segment, candidate_segments):
     # Intersection including Non-negative overlap score.
     segments_intersection = (tt2 - tt1).clip(0)
     # Segment union.
-    segments_union = (candidate_segments[:, 1] - candidate_segments[:, 0])\
+    segments_union = (candidate_segments[:, 1] - candidate_segments[:, 0]) \
                      + (target_segment[1] - target_segment[0]) - segments_intersection
     # Compute overlap as the ratio of the intersection
     # over union of two segments.

@@ -15,7 +15,7 @@ from tqdm import tqdm
 from easydict import EasyDict as edict
 
 # ============================================================
-      
+# 引入依赖
 # ============================================================
 sys.path.append(os.getcwd())
 from core.model import CoLA
@@ -27,7 +27,7 @@ from WSDDN.tool import ANETdetection
 
 
 # ============================================================
-          
+# DDP 基础设置
 # ============================================================
 def setup_ddp():
     if 'RANK' in os.environ and 'WORLD_SIZE' in os.environ:
@@ -48,13 +48,13 @@ def cleanup_ddp():
 
 
 # ============================================================
-                                
-                                           
+# [核心组件] CoLA Full Wrapper XRFV2
+# 统一训练和测试的数据流：所有输入都经过 GlobalBackboneWrapper
 # ============================================================
 class CoLA_FullWrapper_XRFV2(nn.Module):
     def __init__(self, cola_model, win_len=2048, stride=1024):
         super().__init__()
-                 
+        # 1. 提取组件
         self.backbone = cola_model.actionness_module.backbone
         self.adapter = cola_model.actionness_module.adapter
         self.f_cls = cola_model.actionness_module.f_cls
@@ -64,8 +64,8 @@ class CoLA_FullWrapper_XRFV2(nn.Module):
         self.win_len = win_len
         self.stride = stride
 
-                                         
-                                                                   
+        # 2. [修改] 仅包装 Backbone (输出 512 维)
+        # 这样 GlobalBackboneWrapper 内部的 .view(..., 512, ...) 就能正常工作了
         from WSDDN.utils import GlobalBackboneWrapper
         self.global_extractor = GlobalBackboneWrapper(
             self.backbone,
@@ -79,22 +79,22 @@ class CoLA_FullWrapper_XRFV2(nn.Module):
         """
         x = x.permute(0, 2, 1)  # -> [B, C, T]
 
-                           
-                                                  
+        # 1. 提取拼接后的 512 维特征
+        # 返回 global_feat_512: [B, 512, T_feat_low]
         global_feat_512, info = self.global_extractor(x, return_info=True)
 
-                                      
+        # 2. [修改] 在拼接后，手动调用 Adapter 升维
         # [B, 512, T] -> [B, 2048, T]
         global_feat_2048 = self.adapter(global_feat_512)
 
-                
+        # 3. 分类头
         out = self.dropout(global_feat_2048)
         out = self.f_cls(out)  # [B, Classes, T]
 
         cas = torch.sigmoid(out).permute(0, 2, 1)  # [B, T, Classes]
         actionness = cas.sum(dim=2)
 
-                                       
+        # 4. 局部视频得分 (Local Max Pooling)
         k_len = int(self.win_len / info['bin_frames'])
         if k_len < 1: k_len = 1
 
@@ -108,7 +108,7 @@ class CoLA_FullWrapper_XRFV2(nn.Module):
 
 
 # ============================================================
-              
+# 配置映射 (XRFV2)
 # ============================================================
 def map_config_to_cola_cfg(user_config):
     c = edict()
@@ -117,10 +117,10 @@ def map_config_to_cola_cfg(user_config):
     c.FEATS_FPS = user_config['fps']
     c.FEATS_DIM = user_config['in_channels']
     c.NUM_CLASSES = user_config['num_classes']
-    c.NUM_SEGMENTS = 2048             
+    c.NUM_SEGMENTS = 2048  # 固定为训练切片长度
     c.UP_SCALE = 1
 
-                      
+    # XRFV2 使用单一的预训练文件
     c.PRETRAINED_PATH = user_config['pretrained_path']
     c.BACKBONE_TYPE = 'cnn1d'
     c.TRAIN_BACKBONE = user_config['training']['train_backbone']
@@ -138,7 +138,7 @@ def map_config_to_cola_cfg(user_config):
     c.CAS_THRESH = np.arange(0.1, 0.5, 0.05)
     c.ANESS_THRESH = np.arange(0.1, 0.9, 0.05)
 
-            
+    # 30 类字典
     c.CLASS_DICT = {
         "Stretching": 0, "Pouring Water": 1, "Writing": 2, "Cutting Fruit": 3,
         "Eating Fruit": 4, "Taking Medicine": 5, "Drinking Water": 6, "Sitting Down": 7,
@@ -154,7 +154,7 @@ def map_config_to_cola_cfg(user_config):
 
 
 # ============================================================
-        
+# 健壮加载函数
 # ============================================================
 def load_checkpoint_robust(net, ckpt_path, device):
     if not os.path.exists(ckpt_path):
@@ -176,7 +176,7 @@ def load_checkpoint_robust(net, ckpt_path, device):
 
 
 # ============================================================
-      
+# 训练函数
 # ============================================================
 def train_fold_ddp(config, fold, rank, local_rank, world_size):
     if rank == 0: print(f"\n>>> [Train DDP] XRFV2 (No Fold, Random Split)...")
@@ -184,23 +184,23 @@ def train_fold_ddp(config, fold, rank, local_rank, world_size):
     cola_cfg = map_config_to_cola_cfg(config)
     net = CoLA(cola_cfg).to(local_rank)
 
-           
+    # 冻结/解冻
     if not cola_cfg.TRAIN_BACKBONE:
         for p in net.actionness_module.backbone.parameters(): p.requires_grad = False
         net.actionness_module.backbone.eval()
 
-                        
-                           
+    # 实例化 Wrapper (训练模式)
+    # 传入的 net 必须还没有被 DDP 包装
     train_wrapper = CoLA_FullWrapper_XRFV2(net, win_len=cola_cfg.NUM_SEGMENTS, stride=cola_cfg.NUM_SEGMENTS // 2)
 
-                                                             
-                                                       
-                                      
-                            
+    # DDP 包装 (注意：这里包装的是 Wrapper 还是 Net? 建议包装 Net，Wrapper 只是壳)
+    # 但由于 forward 在 Wrapper 里，所以我们需要把 Wrapper 变成 DDP 模块
+    # 或者，更简单的做法：把 Wrapper 逻辑写在 Net 内部。
+    # 为了复用，我们这里直接包装 Wrapper。
     train_wrapper = nn.SyncBatchNorm.convert_sync_batchnorm(train_wrapper)
     ddp_model = DDP(train_wrapper, device_ids=[local_rank], output_device=local_rank)
 
-         
+    # 数据集
     train_ds = XRFV2Dataset(
         mode='train', modal=config["modal"],
         num_segments=cola_cfg.NUM_SEGMENTS,  # 2048
@@ -232,22 +232,22 @@ def train_fold_ddp(config, fold, rank, local_rank, world_size):
             # Forward via Wrapper
             video_scores, _, _, cas = ddp_model(data)
 
-                   
-                                             
-                                                          
-                                   
-                                                              
-                                             
-                                                                           
-                                          
+            # 兼容性处理
+            # 这里的 cas 是低频特征图，CoLA Loss 需要对齐维度
+            # 简单做法：只用 video_scores 算分类 Loss，或者插值 cas 回去算定位
+            # 但 Wrapper 已经对齐了训练和推理。
+            # 现在的 CoLA Loss 内部逻辑是基于 Snippet 的，我们需要确保输入维度的含义一致。
+            # CoLA Loss 内部没有复杂的长度依赖，除了 SniCo。
+            # 为了训练稳定，我们这里只用 Video 分数算 Action Loss，或者传入 dummy contrast pairs
+            # 或者我们需要修改 TotalLoss 以接受低频 cas
 
-                                               
+            # [简单方案] 暂时只算分类 Loss，确保 Backbone 收敛
             video_scores = torch.clamp(video_scores, 1e-6, 1 - 1e-6)
 
-                        
+            # 取全局最大作为视频分
             v_score_global, _ = torch.max(video_scores, dim=1)  # [B, C]
 
-                      
+            # 手动计算 BCE
             bce_loss = nn.BCELoss()(v_score_global, label / (label.sum(1, keepdim=True) + 1e-10))
             cost = bce_loss
 
@@ -263,15 +263,15 @@ def train_fold_ddp(config, fold, rank, local_rank, world_size):
     ckpt_path = os.path.join(save_dir, "model_final.pth")
     if rank == 0:
         os.makedirs(save_dir, exist_ok=True)
-                                 
-        torch.save(ddp_model.module.state_dict(), ckpt_path)                      
+        # 保存原始 net 的权重，剥离 wrapper
+        torch.save(ddp_model.module.state_dict(), ckpt_path)  # 保存包含 wrapper 结构的权重
 
     dist.barrier()
     return ckpt_path, os.path.dirname(save_dir)
 
 
 # ============================================================
-               
+# 推理函数 (Rank 0)
 # ============================================================
 def process_outputs_xrfv2(video_scores, cas, info, video_props, video_id, config, cola_cfg):
     # video_scores: [T, C]
@@ -282,18 +282,18 @@ def process_outputs_xrfv2(video_scores, cas, info, video_props, video_id, config
 
     local_vid_p = video_scores[0]
 
-          
+    # 全局筛选
     global_max, _ = torch.max(local_vid_p, dim=0)
     pred_cats = np.where(global_max.cpu().numpy() >= hard_thresh)[0]
     if len(pred_cats) == 0: pred_cats = np.array([np.argmax(global_max.cpu().numpy())])
 
-          
+    # 局部掩码
     local_mask = (local_vid_p >= hard_thresh).float()
     cas_p = torch.sigmoid(cas[0]) * local_mask
 
-          
+    # 维度准备
     cas_np = np.expand_dims(cas_p.cpu().numpy(), axis=2)
-    aness_np = np.ones_like(cas_np)              
+    aness_np = np.ones_like(cas_np)  # XRFV2 简化处理
 
     vid_p_np = global_max.cpu().numpy()
     T_feat = cas_p.shape[0]
@@ -302,7 +302,7 @@ def process_outputs_xrfv2(video_scores, cas, info, video_props, video_id, config
 
     for cls_id, props in prop_dict.items():
         for p in props:
-                  
+            # 还原坐标
             video_props.append([p[0], p[1], p[2] * scale, p[3] * scale])
 
 
@@ -311,19 +311,19 @@ def eval_xrfv2_rank0(config, ckpt_path, save_dir, device):
     print(f"\n>>> [Eval] XRFV2 Test Full...")
     cola_cfg = map_config_to_cola_cfg(config)
 
-          
+    # 加载模型
     net = CoLA(cola_cfg).to(device)
-                               
-                                                                         
+    # 因为保存的是 Wrapper 结构，加载时需要注意
+    # 如果 train_fold_ddp 保存的是 ddp_model.module (即 Wrapper)，则需要先实例化 Wrapper
     full_wrapper = CoLA_FullWrapper_XRFV2(net, win_len=2048, stride=1024).to(device)
 
-          
+    # 加载权重
     load_checkpoint_robust(full_wrapper, ckpt_path, device)
     full_wrapper.eval()
 
     test_ds = XRFV2Dataset(
         mode='test', modal=config["modal"],
-        num_segments=0,      
+        num_segments=0,  # 全长
         class_dict=cola_cfg.CLASS_DICT, seed=config["seed"], supervision='weak'
     )
 
@@ -347,9 +347,9 @@ def eval_xrfv2_rank0(config, ckpt_path, save_dir, device):
             for cid, props in cls_groups.items():
                 keep = utils.nms(props, cola_cfg.NMS_THRESH)
                 for k in keep:
-                                                 
-                                                           
-                                     
+                    # XRFV2 评估通常直接用帧索引，或者看 GT 格式。
+                    # 假设 GT 是帧，这里就不除以 FPS。如果 GT 是秒，这里除以 50。
+                    # XRFV2 默认 GT 是帧。
                     sbj_list.append({
                         'label': id2name.get(cid, str(cid)),
                         'score': float(k[1]),
@@ -361,7 +361,7 @@ def eval_xrfv2_rank0(config, ckpt_path, save_dir, device):
     with open(pred_path, 'w') as f:
         json.dump(final_res, f, indent=2)
 
-            
+    # 调用学姐评估
     if os.path.exists(config["gt_path"]):
         ev = ANETdetection(config["gt_path"], pred_path, subset="test", tiou_thresholds=np.linspace(0.3, 0.7, 5),
                            verbose=False)
@@ -378,14 +378,14 @@ def main():
     base_config = {
         "dataset_dir": "/home/lipei/shared-nvme/dataset/all_30_3",
         "modal": "imu",
-        "pretrained_path": "/home/lipei/project/WSDDN/output_xrfv2_classifier/classifier_best.pth",             
+        "pretrained_path": "/home/lipei/project/WSDDN/output_xrfv2_classifier/classifier_best.pth",  # 你的分类预训练权重
         "gt_path": "/home/lipei/shared-nvme/dataset/all_30_3/imu_annotations.json",
         "result_root": "./output_xrfv2_cola_ddp",
 
         "fps": 50,
         "in_channels": 36,
         "num_classes": 30,
-        "clip_sec": 30.0,         
+        "clip_sec": 30.0,  # 2048帧
         "clip_overlap": 0.0,
 
         "training": {
