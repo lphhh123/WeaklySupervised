@@ -1,0 +1,447 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="890315ef-2a92-4d47-8e03-e51069d11e2b" name="更改" comment="">
+      <change beforePath="$PROJECT_DIR$/CoLA/LICENSE" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CoLA/README.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CoLA/benchmark_xrfv2.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CoLA/core/config.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CoLA/core/config_hangtime.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CoLA/core/config_xrfv2.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CoLA/core/dataset.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CoLA/core/dataset_xrfv2.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CoLA/core/loss.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CoLA/core/model.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CoLA/core/test_dataset_loading.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CoLA/core/test_model_build.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CoLA/core/utils.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CoLA/count_params.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CoLA/eval/batch_eval_seeds.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CoLA/eval/benchmark_xrfv2.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CoLA/eval/eval_classification.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CoLA/eval/eval_detection.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CoLA/eval/eval_folds_metrics.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CoLA/eval/eval_xrfv2_metrics.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CoLA/eval/hangtime_eval_single.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CoLA/eval/mAP.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CoLA/eval/metrics_utils.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CoLA/eval/summary_hangtime.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CoLA/eval/summary_inference.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CoLA/eval/summary_opportunity.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CoLA/eval/summary_rwhar.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CoLA/eval/summary_sbhar.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CoLA/eval/summary_wear.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CoLA/eval/summary_wetlab.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CoLA/eval/test_window_aligned.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CoLA/eval/utils_eval.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CoLA/eval_standalone.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CoLA/eval_xrfv2_metrics.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CoLA/logs_batch_run/run_cola_opportunity_ddp.log" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CoLA/logs_batch_run/run_cola_rwhar_ddp.log" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CoLA/logs_batch_run/run_cola_sbhar_ddp.log" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CoLA/logs_batch_run/run_cola_wear_ddp.log" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CoLA/logs_batch_run/run_cola_wetlab_ddp.log" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CoLA/main_cola.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CoLA/pre_models/XRFV2/__init__.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CoLA/pre_models/XRFV2/cnn1d.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CoLA/pre_models/XRFV2/impl_tsse_mamba.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CoLA/pre_models/XRFV2/mamba1d.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CoLA/pre_models/XRFV2/pre_models.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CoLA/pre_models/XRFV2/tsse_models.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CoLA/pre_models/XRFV2/tssemamba.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CoLA/pre_models/XRFV2/vgg1d.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CoLA/pre_models/__init__.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CoLA/pre_models/pre_models.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CoLA/re_inference.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CoLA/requirements.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CoLA/run_cola_hangtime_ddp.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CoLA/run_cola_opportunity_ddp.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CoLA/run_cola_rwhar_ddp.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CoLA/run_cola_sbhar_ddp.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CoLA/run_cola_wear_ddp.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CoLA/run_cola_wetlab_ddp.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CoLA/run_cola_xrfv2_ddp.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CoLA/run_simulation.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CoLA/run_xrfv2_ddp.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CoLA/section6.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CoLA/standalone_eval_debug.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CoLA/train_classifier.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WSDDN/OtherData/HANGTIME/dataset_hangtime_ws.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WSDDN/OtherData/HANGTIME/pre_train/CNN1D/hangtime_CNN1D_pretrained_loso_sbj_0.pth" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WSDDN/OtherData/HANGTIME/pre_train/CNN1D/hangtime_CNN1D_pretrained_loso_sbj_1.pth" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WSDDN/OtherData/HANGTIME/pre_train/CNN1D/hangtime_CNN1D_pretrained_loso_sbj_10.pth" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WSDDN/OtherData/HANGTIME/pre_train/CNN1D/hangtime_CNN1D_pretrained_loso_sbj_11.pth" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WSDDN/OtherData/HANGTIME/pre_train/CNN1D/hangtime_CNN1D_pretrained_loso_sbj_12.pth" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WSDDN/OtherData/HANGTIME/pre_train/CNN1D/hangtime_CNN1D_pretrained_loso_sbj_13.pth" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WSDDN/OtherData/HANGTIME/pre_train/CNN1D/hangtime_CNN1D_pretrained_loso_sbj_14.pth" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WSDDN/OtherData/HANGTIME/pre_train/CNN1D/hangtime_CNN1D_pretrained_loso_sbj_15.pth" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WSDDN/OtherData/HANGTIME/pre_train/CNN1D/hangtime_CNN1D_pretrained_loso_sbj_16.pth" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WSDDN/OtherData/HANGTIME/pre_train/CNN1D/hangtime_CNN1D_pretrained_loso_sbj_17.pth" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WSDDN/OtherData/HANGTIME/pre_train/CNN1D/hangtime_CNN1D_pretrained_loso_sbj_18.pth" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WSDDN/OtherData/HANGTIME/pre_train/CNN1D/hangtime_CNN1D_pretrained_loso_sbj_19.pth" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WSDDN/OtherData/HANGTIME/pre_train/CNN1D/hangtime_CNN1D_pretrained_loso_sbj_2.pth" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WSDDN/OtherData/HANGTIME/pre_train/CNN1D/hangtime_CNN1D_pretrained_loso_sbj_20.pth" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WSDDN/OtherData/HANGTIME/pre_train/CNN1D/hangtime_CNN1D_pretrained_loso_sbj_21.pth" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WSDDN/OtherData/HANGTIME/pre_train/CNN1D/hangtime_CNN1D_pretrained_loso_sbj_22.pth" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WSDDN/OtherData/HANGTIME/pre_train/CNN1D/hangtime_CNN1D_pretrained_loso_sbj_23.pth" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WSDDN/OtherData/HANGTIME/pre_train/CNN1D/hangtime_CNN1D_pretrained_loso_sbj_3.pth" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WSDDN/OtherData/HANGTIME/pre_train/CNN1D/hangtime_CNN1D_pretrained_loso_sbj_4.pth" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WSDDN/OtherData/HANGTIME/pre_train/CNN1D/hangtime_CNN1D_pretrained_loso_sbj_5.pth" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WSDDN/OtherData/HANGTIME/pre_train/CNN1D/hangtime_CNN1D_pretrained_loso_sbj_6.pth" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WSDDN/OtherData/HANGTIME/pre_train/CNN1D/hangtime_CNN1D_pretrained_loso_sbj_7.pth" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WSDDN/OtherData/HANGTIME/pre_train/CNN1D/hangtime_CNN1D_pretrained_loso_sbj_8.pth" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WSDDN/OtherData/HANGTIME/pre_train/CNN1D/hangtime_CNN1D_pretrained_loso_sbj_9.pth" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WSDDN/OtherData/HANGTIME/pre_train/dataset_hangtime.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WSDDN/OtherData/HANGTIME/pre_train/pre_train_hangtime.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WSDDN/OtherData/HANGTIME/run_oicrBUAA_hangtime.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WSDDN/OtherData/HANGTIME/run_pcl_hangtime.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WSDDN/OtherData/HANGTIME/run_rskp_hangtime.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WSDDN/OtherData/HANGTIME/run_wsddn_hangtime.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WSDDN/OtherData/Opportunity/dataset_opportunity_ws.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WSDDN/OtherData/Opportunity/pre_train/CNN1D/opportunity_CNN1D_pretrained_loso_sbj_0.pth" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WSDDN/OtherData/Opportunity/pre_train/CNN1D/opportunity_CNN1D_pretrained_loso_sbj_1.pth" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WSDDN/OtherData/Opportunity/pre_train/CNN1D/opportunity_CNN1D_pretrained_loso_sbj_2.pth" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WSDDN/OtherData/Opportunity/pre_train/CNN1D/opportunity_CNN1D_pretrained_loso_sbj_3.pth" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WSDDN/OtherData/Opportunity/pre_train/dataset_opportunity.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WSDDN/OtherData/Opportunity/pre_train/pre_train_opportunity.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WSDDN/OtherData/Opportunity/run_oicrBUAA_opportunity.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WSDDN/OtherData/Opportunity/run_pcl_opportunity.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WSDDN/OtherData/Opportunity/run_rskp_opportunity.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WSDDN/OtherData/Opportunity/run_wsddn_opportunity.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WSDDN/OtherData/RWHAR/dataset_rwhar_ws.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WSDDN/OtherData/RWHAR/pre_train/CNN1D/rwhar_CNN1D_pretrained_loso_sbj_0.pth" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WSDDN/OtherData/RWHAR/pre_train/CNN1D/rwhar_CNN1D_pretrained_loso_sbj_1.pth" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WSDDN/OtherData/RWHAR/pre_train/CNN1D/rwhar_CNN1D_pretrained_loso_sbj_10.pth" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WSDDN/OtherData/RWHAR/pre_train/CNN1D/rwhar_CNN1D_pretrained_loso_sbj_11.pth" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WSDDN/OtherData/RWHAR/pre_train/CNN1D/rwhar_CNN1D_pretrained_loso_sbj_12.pth" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WSDDN/OtherData/RWHAR/pre_train/CNN1D/rwhar_CNN1D_pretrained_loso_sbj_13.pth" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WSDDN/OtherData/RWHAR/pre_train/CNN1D/rwhar_CNN1D_pretrained_loso_sbj_14.pth" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WSDDN/OtherData/RWHAR/pre_train/CNN1D/rwhar_CNN1D_pretrained_loso_sbj_2.pth" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WSDDN/OtherData/RWHAR/pre_train/CNN1D/rwhar_CNN1D_pretrained_loso_sbj_3.pth" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WSDDN/OtherData/RWHAR/pre_train/CNN1D/rwhar_CNN1D_pretrained_loso_sbj_4.pth" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WSDDN/OtherData/RWHAR/pre_train/CNN1D/rwhar_CNN1D_pretrained_loso_sbj_5.pth" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WSDDN/OtherData/RWHAR/pre_train/CNN1D/rwhar_CNN1D_pretrained_loso_sbj_6.pth" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WSDDN/OtherData/RWHAR/pre_train/CNN1D/rwhar_CNN1D_pretrained_loso_sbj_7.pth" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WSDDN/OtherData/RWHAR/pre_train/CNN1D/rwhar_CNN1D_pretrained_loso_sbj_8.pth" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WSDDN/OtherData/RWHAR/pre_train/CNN1D/rwhar_CNN1D_pretrained_loso_sbj_9.pth" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WSDDN/OtherData/RWHAR/pre_train/dataset_rwhar.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WSDDN/OtherData/RWHAR/pre_train/pre_train_rwhar.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WSDDN/OtherData/RWHAR/run_oicrBUAA_rwhar.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WSDDN/OtherData/RWHAR/run_pcl_rwhar.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WSDDN/OtherData/RWHAR/run_rskp_rwhar.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WSDDN/OtherData/RWHAR/run_wsddn_rwhar.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WSDDN/OtherData/SBHAR/dataset_sbhar_ws.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WSDDN/OtherData/SBHAR/pre_train/CNN1D/sbhar_CNN1D_pretrained_loso_sbj_0.pth" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WSDDN/OtherData/SBHAR/pre_train/CNN1D/sbhar_CNN1D_pretrained_loso_sbj_1.pth" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WSDDN/OtherData/SBHAR/pre_train/CNN1D/sbhar_CNN1D_pretrained_loso_sbj_10.pth" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WSDDN/OtherData/SBHAR/pre_train/CNN1D/sbhar_CNN1D_pretrained_loso_sbj_11.pth" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WSDDN/OtherData/SBHAR/pre_train/CNN1D/sbhar_CNN1D_pretrained_loso_sbj_12.pth" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WSDDN/OtherData/SBHAR/pre_train/CNN1D/sbhar_CNN1D_pretrained_loso_sbj_13.pth" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WSDDN/OtherData/SBHAR/pre_train/CNN1D/sbhar_CNN1D_pretrained_loso_sbj_14.pth" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WSDDN/OtherData/SBHAR/pre_train/CNN1D/sbhar_CNN1D_pretrained_loso_sbj_15.pth" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WSDDN/OtherData/SBHAR/pre_train/CNN1D/sbhar_CNN1D_pretrained_loso_sbj_16.pth" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WSDDN/OtherData/SBHAR/pre_train/CNN1D/sbhar_CNN1D_pretrained_loso_sbj_17.pth" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WSDDN/OtherData/SBHAR/pre_train/CNN1D/sbhar_CNN1D_pretrained_loso_sbj_18.pth" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WSDDN/OtherData/SBHAR/pre_train/CNN1D/sbhar_CNN1D_pretrained_loso_sbj_19.pth" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WSDDN/OtherData/SBHAR/pre_train/CNN1D/sbhar_CNN1D_pretrained_loso_sbj_2.pth" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WSDDN/OtherData/SBHAR/pre_train/CNN1D/sbhar_CNN1D_pretrained_loso_sbj_20.pth" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WSDDN/OtherData/SBHAR/pre_train/CNN1D/sbhar_CNN1D_pretrained_loso_sbj_21.pth" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WSDDN/OtherData/SBHAR/pre_train/CNN1D/sbhar_CNN1D_pretrained_loso_sbj_22.pth" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WSDDN/OtherData/SBHAR/pre_train/CNN1D/sbhar_CNN1D_pretrained_loso_sbj_23.pth" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WSDDN/OtherData/SBHAR/pre_train/CNN1D/sbhar_CNN1D_pretrained_loso_sbj_24.pth" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WSDDN/OtherData/SBHAR/pre_train/CNN1D/sbhar_CNN1D_pretrained_loso_sbj_25.pth" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WSDDN/OtherData/SBHAR/pre_train/CNN1D/sbhar_CNN1D_pretrained_loso_sbj_26.pth" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WSDDN/OtherData/SBHAR/pre_train/CNN1D/sbhar_CNN1D_pretrained_loso_sbj_27.pth" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WSDDN/OtherData/SBHAR/pre_train/CNN1D/sbhar_CNN1D_pretrained_loso_sbj_28.pth" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WSDDN/OtherData/SBHAR/pre_train/CNN1D/sbhar_CNN1D_pretrained_loso_sbj_29.pth" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WSDDN/OtherData/SBHAR/pre_train/CNN1D/sbhar_CNN1D_pretrained_loso_sbj_3.pth" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WSDDN/OtherData/SBHAR/pre_train/CNN1D/sbhar_CNN1D_pretrained_loso_sbj_4.pth" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WSDDN/OtherData/SBHAR/pre_train/CNN1D/sbhar_CNN1D_pretrained_loso_sbj_5.pth" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WSDDN/OtherData/SBHAR/pre_train/CNN1D/sbhar_CNN1D_pretrained_loso_sbj_6.pth" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WSDDN/OtherData/SBHAR/pre_train/CNN1D/sbhar_CNN1D_pretrained_loso_sbj_7.pth" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WSDDN/OtherData/SBHAR/pre_train/CNN1D/sbhar_CNN1D_pretrained_loso_sbj_8.pth" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WSDDN/OtherData/SBHAR/pre_train/CNN1D/sbhar_CNN1D_pretrained_loso_sbj_9.pth" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WSDDN/OtherData/SBHAR/pre_train/dataset_sbhar.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WSDDN/OtherData/SBHAR/pre_train/pre_train_sbhar.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WSDDN/OtherData/SBHAR/run_oicrBUAA_sbhar.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WSDDN/OtherData/SBHAR/run_pcl_sbhar.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WSDDN/OtherData/SBHAR/run_rskp_sbhar.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WSDDN/OtherData/SBHAR/run_wsddn_sbhar.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WSDDN/OtherData/WEAR/dataset_wear_ws.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WSDDN/OtherData/WEAR/pre_train/CNN1D/wear_CNN1D_pretrained_loso_sbj_0.pth" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WSDDN/OtherData/WEAR/pre_train/CNN1D/wear_CNN1D_pretrained_loso_sbj_1.pth" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WSDDN/OtherData/WEAR/pre_train/CNN1D/wear_CNN1D_pretrained_loso_sbj_10.pth" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WSDDN/OtherData/WEAR/pre_train/CNN1D/wear_CNN1D_pretrained_loso_sbj_11.pth" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WSDDN/OtherData/WEAR/pre_train/CNN1D/wear_CNN1D_pretrained_loso_sbj_12.pth" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WSDDN/OtherData/WEAR/pre_train/CNN1D/wear_CNN1D_pretrained_loso_sbj_13.pth" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WSDDN/OtherData/WEAR/pre_train/CNN1D/wear_CNN1D_pretrained_loso_sbj_14.pth" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WSDDN/OtherData/WEAR/pre_train/CNN1D/wear_CNN1D_pretrained_loso_sbj_15.pth" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WSDDN/OtherData/WEAR/pre_train/CNN1D/wear_CNN1D_pretrained_loso_sbj_16.pth" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WSDDN/OtherData/WEAR/pre_train/CNN1D/wear_CNN1D_pretrained_loso_sbj_17.pth" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WSDDN/OtherData/WEAR/pre_train/CNN1D/wear_CNN1D_pretrained_loso_sbj_2.pth" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WSDDN/OtherData/WEAR/pre_train/CNN1D/wear_CNN1D_pretrained_loso_sbj_3.pth" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WSDDN/OtherData/WEAR/pre_train/CNN1D/wear_CNN1D_pretrained_loso_sbj_4.pth" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WSDDN/OtherData/WEAR/pre_train/CNN1D/wear_CNN1D_pretrained_loso_sbj_5.pth" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WSDDN/OtherData/WEAR/pre_train/CNN1D/wear_CNN1D_pretrained_loso_sbj_6.pth" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WSDDN/OtherData/WEAR/pre_train/CNN1D/wear_CNN1D_pretrained_loso_sbj_7.pth" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WSDDN/OtherData/WEAR/pre_train/CNN1D/wear_CNN1D_pretrained_loso_sbj_8.pth" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WSDDN/OtherData/WEAR/pre_train/CNN1D/wear_CNN1D_pretrained_loso_sbj_9.pth" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WSDDN/OtherData/WEAR/pre_train/dataset_wear.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WSDDN/OtherData/WEAR/pre_train/pre_train_wear.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WSDDN/OtherData/WEAR/run_oicrBUAA_wear.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WSDDN/OtherData/WEAR/run_pcl_wear.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WSDDN/OtherData/WEAR/run_rskp_wear.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WSDDN/OtherData/WEAR/run_wsddn_wear.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WSDDN/OtherData/WETLAB/dataset_wetlab_ws.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_0.pth" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_1.pth" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_10.pth" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_11.pth" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_12.pth" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_13.pth" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_14.pth" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_15.pth" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_16.pth" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_17.pth" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_18.pth" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_19.pth" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_2.pth" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_20.pth" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_21.pth" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_3.pth" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_4.pth" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_5.pth" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_6.pth" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_7.pth" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_8.pth" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WSDDN/OtherData/WETLAB/pre_train/CNN1D/wetlab_CNN1D_pretrained_loso_sbj_9.pth" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WSDDN/OtherData/WETLAB/pre_train/dataset_wetlab.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WSDDN/OtherData/WETLAB/pre_train/pre_train_wetlab.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WSDDN/OtherData/WETLAB/run_oicrBUAA_wetlab.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WSDDN/OtherData/WETLAB/run_pcl_wetlab.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WSDDN/OtherData/WETLAB/run_rskp_wetlab.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WSDDN/OtherData/WETLAB/run_wsddn_wetlab.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WSDDN/OtherData/eval_folds_metrics.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WSDDN/OtherData/mean_std_generating.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WSDDN/OtherData/utils.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WSDDN/RSKP_MODEL/losses.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WSDDN/RSKP_MODEL/main_branch.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WSDDN/RSKP_MODEL/memory.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WSDDN/builder_models.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WSDDN/builder_pretrainbackbone.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WSDDN/calculate_model_params.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WSDDN/data_view.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WSDDN/dataset/dataset_xrfv2.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WSDDN/eval_xrfv2_metrics.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WSDDN/label_mapping.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WSDDN/model_parameter.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WSDDN/model_time.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WSDDN/models/PCLHead.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WSDDN/models/PCL_OICR_model.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WSDDN/models/WSDDN_model.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WSDDN/models/__init__.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WSDDN/models/oicr_paloss_model.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WSDDN/models/pcl_model_blocks.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WSDDN/plot_timeline.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WSDDN/pre_train/__init__.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WSDDN/pre_train/pre_imu.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WSDDN/pre_train/pre_model.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WSDDN/requirement.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WSDDN/run_main_xrfv2.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WSDDN/run_main_xrfv2_test_rskp.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WSDDN/test_epoch.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WSDDN/tool.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WSDDN/train_epoch.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sound/OtherData/HANGTIME/dataset_hangtime_ws.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sound/OtherData/HANGTIME/pre_train/dataset_hangtime.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sound/OtherData/HANGTIME/pre_train/mean_std_hangtime.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sound/OtherData/HANGTIME/pre_train/pre_train_hangtime.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sound/OtherData/HANGTIME/run_cdur_hangtime.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sound/OtherData/HANGTIME/run_dcase_hangtime.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sound/OtherData/HANGTIME/run_pcl_hangtime.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sound/OtherData/HANGTIME/run_wsddn_hangtime.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sound/OtherData/Opportunity/dataset_opportunity_ws.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sound/OtherData/Opportunity/pre_train/dataset_opportunity.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sound/OtherData/Opportunity/pre_train/pre_train_opportunity.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sound/OtherData/Opportunity/run_cdur_opportunity.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sound/OtherData/Opportunity/run_dcase_opportunity.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sound/OtherData/Opportunity/run_pcl_opportunity.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sound/OtherData/Opportunity/run_wsddn_opportunity.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sound/OtherData/RWHAR/dataset_rwhar_ws.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sound/OtherData/RWHAR/pre_train/dataset_rwhar.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sound/OtherData/RWHAR/pre_train/pre_train_rwhar.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sound/OtherData/RWHAR/run_cdur_rwhar.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sound/OtherData/RWHAR/run_dcase_rwhar.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sound/OtherData/RWHAR/run_pcl_rwhar.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sound/OtherData/RWHAR/run_wsddn_rwhar.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sound/OtherData/SBHAR/dataset_sbhar_ws.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sound/OtherData/SBHAR/pre_train/dataset_sbhar.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sound/OtherData/SBHAR/pre_train/pre_train_sbhar.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sound/OtherData/SBHAR/run_cdur_sbhar.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sound/OtherData/SBHAR/run_dcase_sbhar.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sound/OtherData/SBHAR/run_pcl_sbhar.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sound/OtherData/SBHAR/run_wsddn_sbhar.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sound/OtherData/WEAR/dataset_wear_ws.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sound/OtherData/WEAR/pre_train/dataset_wear.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sound/OtherData/WEAR/pre_train/pre_train_wear.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sound/OtherData/WEAR/run_cdur_wear.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sound/OtherData/WEAR/run_dcase_wear.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sound/OtherData/WEAR/run_dcase_wear_2022.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sound/OtherData/WEAR/run_dcase_wear_2026.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sound/OtherData/WEAR/run_pcl_wear.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sound/OtherData/WEAR/run_wsddn_wear.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sound/OtherData/WETLAB/dataset_wetlab_ws.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sound/OtherData/WETLAB/pre_train/dataset_wetlab.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sound/OtherData/WETLAB/pre_train/pre_train_wetlab.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sound/OtherData/WETLAB/run_cdur_wetlab.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sound/OtherData/WETLAB/run_dcase_wetlab.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sound/OtherData/WETLAB/run_pcl_wetlab.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sound/OtherData/WETLAB/run_wsddn_wetlab.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sound/OtherData/mean_std_generating.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sound/OtherData/utils.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sound/README.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sound/builder_models.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sound/builder_pretrainbackbone.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sound/cal_xrfv2_map.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sound/calc_wear_metrics.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sound/cdur_xrfv2_onlytest.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sound/count_params_CDur.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sound/count_params_DCASE.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sound/dataset/dataset_XRFV2_loso.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sound/dataset/dataset_xrfv2.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sound/dcase_xrfv2_onlytest.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sound/eval_xrfv2_metrics.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sound/label_mapping.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sound/mapping.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sound/models/CDur_model.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sound/models/CDur_model_XRFV2.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sound/models/CDur_models.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sound/models/DCASE_CNN.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sound/models/DCASE_CRNN.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sound/models/DCASE_CRNN_LOSO_XRFV2.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sound/models/DCASE_CRNN_XRFV2.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sound/models/DCASE_RNN.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sound/models/DCASE_model.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sound/models/PCLHead.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sound/models/PCL_OICR_model.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sound/models/WSDDN_model.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sound/models/__init__.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sound/models/pcl_model_blocks.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sound/plot_timeline.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sound/postprocessing/cal_full_map.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sound/postprocessing/cal_sound_metric.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sound/postprocessing/cal_test_win_full.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sound/postprocessing/cal_tious_map.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sound/postprocessing/cal_win_full_map.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sound/postprocessing/cal_win_full_mode.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sound/postprocessing/cal_wstal_avg.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sound/postprocessing/cal_wstal_avgmap.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sound/postprocessing/cal_wstal_metric.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sound/postprocessing/cal_xrfv2_metric.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sound/postprocessing/calc_fstal_metrics.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sound/postprocessing/calc_wear_metrics.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sound/postprocessing/score_thres.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sound/postprocessing/utils.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sound/pre_train/__init__.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sound/pre_train/pre_imu.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sound/pre_train/pre_model.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sound/run_cdur_xrfv2.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sound/run_cdur_xrfv2_1.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sound/run_cdur_xrfv2_loso.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sound/run_cdur_xrfv2_loso_1.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sound/run_cdur_xrfv2_test.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sound/run_cdur_xrfv2_wins.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sound/run_dcase_xrfv2.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sound/run_dcase_xrfv2_loso.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sound/run_dcase_xrfv2_test.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sound/run_dcase_xrfv2_test_map.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sound/run_main_xrfv2.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sound/sec_to_frame.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sound/test_epoch.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sound/tool.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sound/train_epoch.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sound/utils/data_utils.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sound/utils/os_utils.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sound/utils/torch_utils.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sound/xrfv2_dcase_loso_test.py" beforeDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;lphhh123&quot;
+  }
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;git@github.com:lphhh123/WeaklySupervised.git&quot;,
+    &quot;accountId&quot;: &quot;5d5974fe-5afa-49b0-885b-e208125fc8e2&quot;
+  }
+}</component>
+  <component name="ProjectColorInfo">{
+  &quot;customColor&quot;: &quot;&quot;,
+  &quot;associatedIndex&quot;: 5
+}</component>
+  <component name="ProjectId" id="39KvAY8DkdsLUuwOhaOKWmRwWHt" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "git-widget-placeholder": "master",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "settings.editor.selected.configurable": "ssh.settings",
+    "vue.rearranger.settings.migration": "true"
+  }
+}]]></component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-js-predefined-d6986cc7102b-6a121458b545-JavaScript-PY-251.25410.159" />
+        <option value="bundled-python-sdk-e0ed3721d81e-36ea0e71a18c-com.jetbrains.pycharm.pro.sharedIndexes.bundled-PY-251.25410.159" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="默认任务">
+      <changelist id="890315ef-2a92-4d47-8e03-e51069d11e2b" name="更改" comment="" />
+      <created>1770457435433</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1770457435433</updated>
+      <workItem from="1770457437111" duration="31000" />
+      <workItem from="1770457490431" duration="67000" />
+      <workItem from="1770457597589" duration="100000" />
+      <workItem from="1770466031812" duration="344000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/WeaklySupervised_Image/dataset/dataset_xrfv2.py</url>
+          <option name="timeStamp" value="1" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
+  </component>
+</project>
