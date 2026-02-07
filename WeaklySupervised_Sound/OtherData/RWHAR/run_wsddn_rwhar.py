@@ -64,7 +64,7 @@ def train_wsddn_one_fold(config, fold: int, exp_name: str = "wsddn_opportunity")
     train_dataset = ProposalWrappedDataset(
         base_ds=base_train_ds,
         num_proposals=config["training"]["num_proposals"],
-        backbone=backbone,  # 关键：传进来probe Lout
+        backbone=backbone,
         win_len=config.get("seg_win_len", 90),
         seg_stride=config.get("seg_stride", 45),
         fps=config.get("fps", 30),
@@ -214,8 +214,8 @@ def train_wsddn_one_fold(config, fold: int, exp_name: str = "wsddn_opportunity")
 def test_wsddn_one_fold(config, checkpoint_path, fold: int, test_mode: str = "test_window"):
     """
     test_mode:
-      - "test_window": 测试人也按 clip_sec 滑窗（最贴近训练）
-      - "test_full"  : 整条序列一次性跑（需要你的 dataset 支持该 mode）
+      - "test_window": Message clip_sec Message（Message）
+      - "test_full"  : Message（Message dataset Message mode）
     """
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
@@ -246,7 +246,7 @@ def test_wsddn_one_fold(config, checkpoint_path, fold: int, test_mode: str = "te
     )
     loader = DataLoader(ds, batch_size=1, shuffle=False, num_workers=int(config.get("num_workers", 2)))
 
-    # ---- load backbone + wrapper（与训练一致）----
+
     backbone = CNN1DBackbone(in_channels=in_channels, feat_dim=512).to(device)
 
     pretrain_path = os.path.join(
@@ -322,7 +322,7 @@ def test_wsddn_one_fold(config, checkpoint_path, fold: int, test_mode: str = "te
             T_global=T_global,
             num_proposals=num_props,
             fps=fps,
-            raw_frames=raw_frames,  # test_full 时长度可变，用 raw_frames 更稳
+            raw_frames=raw_frames,
             base_physical_sec=float(config["testing"].get("base_physical_sec", 7.0)),
             step_sec=float(config["testing"].get("step_sec", 2.0)),
             min_sec=float(config["testing"].get("min_sec", 5.0)),
@@ -413,16 +413,16 @@ def test_wsddn_one_fold(config, checkpoint_path, fold: int, test_mode: str = "te
     mAPs, avg_mAP, ap_mat  = evaluator.evaluate()
 
     # -----------------------------
-    # 保存每个动作(per-class)的 AP 到 json
+
     # ap_mat: [len(tious), num_classes]
     # -----------------------------
     idx2name = {int(v): str(k) for k, v in evaluator.activity_index.items()}  # idx -> label_name
 
     per_action = {}
-    # 为了稳定输出顺序：按 idx 从小到大写
+
     for cidx in range(ap_mat.shape[1]):
         name = idx2name.get(cidx, id2label.get(cidx, f"class_{cidx}"))
-        ap_list = [float(x) for x in ap_mat[:, cidx].tolist()]  # 每个 tIoU 的 AP
+        ap_list = [float(x) for x in ap_mat[:, cidx].tolist()]
         per_action[name] = {
             "ap_per_tiou": ap_list,
             "mean_ap": float(np.mean(ap_list)) if len(ap_list) > 0 else 0.0
@@ -481,7 +481,7 @@ def run_loso_wsddn(config):
         # 2) test_window
         mAPs_w, avg_w, pred_w = test_wsddn_one_fold(config, wsddn_ckpt, fold=fold, test_mode="test_window")
 
-        # 3) test_full（如果你的 dataset 支持）
+
         mAPs_f, avg_f, pred_f = test_wsddn_one_fold(config, wsddn_ckpt, fold=fold, test_mode="test_full")
 
         all_reports.append({
@@ -501,7 +501,7 @@ def run_loso_wsddn(config):
             },
         })
 
-        # 每折落盘一次
+
         with open(os.path.join(config["result_root"], "loso_report_partial.json"), "w", encoding="utf-8") as f:
             json.dump(all_reports, f, indent=2, ensure_ascii=False)
 
@@ -526,19 +526,19 @@ if __name__ == "__main__":
         "result_root": "/home/lipei/project/WSDDN/test_results/RWHAR/wsddn_0108",
 
         "num_folds": 15,
-        "folds": [0, 1, 2, 3,4,5,6,7,8,9,10,11,12,13,14],  # 只跑部分折就改这里
+        "folds": [0, 1, 2, 3,4,5,6,7,8,9,10,11,12,13,14],
 
         # rwhar
         "fps": 50,
         "clip_sec": 1000.0,
         "clip_overlap": 0.5,
-        "in_channels": 21,        # 传感器轴数
+        "in_channels": 21,
         "num_classes": 8,
         "stats_dirname": "loso_norm_stats_json",
 
         # wrapper params
-        "seg_win_len": 512,         # 10s*50（为了后续整除，这里设置512
-        "seg_stride": 256,          # 5s*50（为了后续整除，这里设置256
+        "seg_win_len": 512,
+        "seg_stride": 256,
 
         "pretrained_model_name": "CNN1D",
 
@@ -561,7 +561,7 @@ if __name__ == "__main__":
             "min_sec": 80.0,
             "max_sec": 1000.0,
 
-            # spatial regularizer（可为0关闭）
+
             "spatial_reg_weight": 1.0,
             "spatial_reg_iou": 0.8,
         },
@@ -573,7 +573,7 @@ if __name__ == "__main__":
             "nms_sigma": 0.5,
             "top_k": 200,
 
-            # proposal params（测试可放宽/修改）
+
             "base_physical_sec": 500.0,
             "step_sec": 2.0,
             "min_sec": 80.0,

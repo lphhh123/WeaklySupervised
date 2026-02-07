@@ -25,9 +25,9 @@ from OtherData.utils import _meta_get, set_seed, featbox_to_time_seconds, build_
 # 3) train one fold
 # ============================================================
 def train_pcl_oicr_one_fold_opportunity(config, fold: int, exp_name: str = "pcl_oicr_opportunity"):
-    # ... (这部分保持不变，为了节省篇幅我省略了中间代码，请保持你原有的逻辑) ...
+
     # -----------------------------------------------------------------------
-    # 这里的代码完全不需要动，直接用你原来的 train 函数即可
+
     # -----------------------------------------------------------------------
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
@@ -364,11 +364,11 @@ def test_pcl_oicr_opportunity(config, checkpoint_path, fold: int, test_mode: str
         prediction_filename=pred_path,
         subset="test",
         tiou_thresholds=tious,
-        verbose=False  # <--- 1. 这里设置为 False，禁止打印每个类别的 mAP
+        verbose=False
     )
     mAPs, avg_mAP, _ = evaluator.evaluate()
 
-    # 打印简略结果，不打印详细表格
+
     print(f"[ANET] fold={fold} mode={test_mode} avg_mAP={avg_mAP:.4f} (0.3~0.7)")
 
     return mAPs, avg_mAP, pred_path
@@ -385,8 +385,8 @@ def run_loso_pcl_oicr_opportunity(config):
     num_folds = int(config.get("num_folds", 5))
     folds = config.get("folds", list(range(num_folds)))
 
-    # 用于存储所有 Folds 的结果，最后求平均
-    # 结构: {"test_window": [fold0_mAPs, fold1_mAPs...], "test_full": ...}
+
+
     all_folds_metrics = {
         "test_window": [],
         "test_full": []
@@ -403,16 +403,16 @@ def run_loso_pcl_oicr_opportunity(config):
             config, fold, exp_name=config.get("exp_name", "pcl_oicr_opportunity")
         )
 
-        # 运行 Test Window
+
         mAPs_w, avg_w, pred_w = test_pcl_oicr_opportunity(config, ckpt, fold=fold, test_mode="test_window")
         all_folds_metrics["test_window"].append(mAPs_w)
 
-        # 运行 Test Full (可选)
+
         mAPs_f, avg_f, pred_f = test_pcl_oicr_opportunity(config, ckpt, fold=fold, test_mode="test_full")
         all_folds_metrics["test_full"].append(mAPs_f)
 
     # -----------------------------------------------------------
-    # 所有 Fold 跑完后，计算平均 mAP 并输出漂亮的结果
+
     # -----------------------------------------------------------
     print("\n" + "=" * 60)
     print("  LOSO Final Summary (Average over all folds)")
@@ -438,7 +438,7 @@ def run_loso_pcl_oicr_opportunity(config):
 
 
 if __name__ == "__main__":
-    # 配置保持不变
+
     config = {
         "seed": 2024,
         "exp_name": "oicr_opportunity",

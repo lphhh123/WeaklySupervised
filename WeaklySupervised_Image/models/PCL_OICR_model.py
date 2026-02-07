@@ -6,16 +6,16 @@ from sklearn.cluster import KMeans
 
 from .pcl_model_blocks import mil_outputs, mil_losses, OICRLosses, refine_outputs
 
-# SSP版
+
 class IMU_PCL_OICR(nn.Module):
     """
-    IMU 上的 PCL/OICR 头（带 1D SPP）：
-      输入: global_feat [B, C, T] 或 [B, T, C], proposal_boxes [B, P, 2], labels [B, C]
-      训练时: 返回 losses + 各级 score
-      测试时: 返回 mil_score / refine_scores
+    IMU Message PCL/OICR Message（Message 1D SPP）：
+      Message: global_feat [B, C, T] Message [B, T, C], proposal_boxes [B, P, 2], labels [B, C]
+      Message: Message losses + Message score
+      Message: Message mil_score / refine_scores
     """
     def __init__(self,
-                 feat_dim,         # backbone 输出的通道数 C
+                 feat_dim,
                  num_classes,
                  refine_times=3,
                  use_pcl=False,
@@ -36,11 +36,11 @@ class IMU_PCL_OICR(nn.Module):
         self.graph_iou_thresh = graph_iou_thresh
         self.max_pc_num = max_pc_num
 
-        # -------- 1D SPP 模块 --------
+
         self.spp = TemporalSPP1D(levels=spp_levels, pool_type=pool_type)
         self.spp_out_dim = feat_dim * self.spp.out_mul  # C * sum(levels)
 
-        # 相当于 roi_2mlp_head：对 pooled feature 做两层 MLP
+
         self.fc1 = nn.Linear(self.spp_out_dim, hidden_dim)
         self.fc2 = nn.Linear(hidden_dim, hidden_dim)
 
@@ -53,10 +53,10 @@ class IMU_PCL_OICR(nn.Module):
 
     def pool_proposals_1d_spp(self, global_feat, proposal_boxes):
         """
-        使用 1D SPP 的 proposal pooling
+        Message 1D SPP Message proposal pooling
         global_feat:    [B, C, T]
         proposal_boxes: [B, P, 2] (start, end)
-        返回:           [B, P, C * sum(levels)]
+        Message:           [B, P, C * sum(levels)]
         """
         B, C, T = global_feat.shape
         B2, P, _ = proposal_boxes.shape
@@ -85,21 +85,21 @@ class IMU_PCL_OICR(nn.Module):
 
     def forward(self, global_feat, proposal_boxes, labels=None):
         """
-        global_feat: [B, C, T] 或 [B, T, C]
+        global_feat: [B, C, T] Message [B, T, C]
         proposal_boxes: [B, P, 2]
-        labels: [B, num_classes] (0/1)，训练必传
+        labels: [B, num_classes] (0/1)，Message
         """
         if global_feat.dim() != 3:
-            raise ValueError("global_feat 应该是 [B, C, T] 或 [B, T, C]")
+            raise ValueError("global_feat Message [B, C, T] Message [B, T, C]")
 
-        # 标准化为 [B, C, T]
+
         if global_feat.size(1) == self.feat_dim:
             feat = global_feat
         elif global_feat.size(2) == self.feat_dim:
             feat = global_feat.transpose(1, 2)
         else:
             raise ValueError(
-                f"global_feat 形状不匹配 feat_dim={self.feat_dim}, got {global_feat.shape}"
+                f"global_feat Message feat_dim={self.feat_dim}, got {global_feat.shape}"
             )
 
         B, C, T = feat.shape
@@ -114,24 +114,24 @@ class IMU_PCL_OICR(nn.Module):
         x = F.relu(self.fc2(x), inplace=True)  # [B,P,H]
 
         # 3) MIL + refine
-        mil_score = self.mil_head(x)  #  [B,P,C]（会走 3D 分支）
-        refine_scores_flat = self.refine_head(x)  # 把 refine_outputs 改成输出 [B,P,C+1]
+        mil_score = self.mil_head(x)
+        refine_scores_flat = self.refine_head(x)
 
 
         device = x.device
         output = {}
 
-        # 4) 训练：计算 loss
+
         if self.training:
             if labels is None:
-                raise ValueError("训练模式下必须传入 labels")
+                raise ValueError("Message labels")
 
             # image-level MIL loss
             mil_score_vid = mil_score.view(B, P, self.num_classes).sum(dim=1)  # [B, C]
             loss_im_cls = mil_losses(mil_score_vid, labels.float())
             output["losses"] = {"loss_im_cls": loss_im_cls}
 
-            # numpy 版数据，用于生成 pseudo labels
+
             boxes_np = proposal_boxes.detach().cpu().numpy()           # [B, P, 2]
             labels_np = labels.detach().cpu().numpy()                  # [B, C]
             mil_np = mil_score.detach().cpu().numpy().reshape(B, P, self.num_classes)
@@ -140,7 +140,7 @@ class IMU_PCL_OICR(nn.Module):
                 for rs in refine_scores_flat
             ]
 
-            # 逐个 refine 分支
+
             for i_refine in range(self.refine_times):
                 loss_refine_all = 0.0
 
@@ -180,11 +180,11 @@ class IMU_PCL_OICR(nn.Module):
 
                 loss_refine_avg = loss_refine_all / B
                 if i_refine == 0:
-                    loss_refine_avg = loss_refine_avg * 3.0  # 论文里的 trick
+                    loss_refine_avg = loss_refine_avg * 3.0
 
                 output["losses"][f"refine_loss{i_refine}"] = loss_refine_avg
 
-        # 5) 无论 train / eval，都返回 score 方便调试和测试
+
         output["mil_score"] = mil_score.view(B, P, self.num_classes)
         output["refine_scores"] = [
             rs.view(B, P, self.num_classes + 1) for rs in refine_scores_flat
@@ -197,9 +197,9 @@ class IMU_PCL_OICR(nn.Module):
 
 def segment_overlaps_1d(a, b):
     """
-    1D IoU 计算:
+    1D IoU Message:
       a: [N, 2], b: [M, 2]
-      返回 overlaps: [N, M]
+      Message overlaps: [N, M]
     """
     a = a.astype(np.float32, copy=False)
     b = b.astype(np.float32, copy=False)
@@ -222,9 +222,9 @@ def segment_overlaps_1d(a, b):
 
 def _get_top_ranking_indices(probs, num_clusters=3, rng_seed=1):
     """
-    原 PCL 里的 k-means 挑高分簇：
-      probs: [P]，某一类别下所有 proposal 的得分
-    返回：属于高分簇的 index
+    Message PCL Message k-means Message：
+      probs: [P]，Message proposal Message
+    Message：Message index
     """
     probs = probs.reshape(-1, 1)
     N = probs.shape[0]
@@ -249,7 +249,7 @@ def _build_graph_1d(segments, iou_thresh):
 
 def _get_graph_centers_1d(boxes, cls_prob, im_labels,graph_iou_thresh=0.5,max_pc_num=3,num_kmeans_cluster=3,rng_seed=1):
     """
-    PCL 的 graph center 选 pseudo GT 的逻辑，1D 版。
+    PCL Message graph center Message pseudo GT Message，1D Message。
     boxes: [P,2]
     cls_prob: [P,C]
     im_labels: [1,C]（image-level label）
@@ -316,10 +316,10 @@ def _get_graph_centers_1d(boxes, cls_prob, im_labels,graph_iou_thresh=0.5,max_pc
         gt_scores.append(centers_scores.reshape(-1, 1))
         gt_classes.append((c + 1) * np.ones((centers_boxes.shape[0], 1), dtype=np.int32))
 
-        # 删掉这些 center，从 pool 中去掉
+
         delete_idx = top_idx[keep_centers]
         # cls_pool = np.delete(cls_pool, delete_idx, axis=0)
-        cls_pool[delete_idx, :] = -1.0  # 不做 np.delete，直接标记为无效，避免数组拷贝
+        cls_pool[delete_idx, :] = -1.0
         # boxes_pool = np.delete(boxes_pool, delete_idx, axis=0)
 
     if len(gt_segments) == 0:
@@ -340,7 +340,7 @@ def _get_graph_centers_1d(boxes, cls_prob, im_labels,graph_iou_thresh=0.5,max_pc
 
 def _get_highest_score_proposals_1d(boxes, cls_prob, im_labels):
     """
-    OICR 的最高分 proposal 当 pseudo GT 的逻辑，1D 版。
+    OICR Message proposal Message pseudo GT Message，1D Message。
     """
     num_imgs, num_classes = im_labels.shape
     assert num_imgs == 1
@@ -383,8 +383,8 @@ def _get_highest_score_proposals_1d(boxes, cls_prob, im_labels):
 def _assign_clusters_1d(all_segments, proposals, im_labels,
                         fg_thresh=0.5, bg_thresh=0.1):
     """
-    与原 get_proposal_clusters 对应：
-      返回 labels, cls_loss_weights, gt_assignment
+    Message get_proposal_clusters Message：
+      Message labels, cls_loss_weights, gt_assignment
     """
     gt_segments = proposals["gt_segments"]
     gt_classes  = proposals["gt_classes"]
@@ -423,11 +423,11 @@ def pcl_1d(
     rng_seed=1,
 ):
     """
-    PCL 的 1D 版本：图聚类 + proposal cluster。
+    PCL Message 1D Message：Message + proposal cluster。
     """
     cls_prob = cls_prob.copy()
     if cls_prob.shape[1] != im_labels.shape[1]:
-        # 有背景列时去背景
+
         cls_prob = cls_prob[:, 1:]
 
     eps = 1e-9
@@ -466,7 +466,7 @@ def oicr_1d(
     bg_thresh=0.1,
 ):
     """
-    OICR 的 1D 版本：最高分 proposal 直接做 pseudo GT。
+    OICR Message 1D Message：Message proposal Message pseudo GT。
     """
     cls_prob = cls_prob.copy()
     if cls_prob.shape[1] != im_labels.shape[1]:
@@ -498,13 +498,13 @@ def oicr_1d(
 
 class TemporalSPP1D(nn.Module):
     """
-    1D 版的 Spatial Pyramid Pooling：
-    给定 [N, C, T]，输出 [N, C * sum(levels)]
-    例如 levels=(1,2,4)，就会做：
-      - 1 个 bin -> [N, C*1]
-      - 2 个 bin -> [N, C*2]
-      - 4 个 bin -> [N, C*4]
-    拼在一起得到 [N, C*(1+2+4)]
+    1D Message Spatial Pyramid Pooling：
+    Message [N, C, T]，Message [N, C * sum(levels)]
+    Message levels=(1,2,4)，Message：
+      - 1 Message bin -> [N, C*1]
+      - 2 Message bin -> [N, C*2]
+      - 4 Message bin -> [N, C*4]
+    Message [N, C*(1+2+4)]
     """
     def __init__(self, levels=(1, 2, 4), pool_type="avg"):
         super().__init__()
@@ -521,7 +521,7 @@ class TemporalSPP1D(nn.Module):
 
     @property
     def out_mul(self):
-        """输出维度是 C * out_mul （out_mul = sum(levels)）"""
+        """Message C * out_mul （out_mul = sum(levels)）"""
         return sum(self.levels)
 
     def forward(self, x):
@@ -534,7 +534,7 @@ class TemporalSPP1D(nn.Module):
         for L, pool in zip(self.levels, self.poolers):
             # [N, C, L]
             y = pool(x)
-            # 展平时间维： [N, C*L]
+
             y = y.view(N, C * L)
             feats.append(y)
         # [N, C * sum(levels)]

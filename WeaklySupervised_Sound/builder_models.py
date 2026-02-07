@@ -15,13 +15,13 @@ def _get_feat_dim_from_pretrained_name(config) -> int:
 
 def build_wsddn_imu_model(config, num_classes, device):
     """
-    根据 config 构建 WSDDN 系列模型
+    Message config Message WSDDN Message
     """
     model_cfg = config["model"]
     model_type = model_cfg.get("type", "wsddn")
     feat_dim = _get_feat_dim_from_pretrained_name(config)
 
-    # 所有 WSDDN 家族共享的子 config
+
     wsddn_cfg = model_cfg.get("wsddn", {})
 
     if model_type == "wsddn":

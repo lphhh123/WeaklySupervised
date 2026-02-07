@@ -16,7 +16,7 @@ class Actionness_Module(nn.Module):
     def __init__(self, len_feature, num_classes, cfg):
         super(Actionness_Module, self).__init__()
 
-        # 1. 加载 Backbone
+
         self.backbone = backbone_factory(
             dataset_name='HANGTIME',
             backbone_type=cfg.BACKBONE_TYPE,
@@ -24,7 +24,7 @@ class Actionness_Module(nn.Module):
             pretrained_path=cfg.PRETRAINED_PATH
         )
 
-        # 冻结逻辑
+
         train_backbone = getattr(cfg, 'TRAIN_BACKBONE', False)
         if not train_backbone:
             for param in self.backbone.parameters():
@@ -42,7 +42,7 @@ class Actionness_Module(nn.Module):
             nn.ReLU(inplace=True)
         )
 
-        # 3. 分类头
+
         self.f_cls = nn.Sequential(
             nn.Conv1d(in_channels=2048, out_channels=num_classes, kernel_size=1, bias=False),
         )
@@ -50,9 +50,9 @@ class Actionness_Module(nn.Module):
 
     def extract_features(self, x):
         """
-        [新增接口] 仅提取特征，用于 test_full 的特征拼接
-        输入 x: [B, T, C] (例如 [1, 1500, 3])
-        输出: [B, 2048, T] (例如 [1, 2048, 1500])
+        [Message] Message，Message test_full Message
+        Message x: [B, T, C] (Message [1, 1500, 3])
+        Message: [B, 2048, T] (Message [1, 2048, 1500])
         """
         T_input = x.shape[1]
         out = x.permute(0, 2, 1)  # [B, C, T]
@@ -67,7 +67,7 @@ class Actionness_Module(nn.Module):
         # Adapter
         out = self.adapter(out)
 
-        # 强制插值回输入长度 (这是 CoLA 能够进行 Pixel-level 预测的关键)
+
         # if out.shape[2] != T_input:
             # out = F.interpolate(out, size=T_input, mode='linear', align_corners=False)
 
@@ -75,8 +75,8 @@ class Actionness_Module(nn.Module):
 
     def predict(self, embeddings):
         """
-        [新增接口] 仅分类，用于处理拼接后的长特征图
-        输入 embeddings: [B, 2048, T_long]
+        [Message] Message，Message
+        Message embeddings: [B, 2048, T_long]
         """
         out = self.dropout(embeddings)
         out = self.f_cls(out)  # [B, NumClass, T]
@@ -84,17 +84,17 @@ class Actionness_Module(nn.Module):
         cas = out.permute(0, 2, 1)  # [B, T, NumClass]
         actionness = cas.sum(dim=2)  # [B, T]
 
-        # 为了保持接口一致，返回 embedding 需要转回 [B, T, C]
+
         return embeddings.permute(0, 2, 1), cas, actionness
 
     def forward(self, x):
         """
-        [原始接口] 保持完全不变，用于训练和 Window 推理
+        [Message] Message，Message Window Message
         """
-        # 1. 提取特征 (含 Backbone + Adapter + Interpolate)
+
         feats = self.extract_features(x)
 
-        # 2. 分类预测
+
         return self.predict(feats)
 
 
@@ -148,7 +148,7 @@ class CoLA(nn.Module):
         return hard_act, hard_bkg
 
     def get_video_cls_scores(self, cas, k_easy):
-        # 兼容变长 T
+
         T = cas.shape[1]
         k = max(1, min(k_easy, T))
 
@@ -159,10 +159,10 @@ class CoLA(nn.Module):
         return video_scores
 
     def forward(self, x):
-        # 1. Actionness Module (调用 split 后的接口)
+
         embeddings, cas, actionness = self.actionness_module(x)
 
-        # 2. Mining 逻辑 (保持不变)
+
         num_segments = x.shape[1]
         k_easy = num_segments // self.r_easy
         k_hard = num_segments // self.r_hard

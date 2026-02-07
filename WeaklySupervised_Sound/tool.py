@@ -16,24 +16,24 @@ import random
 
 def load_label_mapping(mapping_path):
     """
-    读取label_mapping.json，返回：
-    - id_to_action: {旧ID: 动作名}
-    - old_to_new: {旧ID: 新ID}
-    - new_to_action: {新ID: 动作名}（新增：方便测试时映射）
+    Messagelabel_mapping.json，Message：
+    - id_to_action: {MessageID: Message}
+    - old_to_new: {MessageID: MessageID}
+    - new_to_action: {MessageID: Message}（Message：Message）
     """
     with open(mapping_path, 'r') as f:
         mapping = json.load(f)
 
-    # 旧ID→动作名（键转为int）
+
     id_to_action = {int(k): v for k, v in mapping["id_to_action"].items()}
-    # 旧ID→新ID（键转为int）
+
     old_to_new = {int(k): v for k, v in mapping["old_to_new_mapping"].items()}
-    # 新ID→动作名（去重合并）
+
     new_to_action = {}
     for old_id, act_name in id_to_action.items():
         new_id = old_to_new[old_id]
         if new_id not in new_to_action:
-            new_to_action[new_id] = act_name  # 保留第一个映射的动作名（同组动作名相似）
+            new_to_action[new_id] = act_name
 
     return id_to_action, old_to_new, new_to_action
 

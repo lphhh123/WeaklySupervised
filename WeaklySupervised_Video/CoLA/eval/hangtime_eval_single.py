@@ -6,7 +6,7 @@ import numpy as np
 from tqdm import tqdm
 import copy
 
-# 环境设置：确保能找到项目核心模块
+
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
 PROJECT_ROOT = os.path.dirname(CURRENT_DIR)
 sys.path.append(PROJECT_ROOT)
@@ -17,10 +17,10 @@ from run_cola_hangtime_ddp import map_config_to_cola_cfg, get_inference_data
 from WSDDN.HANGTIME.dataset_hangtime_ws import WeaklyHangtimeDataset
 from eval_folds_metrics import evaluate_experiment_dir
 
-# ================= 配置区域 =================
-# 1. 指向你想要测试的那个 Fold 权重
+
+
 CKPT_PATH = "/home/lipei/project/CoLA/output_hangtime_cola_ddp/seed_2022/fold0/model_final.pth"
-# 2. 临时评估目录 (脚本会自动创建)
+
 TMP_EVAL_DIR = "/home/lipei/project/CoLA/output_hangtime_cola_ddp/seed_2024/fold0_debug"
 # /home/lipei/project/CoLA/output_hangtime_cola_ddp/seed_2022/fold0/model_final.pth
 BASE_CONFIG = {
@@ -36,7 +36,7 @@ BASE_CONFIG = {
     "training": {"train_backbone": False},
     "cola": {
         "lambda": 0.01, "r_easy": 100, "r_hard": 20, "m": 3, "M": 10,
-        "class_thresh": 0.1,  # 设定基础门槛
+        "class_thresh": 0.1,
         "nms_thresh": 0.3
     }
 }
@@ -50,13 +50,13 @@ def run_optimized_inference():
     fold = 0
     os.makedirs(os.path.join(TMP_EVAL_DIR, "fold0"), exist_ok=True)
 
-    # 1. 加载模型
+
     cfg = map_config_to_cola_cfg(BASE_CONFIG, fold)
     net = CoLA(cfg).to(device)
     net.load_state_dict(torch.load(CKPT_PATH, map_location=device))
     net.eval()
 
-    # 2. 加载数据集
+
     test_dataset = WeaklyHangtimeDataset(
         dataset_dir=BASE_CONFIG["dataset_dir"],
         loso_json=f"loso_sbj_{fold}.json",
@@ -65,7 +65,7 @@ def run_optimized_inference():
 
     id2name = {v: k for k, v in cfg.CLASS_DICT.items()}
 
-    # 3. 执行推理 (重点测 test_full，因为它之前 IR 最高)
+
     mode = "test_full"
     win_size = cfg.NUM_SEGMENTS  # 1500
     final_res = {'version': 'VERSION 1.3', 'results': {}}
@@ -76,18 +76,18 @@ def run_optimized_inference():
             chunk = chunk.to(device)
             video_scores, _, actionness, cas = net(chunk)
 
-            # --- [优化逻辑集成] ---
+
             cas_prob = torch.sigmoid(cas[0])  # [1500, 5]
             aness_prob = torch.sigmoid(actionness[0])  # [1500]
             v_prob = torch.sigmoid(video_scores[0]).cpu().numpy()
 
-            # A. 动作性抑制 (去除背景噪声)
+
             cas_suppressed = cas_prob * aness_prob.unsqueeze(1)
 
             cas_np = np.expand_dims(cas_suppressed.cpu().numpy(), axis=2)
             aness_np = np.tile(aness_prob.cpu().numpy().reshape(-1, 1, 1), (1, 5, 1))
 
-            # B. 生成 Proposal
+
             pred_cats = np.where(v_prob >= BASE_CONFIG['cola']['class_thresh'])[0]
             if len(pred_cats) == 0: pred_cats = np.array([np.argmax(v_prob)])
 
@@ -95,17 +95,17 @@ def run_optimized_inference():
 
             for cls_id, props in prop_dict.items():
                 for p in props:
-                    # C. 负分过滤：丢弃 Outer 概率大于 Inner 概率的框
+
                     if p[1] <= 0: continue
 
                     scale = t_origin / win_size
-                    # p[2], p[3] 是 1500 尺度下的帧坐标
+
                     global_start_f = p[2] * scale
                     global_end_f = p[3] * scale
 
                     video_props.append([p[0], p[1], global_start_f, global_end_f])
 
-        # D. 全局 NMS 与单位转换 (帧 -> 秒)
+
         sbj_list = []
         if video_props:
             cls_groups = {}
@@ -116,34 +116,34 @@ def run_optimized_inference():
                     sbj_list.append({
                         'label': id2name.get(cid, str(cid)),
                         'score': float(k[1]),
-                        'segment': [round(float(k[2]) / 50.0, 2), round(float(k[3]) / 50.0, 2)]  # 除以 50.0 转秒
+                        'segment': [round(float(k[2]) / 50.0, 2), round(float(k[3]) / 50.0, 2)]
                     })
-            # 限制每个视频最大 100 个框，防止 IR 爆表
+
             sbj_list = sorted(sbj_list, key=lambda x: x['score'], reverse=True)[:100]
         final_res['results'][sbj] = sbj_list
 
-    # 4. 保存 JSON
+
     pred_path = os.path.join(TMP_EVAL_DIR, "fold0", f"predictions_{mode}.json")
     with open(pred_path, 'w') as f:
         json.dump(final_res, f, indent=2)
 
-    # 学姐脚本要求必须同时有 window 和 full 文件，我们复制一份占位
+
     shutil_copy = os.path.join(TMP_EVAL_DIR, "fold0", "predictions_test_window.json")
     with open(shutil_copy, 'w') as f:
         json.dump(final_res, f, indent=2)
 
-    # 5. 准备 GT (直接从原 fold 拷贝过去)
+
     orig_gt = os.path.join(os.path.dirname(CKPT_PATH), "gt_for_anet.json")
     target_gt = os.path.join(TMP_EVAL_DIR, "fold0", "gt_for_anet.json")
     if os.path.exists(orig_gt):
         import shutil
         shutil.copy(orig_gt, target_gt)
 
-    print(f"\n✅ 推理完成，JSON 已存至: {pred_path}")
+    print(f"\n✅ Message，JSON Message: {pred_path}")
     print("-" * 50)
-    print("🚀 开始自动调用评估脚本...")
+    print("🚀 Message...")
 
-    # 6. 调用评估函数
+
     evaluate_experiment_dir(
         TMP_EVAL_DIR,
         tiou_thresholds=(0.3, 0.4, 0.5, 0.6, 0.7),
@@ -151,14 +151,14 @@ def run_optimized_inference():
         conf_thresh_override=0
     )
 
-    # 7. 读取结果并打印
+
     summary_path = os.path.join(TMP_EVAL_DIR, "metrics_summary_all_folds.json")
     with open(summary_path, 'r') as f:
         stats = json.load(f)['modes']['test_full']['mean_over_folds']
-        print("\n" + "=" * 20 + " 修正后 Fold0 结果 " + "=" * 20)
+        print("\n" + "=" * 20 + " Message Fold0 Message " + "=" * 20)
         print(f"mAP@Avg: {stats['mAP_mean']:.4f}")
         print(f"F1-Macro: {stats['F1_macro']:.4f}")
-        print(f"IR (Insertion Ratio): {stats['UODIFM']['IR']:.4f} (期望大幅下降)")
+        print(f"IR (Insertion Ratio): {stats['UODIFM']['IR']:.4f} (Message)")
         print("=" * 50)
 
 

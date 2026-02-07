@@ -13,7 +13,7 @@ def warn(*args, **kwargs):
 
 warnings.warn = warn
 
-# ================= 配置区域 =================
+
 RESULT_ROOT_PATH = '/home/lipei/project/WSDDN/test_results/HANGTIME/wsddn_0108/'
 RAW_DATA_PATH = '/home/yinjiaxi/wstal/tal_for_har/data/hangtime/raw/inertial'
 DATASET = 'hangtime'
@@ -25,7 +25,7 @@ FOLDS_IDS = range(24)
 print("dataset: hangtime")
 print("model: dcase")
 
-# 【修改点】：将原来的列表改为仅包含 [0.0]
+
 SCORE_THRES = [0.0]
 
 # ===========================================
@@ -99,7 +99,7 @@ def evaluate_loso_folds(mode_suffix="window"):
                 all_recall = np.zeros(num_labels)
                 all_f1 = np.zeros(num_labels)
 
-            # --- 准备预测 DataFrame ---
+
             if sbj_name not in pred_data['results']:
                 v_seg = pd.DataFrame(columns=['video-id', 't-start', 't-end', 'label', 'score'])
             else:
@@ -115,7 +115,7 @@ def evaluate_loso_folds(mode_suffix="window"):
                     })
                 v_seg = pd.DataFrame(df_data)
 
-            # --- 准备 Raw Data (GT) ---
+
             raw_csv_path = os.path.join(RAW_DATA_PATH, f"loso_{sbj_name}.csv")
             if not os.path.exists(raw_csv_path):
                 raw_csv_path = os.path.join(RAW_DATA_PATH, f"{sbj_name}.csv")
@@ -137,13 +137,13 @@ def evaluate_loso_folds(mode_suffix="window"):
             v_seg_filtered = v_seg_filtered.rename(
                 columns={"video_id": "video-id", "t_start": "t-start", "t_end": "t-end"})
 
-            # --- 计算 mAP ---
-            # 【这里保持不变】: tiou_thresholds 仍然是 0.3 到 0.7
+
+
             det_eval = ANETdetection(gt_path, 'test', tiou_thresholds=[0.3, 0.4, 0.5, 0.6, 0.7])
             v_mAP, _ = det_eval.evaluate(v_seg_filtered)
             all_mAP.append(v_mAP)
 
-            # --- 计算样本级指标 ---
+
             v_seg_for_samples = v_seg_filtered.copy()
             v_seg_for_samples['label'] = v_seg_for_samples['label'].map(label_dict) - 1
             v_seg_for_samples = v_seg_for_samples.dropna(subset=['label'])
@@ -172,7 +172,7 @@ def evaluate_loso_folds(mode_suffix="window"):
             print(f"No valid folds found for threshold {f}")
             continue
 
-        # --- 打印结果 ---
+
         avg_mAP = np.mean(all_mAP) * 100
         avg_prec = np.mean(all_prec) / valid_fold_count * 100
         avg_rec = np.mean(all_recall) / valid_fold_count * 100

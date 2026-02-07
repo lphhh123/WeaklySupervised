@@ -11,7 +11,7 @@ from torch.utils.tensorboard import SummaryWriter
 from terminaltables import AsciiTable
 from datetime import datetime
 
-# 引入核心模块
+
 import core.utils as utils
 from core.model import CoLA
 from core.loss import TotalLoss
@@ -44,10 +44,10 @@ def cleanup_ddp():
 
 
 def main():
-    # 1. DDP 初始化
+
     rank, local_rank, world_size = setup_ddp()
 
-    # 2. 实验目录与日志配置
+
     if rank == 0:
         exp_name = f"{cfg.BACKBONE_TYPE}_{datetime.now().strftime('%m%d_%H%M')}"
         cfg.OUTPUT_PATH = os.path.join('./output_ddp', exp_name)
@@ -72,16 +72,16 @@ def main():
         logger = None
         writer = None
 
-    # 3. [修正] 移除手动 LR 缩放，完全信任 Config
-    # Config 中 cfg.BATCH_SIZE 是单卡 Batch
-    # Config 中 cfg.LR_BASE 是基础学习率 (1e-4)
-    # 这种方式最清晰，如果需要多卡加速，手动在 Config 里把 LR_BASE 调大即可，不要在代码里乘来乘去。
 
-    # 4. 构建模型
+
+
+
+
+
     net = CoLA(cfg).to(local_rank)
 
     # =======================================================
-    # [新增] 智能加载预训练权重 (支持 Backbone 或 Full Model)
+
     # =======================================================
     ckpt_path = cfg.PRETRAINED_PATH
     if ckpt_path and os.path.exists(ckpt_path):
@@ -90,13 +90,13 @@ def main():
 
         checkpoint = torch.load(ckpt_path, map_location='cpu')
 
-        # 尝试加载为 Full Model (Stage 1 Classifier)
-        # 我们的 classifier_best.pth 保存的是 base_model (即 Actionness_Module) 的 state_dict
-        # 里面的 keys 包含 'backbone...', 'adapter...', 'f_cls...'
 
-        # 这里的 net 是 CoLA，它包含 net.actionness_module
+
+
+
+
         try:
-            # 1. 尝试直接加载进 actionness_module (适配 classifier_best.pth)
+
             msg = net.actionness_module.load_state_dict(checkpoint, strict=False)
             if rank == 0:
                 print(f"   [Mode 1] Loaded into Actionness_Module. Missing: {len(msg.missing_keys)}")
@@ -104,13 +104,13 @@ def main():
             if rank == 0:
                 print(f"   [Mode 1] Failed, trying Mode 2. Error: {e}")
 
-            # 2. 如果失败 (比如 keys 不匹配)，可能这只是一个纯 Backbone 权重
-            # 这时应该由 factory 已经加载过了 (在 model.__init__ 里)，所以这里可以跳过
-            # 或者在这里做更复杂的匹配逻辑
+
+
+
             pass
     # =======================================================
 
-    # 冻结策略
+
     if not cfg.TRAIN_BACKBONE:
         if rank == 0:
             print(f"🔒 [Config] train_backbone=False: Freezing Backbone parameters...")
@@ -123,7 +123,7 @@ def main():
     net = nn.SyncBatchNorm.convert_sync_batchnorm(net)
     net = DDP(net, device_ids=[local_rank], output_device=local_rank)
 
-    # 5. 数据加载
+
     train_dataset = XRFV2Dataset(
         mode='train',
         modal=cfg.MODAL,
@@ -158,8 +158,8 @@ def main():
             pin_memory=True
         )
 
-    # 6. 优化器 & 调度器
-    # [修正] 缩进对齐
+
+
     trainable_params = filter(lambda p: p.requires_grad, net.parameters())
 
     current_lr = cfg.LR_BASE
@@ -177,7 +177,7 @@ def main():
         gamma=cfg.LR_GAMMA
     )
 
-    # 7. 训练循环
+
     criterion = TotalLoss().to(local_rank)
     step = 0
     best_mAP = -1

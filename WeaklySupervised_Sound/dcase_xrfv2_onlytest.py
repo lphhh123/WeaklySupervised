@@ -5,13 +5,13 @@ import numpy as np
 import glob
 from tqdm import tqdm
 
-# 导入工具 (请确保路径正确)
+
 from tool import load_label_mapping
 from models.DCASE_CRNN_XRFV2 import CRNN
 from dataset.dataset_XRFV2_loso import WeaklySupervisedXRFV2DatasetTest
 
 
-# ========================== 1. 辅助函数 ==========================
+
 
 def temporal_nms(predictions, thresh=0.4):
     if len(predictions) == 0: return []
@@ -59,13 +59,13 @@ def post_process_for_anet(probs, id_to_label, threshold=0.3, offset_frame=0):
     return results
 
 
-# ========================== 2. 推理与保存逻辑 ==========================
+
 
 def run_inference_only(config, checkpoint_path, test_mode="window"):
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     _, _, id_to_label = load_label_mapping(config["path"]["mapping_path"])
 
-    # 加载模型
+
     model = CRNN(n_in_channel=1, nclass=config["training"]["num_classes"], **config["model"]["params"]).to(device)
     model.load_state_dict(torch.load(checkpoint_path, map_location=device))
     model.eval()
@@ -73,7 +73,7 @@ def run_inference_only(config, checkpoint_path, test_mode="window"):
     config["training"]["test_mode"] = test_mode
     test_ds = WeaklySupervisedXRFV2DatasetTest(config=config, use_airpods=config["training"]["use_airpods"])
 
-    # 结果容器
+
     prediction_output = {"results": {}, "version": "VERSION 1.3", "external_data": {}}
 
     print(f"\n[Running Inference] Mode: {test_mode}")
@@ -95,10 +95,10 @@ def run_inference_only(config, checkpoint_path, test_mode="window"):
                 clip_results = post_process_for_anet(probs, id_to_label, threshold=0.2, offset_frame=offset)
                 video_raw_segments.extend(clip_results)
 
-            # NMS 合并重叠片段
+
             prediction_output["results"][file_name] = temporal_nms(video_raw_segments, thresh=0.4)
 
-    # 保存 JSON 文件
+
     file_name = f"pred_{test_mode}.json"
     save_path = os.path.join(config["path"]["result_path"], file_name)
     with open(save_path, 'w') as f:
@@ -107,17 +107,17 @@ def run_inference_only(config, checkpoint_path, test_mode="window"):
     print(f"Successfully saved: {save_path}")
 
 
-# ========================== 3. 主程序 ==========================
+
 
 def main():
-    # 配置基础路径
+
     checkpoint_dir = "/home/yinjiaxi/wstal/WeaklySupervised-master/checkpoints/xrfv2_dcase_2022"
     result_dir = "/home/yinjiaxi/wstal/WeaklySupervised-master/result/xrfv2_dcase_2022_test"
 
     if not os.path.exists(result_dir):
         os.makedirs(result_dir, exist_ok=True)
 
-    # 寻找唯一权重
+
     ckpt_files = glob.glob(os.path.join(checkpoint_dir, "*.pth"))
     if not ckpt_files:
         print(f"Error: No .pth found in {checkpoint_dir}")
@@ -136,7 +136,7 @@ def main():
         "training": {"use_airpods": True, "num_classes": 30}
     }
 
-    # 执行两种模式的生成
+
     run_inference_only(config, best_ckpt, test_mode="window")
     run_inference_only(config, best_ckpt, test_mode="full")
 
