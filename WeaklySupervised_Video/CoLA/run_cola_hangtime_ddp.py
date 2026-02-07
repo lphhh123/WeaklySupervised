@@ -13,10 +13,10 @@ from torch.utils.data import DataLoader, DistributedSampler
 from tqdm import tqdm
 from easydict import EasyDict as edict
 
-# from scipy.interpolate import interp1d # [修改 1] test_full 不再需要插值，删除引用
+                                                                       
 
 # ============================================================
-# 引入 CoLA 核心与依赖
+               
 # ============================================================
 sys.path.append(os.getcwd())
 from core.model import CoLA
@@ -27,7 +27,7 @@ from WSDDN.utils import set_seed, build_gt_for_anet
 
 
 # ============================================================
-# DDP 基础设置
+          
 # ============================================================
 def setup_ddp():
     if 'RANK' in os.environ and 'WORLD_SIZE' in os.environ:
@@ -48,18 +48,18 @@ def cleanup_ddp():
 
 
 # ============================================================
-# [修改 2] 重写 CoLA_FullWrapper，对齐学姐的特征拼接逻辑
+                                        
 # ============================================================
 class CoLA_FullWrapper(nn.Module):
     def __init__(self, cola_model, win_len=1500, stride=750):
         super().__init__()
-        # 直接获取子模块，绕过 Actionness_Module.forward 中的强制插值
+                                                     
         self.backbone = cola_model.actionness_module.backbone
         self.adapter = cola_model.actionness_module.adapter
         self.f_cls = cola_model.actionness_module.f_cls
         self.dropout = cola_model.actionness_module.dropout
 
-        # 引用 CoLA 的一些属性用于后处理
+                            
         self.r_easy = cola_model.r_easy
         self.get_video_cls_scores = cola_model.get_video_cls_scores
 
@@ -69,38 +69,38 @@ class CoLA_FullWrapper(nn.Module):
     @torch.no_grad()
     def forward(self, x):
         """
-        x: [1, T_total, C] (原始长视频，未缩放)
+        x: [1, T_total, C] (raw long video, unscaled)
         """
-        # 1. 调整输入维度适配 Conv1d: [B, T, C] -> [B, C, T]
+                                                    
         x = x.permute(0, 2, 1)
         B, C, T_total = x.shape
 
-        # 2. 滑窗提取特征 (Backbone + Adapter)
-        # 这里的 win_len 是 1500，对应训练时的窗口大小
+                                        
+                                       
         offsets = list(range(0, T_total - self.win_len + 1, self.stride))
         if not offsets or offsets[-1] != T_total - self.win_len:
             if T_total >= self.win_len:
                 offsets.append(T_total - self.win_len)
             else:
                 offsets = [0]
-                # 补零 padding
+                            
                 pad_len = self.win_len - T_total
                 x = torch.nn.functional.pad(x, (0, pad_len))
 
         feat_list = []
         count_list = []
 
-        # 预计算输出特征维度 (假设输入1500 -> 输出94)
-        # 先跑一次 dummy 确定输出长度
+                                      
+                           
         dummy_out = self.adapter(self.backbone(x[:, :, :self.win_len]))
         feat_dim = dummy_out.shape[1]  # 2048
-        out_win_len = dummy_out.shape[2]  # 94 (取决于 backbone 下采样)
+        out_win_len = dummy_out.shape[2]                         
 
-        # 计算采样率 (input_frames / feature_frames)
-        # 例如 1500 / 94 ≈ 16
+                                               
+                           
         rate = self.win_len / out_win_len
 
-        # 计算全局特征图的长度
+                    
         T_out_total = int(T_total / rate) + 1
 
         global_feat = torch.zeros(B, feat_dim, T_out_total, device=x.device)
@@ -110,28 +110,28 @@ class CoLA_FullWrapper(nn.Module):
             end = start + self.win_len
             chunk = x[:, :, start:end]  # [B, C, 1500]
 
-            # [核心] 只跑特征提取，不跑分类，也不插值
+                                   
             feat = self.backbone(chunk)
             feat = self.adapter(feat)  # [B, 2048, 94]
 
-            # 映射回全局特征图的位置
+                         
             start_out = int(start / rate)
             end_out = start_out + out_win_len
 
-            # 边界保护
+                  
             valid_w = min(end_out, T_out_total) - start_out
 
             if valid_w > 0:
                 global_feat[:, :, start_out:start_out + valid_w] += feat[:, :, :valid_w]
                 count_map[:, :, start_out:start_out + valid_w] += 1.0
 
-        # 平均重叠区域
+                
         global_feat /= count_map.clamp(min=1.0)
 
-        # 3. 全局分类 (Head)
-        # 输入: [B, 2048, T_out_total] (拼接后的长特征)
+                        
+                                              
 
-        # CoLA Logic (手动执行 model.py 后半部分)
+                                         
         embeddings = global_feat.permute(0, 2, 1)  # [B, T, C]
 
         out = self.dropout(global_feat)
@@ -140,7 +140,7 @@ class CoLA_FullWrapper(nn.Module):
         cas = out.permute(0, 2, 1)  # [B, T, Classes]
         actionness = cas.sum(dim=2)  # [B, T]
 
-        # 计算 Video-level Score
+                              
         k_easy = max(1, cas.shape[1] // self.r_easy)
         video_scores = self.get_video_cls_scores(cas, k_easy)
 
@@ -148,7 +148,7 @@ class CoLA_FullWrapper(nn.Module):
 
 
 # ============================================================
-# 辅助函数：配置映射
+           
 # ============================================================
 def map_config_to_cola_cfg(user_config, fold):
     c = edict()
@@ -181,7 +181,7 @@ def map_config_to_cola_cfg(user_config, fold):
 
 
 # ============================================================
-# 推理辅助：滑窗与插值生成器
+               
 # ============================================================
 def get_inference_data(dataset, mode, win_size=1500, stride=750):
     for sbj in dataset.subjects:
@@ -192,7 +192,7 @@ def get_inference_data(dataset, mode, win_size=1500, stride=750):
         t_origin = raw.shape[0]
 
         if mode == "test_window":
-            # [保持不变] 滑窗逻辑
+                         
             offsets = list(range(0, t_origin - win_size + 1, stride))
             if not offsets or offsets[-1] != t_origin - win_size:
                 if t_origin >= win_size:
@@ -208,9 +208,9 @@ def get_inference_data(dataset, mode, win_size=1500, stride=750):
             yield sbj, window_iter(), t_origin
 
         else:
-            # [修改 3] test_full 逻辑：移除插值，直接返回原始数据
-            # 原始逻辑是 interp1d，现在改为直接 yield raw
-            # CoLA_FullWrapper 会处理 [1, T_raw, C] 的输入
+                                               
+                                             
+                                                    
 
             def single_iter():
                 # [1, T_raw, C]
@@ -220,7 +220,7 @@ def get_inference_data(dataset, mode, win_size=1500, stride=750):
 
 
 # ============================================================
-# 核心逻辑：Train One Fold (DDP)
+                           
 # ============================================================
 def train_one_fold_ddp(config, fold, rank, local_rank, world_size):
     cola_cfg = map_config_to_cola_cfg(config, fold)
@@ -278,19 +278,19 @@ def train_one_fold_ddp(config, fold, rank, local_rank, world_size):
 
 
 # ============================================================
-# 核心逻辑：Inference One Fold (Rank 0 only)
+                                       
 # ============================================================
 @torch.no_grad()
 def run_inference_dual_mode(config, fold, ckpt_path, device):
-    # 1. 加载模型
+             
     cola_cfg = map_config_to_cola_cfg(config, fold)
     net = CoLA(cola_cfg).to(device)
 
-    # 兼容 DDP 权重的加载逻辑
+                    
     checkpoint = torch.load(ckpt_path, map_location=device)
     state_dict = {k.replace('module.', ''): v for k, v in checkpoint.items()}
 
-    # [兼容性修复] 确保新旧 Key 匹配
+                         
     new_state_dict = {}
     for k, v in state_dict.items():
         k = k.replace('actionness_backbone', 'actionness_module.backbone')
@@ -300,7 +300,7 @@ def run_inference_dual_mode(config, fold, ckpt_path, device):
     net.load_state_dict(new_state_dict)
     net.eval()
 
-    # 2. 准备数据集
+              
     loso_json = f"loso_sbj_{fold}.json"
     test_dataset = WeaklyHangtimeDataset(
         dataset_dir=config["dataset_dir"], loso_json=loso_json, mode="test_window",
@@ -309,21 +309,21 @@ def run_inference_dual_mode(config, fold, ckpt_path, device):
     )
     id2name = {v: k for k, v in cola_cfg.CLASS_DICT.items()}
 
-    # 3. 初始化 Full Wrapper (用于 test_full)
-    # 传入原始模型，Wrapper 内部会拆解
+                                        
+                          
     full_wrapper = CoLA_FullWrapper(net, win_len=cola_cfg.NUM_SEGMENTS, stride=cola_cfg.NUM_SEGMENTS // 2)
 
-    # 4. 双模式推理循环
+                
     for mode in ["test_window", "test_full"]:
         final_res = {'version': 'VERSION 1.3', 'results': {}, 'external_data': {}}
         win_size = cola_cfg.NUM_SEGMENTS
         inf_time_list = []
         gpu_mem_list = []
 
-        # [修改 4] 分支逻辑更新：test_full 使用 Wrapper
+                                            
         if mode == "test_full":
             for sbj, window_iter, t_origin in get_inference_data(test_dataset, mode, win_size):
-                # test_full 下 window_iter 只会 yield 一次 (whole sequence)
+                                                                      
                 for chunk, _ in window_iter:
                     chunk = chunk.to(device)
                     if torch.cuda.is_available():
@@ -337,39 +337,39 @@ def run_inference_dual_mode(config, fold, ckpt_path, device):
                     inf_time_list.append((end_t - start_t) * 1000.0)  # ms
                     if torch.cuda.is_available():
                         gpu_mem_list.append(torch.cuda.max_memory_allocated() / 1024 / 1024)  # MB
-                    # 此时 T_current = T_feat (拼接后的特征长度)
+                                                      
                     T_feat = cas.shape[1]
 
-                    # 坐标缩放因子: T_origin / T_feat
-                    # 例如 3000 / 187 ≈ 16
+                                               
+                                        
                     scale = t_origin / T_feat
 
                     process_and_save(
                         sbj, video_scores, actionness, cas,
-                        t_origin=t_origin,  # 原始长度
-                        scale_factor=scale,  # [关键] 传入缩放因子
+                        t_origin=t_origin,        
+                        scale_factor=scale,               
                         start_f=0, mode=mode, config=config, cola_cfg=cola_cfg,
                         id2name=id2name, final_res=final_res
                     )
 
         else:
-            # test_window: 传统的滑窗
+                                
             stride = win_size // 2
             for sbj, window_iter, t_origin in get_inference_data(test_dataset, mode, win_size, stride):
                 for chunk, start_f in window_iter:
                     chunk = chunk.to(device)
-                    # 普通 Forward (内部有插值，但因为 chunk 是 1500，所以 1:1)
+                                                                
                     video_scores, _, actionness, cas = net(chunk)
 
                     process_and_save(
                         sbj, video_scores, actionness, cas,
                         t_origin=t_origin,
-                        scale_factor=1.0,  # test_window 是 1:1 映射
+                        scale_factor=1.0,                        
                         start_f=start_f, mode=mode, config=config, cola_cfg=cola_cfg,
                         id2name=id2name, final_res=final_res
                     )
 
-        # 保存
+            
         if inf_time_list:
             avg_time = np.mean(inf_time_list)
             std_time = np.std(inf_time_list)
@@ -381,16 +381,16 @@ def run_inference_dual_mode(config, fold, ckpt_path, device):
                 "num_samples": len(inf_time_list),
                 "avg_inference_time_ms": f"{avg_time:.2f} ± {std_time:.2f}",
                 "avg_gpu_memory_mb": f"{avg_mem:.2f} ± {std_mem:.2f}",
-                "conf_thresh": config["cola"]["class_thresh"],  # 记录一下参数方便回溯
+                "conf_thresh": config["cola"]["class_thresh"],              
                 "nms_thresh": config["cola"]["nms_thresh"]
             }
 
-            # 保存路径与 predictions 同级
+                                  
             stats_path = os.path.join(config["result_root"], f"fold{fold}", f"inference_stats_{mode}.json")
             with open(stats_path, 'w') as f:
                 json.dump(stats_info, f, indent=2)
 
-            print(f"    📊 [Stats {mode}] Time: {avg_time:.2f}ms | Mem: {avg_mem:.2f}MB")
+            print(f"    [Stats {mode}] Time: {avg_time:.2f}ms | Mem: {avg_mem:.2f}MB")
         out_path = os.path.join(config["result_root"], f"fold{fold}", f"predictions_{mode}.json")
         with open(out_path, 'w') as f:
             json.dump(final_res, f, indent=2)
@@ -398,17 +398,17 @@ def run_inference_dual_mode(config, fold, ckpt_path, device):
 
 
 # ============================================================
-# 辅助函数：统一的后处理逻辑
+               
 # ============================================================
 def process_and_save(sbj, video_scores, actionness, cas, t_origin, scale_factor, start_f, mode, config, cola_cfg,
                      id2name,
                      final_res):
-    # 1. Sigmoid & 融合
+                     
     cas_prob = torch.sigmoid(cas[0])  # [T, C]
     aness_prob = torch.sigmoid(actionness[0])  # [T]
     v_prob = torch.sigmoid(video_scores[0]).cpu().numpy()  # [C]
 
-    # 融合：抑制背景
+             
     cas_suppressed = cas_prob * aness_prob.unsqueeze(1)
 
     T_current = cas_prob.shape[0]
@@ -417,7 +417,7 @@ def process_and_save(sbj, video_scores, actionness, cas, t_origin, scale_factor,
     num_classes = cola_cfg.NUM_CLASSES
     aness_np = np.tile(aness_prob.cpu().numpy().reshape(-1, 1, 1), (1, num_classes, 1))
 
-    # 类别筛选
+          
     if mode == "test_full":
         cas_max_val, _ = torch.max(cas_prob, dim=0)
         cas_max_np = cas_max_val.cpu().numpy()
@@ -428,17 +428,17 @@ def process_and_save(sbj, video_scores, actionness, cas, t_origin, scale_factor,
     if len(pred_cats) == 0:
         pred_cats = np.array([np.argmax(v_prob)])
 
-    # 生成 Proposal (utils.py)
-    # 注意：这里的 win_size 传入 T_current 即可，utils 内部用它做归一化
+                            
+                                                    
     prop_dict = utils.get_proposal_dict(cas_np, aness_np, pred_cats, v_prob, T_current, cola_cfg)
 
     video_props = []
     for cls_id, props in prop_dict.items():
         for p in props:
-            # [修改 5] 坐标转换逻辑统一
-            # p[2], p[3] 是基于 T_current (特征图长度) 的坐标
+                             
+                                                  
             # test_full: T_current = T_feat, scale = T_raw / T_feat
-            # test_window: T_current = 1500, scale = 1.0 (因为我们没缩放), start_f 是偏移
+                                                                               
 
             local_start = p[2] * scale_factor
             local_end = p[3] * scale_factor

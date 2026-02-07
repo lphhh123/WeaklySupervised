@@ -37,7 +37,7 @@ class CNN1DBackbone(nn.Module):
             nn.BatchNorm1d(256),
             nn.ReLU(),
 
-            # Layer 5: /1 (不改变长度)
+                                 
             # (256, T/16) -> (512, T/16)
             nn.Conv1d(256, feat_dim, kernel_size=3, stride=1, padding=1),
             nn.BatchNorm1d(feat_dim),

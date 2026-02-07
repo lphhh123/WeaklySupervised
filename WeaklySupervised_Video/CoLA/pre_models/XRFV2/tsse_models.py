@@ -7,26 +7,26 @@ import torch.nn.functional as F
 import sys
 import os
 
-# --- [关键] 动态添加 WSDDN 路径，以便能 import 其中的 models 模块 ---
+                                                     
 WSDDN_PATH = '/home/lipei/project/WSDDN'
 if WSDDN_PATH not in sys.path:
     sys.path.append(WSDDN_PATH)
 
-# 现在可以正常 import 学姐的模块了
+                      
 from models.TAD.embedding import Embedding
 from models.TAD.backbone import TSSE
 from models.mamba.backbones import MambaBackbone
 
 
-# ... (以下代码直接粘贴你提供的 pre_tsse_mamba_model_7s.py 的内容，除了 imports 部分) ...
-# 为了完整性，我把核心类定义再列一遍，你需要把中间的 helper function 也拷进去
+                                                                     
+                                                
 
 def _ceil_div(a: int, b: int) -> int:
     return (a + b - 1) // b
 
 
 class TADEmbedding_7s(nn.Module):
-    # ... (保持原代码不变) ...
+                       
     def __init__(self, in_channels, out_channels=512, layer=3, input_length=478, embedding_stride=1):
         super().__init__()
         self.embedding = Embedding(in_channels, stride=embedding_stride)
@@ -103,12 +103,12 @@ class Mamba(nn.Module):
         return feats
 
 
-# --- 目标模型 1: TSSE + Mamba ---
+                              
 class TSSE_MambaBackbone_7s(nn.Module):
     def __init__(self, in_channels=30, feat_dim=512, input_length=478, embed_type="TSSE", embedding_stride=1,
                  tsse_layers=3, mamba_cfg=None):
         super().__init__()
-        # ... (保持原代码不变) ...
+                           
         if embed_type == "Norm":
             self.embedding = Embedding(in_channels, stride=embedding_stride)
         else:
@@ -121,7 +121,7 @@ class TSSE_MambaBackbone_7s(nn.Module):
         self.arch = cfg.arch
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
-        # ... (保持原代码不变) ...
+                           
         x = self.embedding(x)
         B, C, L0 = x.shape
         multiple = self.scale_factor ** (int(self.arch[0]) + int(self.arch[-1]))
@@ -135,7 +135,7 @@ class TSSE_MambaBackbone_7s(nn.Module):
         return y
 
 
-# --- 目标模型 2: 纯 TSSE ---
+                        
 class TSSE_7s(nn.Module):
     def __init__(self, in_channels=30, feat_dim=512, input_length=478, embedding_stride=1, tsse_layers=3):
         super().__init__()

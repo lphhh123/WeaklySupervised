@@ -9,7 +9,7 @@ from OtherData.utils import _load_loso_json, _parse_fold_id_from_loso_name, _sub
 # -------------------------
 class WeaklyOpportunityDataset(Dataset):
     """
-    弱监督dataset：返回 raw clip + video-level multi-hot label
+    Weak supervision dataset: return raw clip + video-level multi-hot label.
 
     Return:
       x: FloatTensor [C, T]  (C=113, T=30s*fps or full length)
@@ -38,7 +38,7 @@ class WeaklyOpportunityDataset(Dataset):
         min_ov_frames: int = 1,
 
         # keep negative clips (no actions) ratio in TRAIN
-        neg_keep_ratio: float = 0.2,  # 训练建议保留一点负样本
+        neg_keep_ratio: float = 0.2,               
         seed: int = 2024,
 
         # normalization stats
