@@ -1,0 +1,22 @@
+# Core
+numpy>=1.19.5
+scipy>=1.4.1
+pandas>=1.1.0
+h5py>=3.0.0
+joblib>=0.13.0
+tqdm>=4.0.0
+
+# Deep learning
+torch>=1.7.0
+tensorboard>=1.15.0
+mamba-ssm>=1.0.0
+
+# Visualization
+matplotlib>=3.3.0
+seaborn>=0.11.0
+
+# Utilities
+scikit-learn>=0.24.0
+easydict>=1.9
+terminaltables>=3.1.0
+pyyaml>=5.0
