@@ -17,7 +17,7 @@ from tool import ANETdetection
 from OtherData.utils import set_seed
 
 
-# DCASE 返回 (frame, clip)，Wrapper 只需 frame
+                                         
 class DCASEWrapper(nn.Module):
     def __init__(self, model):
         super().__init__()
@@ -43,12 +43,12 @@ def frame_probs_to_segments(probs, fps, threshold=0.5):
 
 def train_fold(config, fold_idx, device):
     model = CRNN(n_in_channel=36, nclass=30, **config["model_args"]).to(device)
-    # 确保数据集启用了 AirPods
+                      
     train_ds = WeaklySupervisedXRFV2DatasetTrain(
         config["subject_path"],
         config["mapping"],
         split="train",
-        use_airpods=True  # 必须为 True 才能得到 36 通道
+        use_airpods=True                       
     )
     loader = DataLoader(train_ds, batch_size=32, shuffle=True)
     opt = torch.optim.Adam(model.parameters(), lr=1e-4)
@@ -58,10 +58,10 @@ def train_fold(config, fold_idx, device):
     for epoch in range(50):
         model.train()
         for x, _, y in loader:
-            # x 形状可能是 [B, 36, T] 或 [B, T, 36]
+                                             
             if x.shape[1] != 36:
                 x = x.transpose(1, 2)
-            # 现在 x 是 [B, 36, T]
+                               
             _, p = model(x.to(device))
             loss = crit(p, y.to(device))
             opt.zero_grad();
@@ -115,7 +115,7 @@ if __name__ == "__main__":
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     conf = {
         "mapping": "/home/lipei/project/WSDDN/label_mapping.json",
-        "path": {"test_dataset_path": "", "dataset_root_path": "/home/lipei/WWADL/"},  # 动态填充
+        "path": {"test_dataset_path": "", "dataset_root_path": "/home/lipei/WWADL/"},        
         "model_args": {"cnn_integration": False,
                        "cnn_kwargs": {"pooling": [[2, 1], [2, 1], [2, 1], [1, 1], [1, 1], [1, 1], [1, 1]]}}
     }

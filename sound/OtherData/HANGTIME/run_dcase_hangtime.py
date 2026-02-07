@@ -18,15 +18,15 @@ from tool import ANETdetection
 from OtherData.utils import _meta_get, set_seed, build_gt_for_anet, dump_config
 
 # ============================================================
-# [修改 1] 导入 HANGTIME 数据集类
-# 假设文件名遵循命名规范：OtherData/HANGTIME/dataset_hangtime_ws.py
+                         
+                                                       
 # ============================================================
 try:
     from OtherData.HANGTIME.dataset_hangtime_ws import WeaklyHangtimeDataset
 except ImportError:
     print("Error: Could not import 'WeaklyHangtimeDataset'. Please check the path and filename.")
 
-# 引入 DCASE CRNN 模型
+                  
 try:
     from models.DCASE_CRNN import CRNN
 except ImportError:
@@ -95,18 +95,18 @@ def train_dcase_one_fold_hangtime(config, fold: int, exp_name: str = "dcase_hang
     dataset_dir = config["dataset_dir"]
     fps = int(config.get("fps", 50))
     clip_sec = float(config.get("clip_sec", 3.0))
-    in_channels = int(config.get("in_channels", 3))  # Hangtime 是 3
+    in_channels = int(config.get("in_channels", 3))                
     num_classes = int(config["num_classes"])
 
     suffix = f"_{int(clip_sec)}s"
 
-    # CRNN 模型初始化
+                
     cnn_kwargs = config["model_args"].get("cnn_kwargs", {})
 
     model = CRNN(
-        # [关键] 必须设置为 3。
-        # 我们使用 [2, 1] 池化策略保留了3个通道。
-        # CNN 输出特征维度 = 64 * 3 = 192，所以 RNN 输入必须匹配 3。
+                       
+                                  
+                                                    
         n_in_channel=in_channels,
 
         nclass=num_classes,
@@ -124,9 +124,9 @@ def train_dcase_one_fold_hangtime(config, fold: int, exp_name: str = "dcase_hang
     model = model.to(device)
 
     def count_parameters(model):
-        # 统计所有参数
+                
         total_params = sum(p.numel() for p in model.parameters())
-        # 统计可训练参数 (通常我们关心这个)
+                            
         trainable_params = sum(p.numel() for p in model.parameters() if p.requires_grad)
         return total_params, trainable_params
 
@@ -137,10 +137,10 @@ def train_dcase_one_fold_hangtime(config, fold: int, exp_name: str = "dcase_hang
     print(f"Trainable Parameters: {trainable:,}")
     print("-" * 30 + "\n")
 
-    # [修改 2] 实例化 HANGTIME Dataset
+                                 
     loso_json = f"loso_sbj_{fold}.json"
 
-    train_ds = WeaklyHangtimeDataset(  # <--- 修改类名
+    train_ds = WeaklyHangtimeDataset(             
         dataset_dir=dataset_dir,
         loso_json=loso_json,
         mode="train",
@@ -188,7 +188,7 @@ def train_dcase_one_fold_hangtime(config, fold: int, exp_name: str = "dcase_hang
             sample_clips = sample_clips.to(device)
             labels = labels.to(device).float()
 
-            # 维度适配: (Batch, Time, Channels) -> (Batch, Channels, Time)
+                                                                      
             if sample_clips.shape[1] > sample_clips.shape[2]:
                 inputs = sample_clips.permute(0, 2, 1)
             else:
@@ -256,7 +256,7 @@ def test_dcase_hangtime(config, checkpoint_path, fold: int, test_mode: str = "te
     label_dict = js.get("label_dict", {})
     id2label = {int(v): k for k, v in label_dict.items()}
 
-    # [修改 3] 实例化 HANGTIME Dataset
+                                 
     ds = WeaklyHangtimeDataset(
         dataset_dir=dataset_dir,
         loso_json=loso_json,
@@ -289,7 +289,7 @@ def test_dcase_hangtime(config, checkpoint_path, fold: int, test_mode: str = "te
 
         frame_prob, _ = model(inputs)
 
-        # 插值回原始长度
+                 
         target_len = inputs.shape[-1]
         frame_prob = F.interpolate(frame_prob, size=target_len, mode='linear', align_corners=True)
         frame_prob = frame_prob.permute(0, 2, 1).squeeze(0).cpu().numpy()
@@ -358,7 +358,7 @@ def test_dcase_hangtime(config, checkpoint_path, fold: int, test_mode: str = "te
             best_avg_mAP = avg_mAP
             best_thresh = th
             best_mAPs = mAPs
-            # 保存最佳结果
+                    
             best_pred_path = os.path.join(fold_dir, f"best_predictions_{test_mode}{suffix}.json")
             with open(best_pred_path, "w") as f:
                 json.dump(final_results, f, indent=2)
@@ -421,7 +421,7 @@ def run_loso_dcase_hangtime(config):
 
 if __name__ == "__main__":
     # ============================================================
-    # [修改 4] 配置 HANGTIME 专属参数
+                             
     # ============================================================
     config = {
         "seed": 2026,
@@ -449,7 +449,7 @@ if __name__ == "__main__":
             "specaugm_f_l": 2,
             "cnn_integration": True,
 
-            # [关键] 防止 3 通道被 Pool 掉的策略
+                                     
             "cnn_kwargs": {
                 "pooling": [[2, 1], [2, 1], [2, 1], [1, 1], [1, 1], [1, 1], [1, 1]]
             }

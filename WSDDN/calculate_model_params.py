@@ -5,7 +5,6 @@ import argparse
 
 
 def calculate_parameters(model):
-    """计算模型参数数量"""
     total_params = 0
     for name, param in model.named_parameters():
         if param.requires_grad:
@@ -22,20 +21,20 @@ def main():
     parser.add_argument("--checkpoint", type=str, required=True, help="Path to checkpoint file")
     args = parser.parse_args()
 
-    # 加载checkpoint
+                  
     ckpt = torch.load(args.checkpoint, map_location='cpu')
     print("Loaded checkpoint successfully!")
     print(f"Checkpoint keys: {list(ckpt.keys())}")
 
-    # 获取模型参数
+            
     args_dict = ckpt.get("args", {})
-    num_classes = ckpt.get("num_classes", 5)  # 默认值
+    num_classes = ckpt.get("num_classes", 5)       
 
     print(f"\nModel configuration:")
     print(f"args: {args_dict}")
     print(f"num_classes: {num_classes}")
 
-    # 重建模型
+          
     model_args = SimpleNamespace(
         w=args_dict.get("w", 0.5),
         inp_feat_num=args_dict.get("inp_feat_num", 512),
@@ -50,7 +49,7 @@ def main():
 
     model = WSTAL(model_args)
 
-    # 加载模型权重
+            
     if 'model_state_dict' in ckpt:
         model.load_state_dict(ckpt["model_state_dict"])
         print("\nLoaded model state dict successfully!")
@@ -58,7 +57,7 @@ def main():
         model.load_state_dict(ckpt)
         print("\nLoaded entire checkpoint as model state dict!")
 
-    # 计算参数
+          
     print("\nModel parameters:")
     calculate_parameters(model)
 

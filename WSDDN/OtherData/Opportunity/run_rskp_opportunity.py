@@ -3,7 +3,7 @@ import os, json, time
 import argparse
 import numpy as np
 
-# 必须在 import torch 之前解析命令行参数并设置 CUDA_VISIBLE_DEVICES
+                                                    
 import sys
 
 from scipy import ndimage
@@ -25,7 +25,7 @@ from OtherData.utils import GlobalBackboneWrapper, ProposalWrappedDataset, dump_
 from pre_train.pre_model import CNN1DBackbone
 from tool import softnms_v2, ANETdetection
 
-# RSKP 依赖
+         
 from RSKP_MODEL.main_branch import WSTAL, random_walk
 from RSKP_MODEL.memory import Memory
 from RSKP_MODEL.losses import NormalizedCrossEntropy, AttLoss, CategoryCrossEntropy
@@ -33,13 +33,6 @@ from RSKP_MODEL.losses import NormalizedCrossEntropy, AttLoss, CategoryCrossEntr
 
 
 def count_parameters(model):
-    """
-    计算模型参数数量
-    Args:
-        model: PyTorch 模型
-    Returns:
-        total_params: 模型总参数数量
-    """
     total_params = sum(p.numel() for p in model.parameters())
     return total_params
 
@@ -58,7 +51,7 @@ def train_rskp_one_fold_opportunity(config, fold: int, exp_name: str = "rskp_opp
     in_channels = int(config.get("in_channels", 113))
     num_classes = int(config["num_classes"])
 
-    # RSKP 配置
+             
     rskp_cfg = config.get("rskp", {})
 
     # ---- load 3s backbone (fold-specific pretrain) ----
@@ -79,13 +72,13 @@ def train_rskp_one_fold_opportunity(config, fold: int, exp_name: str = "rskp_opp
     pretrained_backbone = GlobalBackboneWrapper(backbone, win_len=win_len, seg_stride=seg_stride).to(device)
     pretrained_backbone.eval()
 
-    # 获取 backbone 输出维度
+                      
     dummy_input = torch.randn(1, in_channels, win_len, device=device)
     with torch.no_grad():
         dummy_feat = pretrained_backbone(dummy_input)
     feat_dim = int(dummy_feat.shape[1])  # 512
 
-    # ---- RSKP 模型 ----
+                       
     out_feat_num = rskp_cfg.get("out_feat_num", feat_dim)
     d_model = int(out_feat_num) if out_feat_num is not None else feat_dim
     args = SimpleNamespace(
@@ -105,7 +98,7 @@ def train_rskp_one_fold_opportunity(config, fold: int, exp_name: str = "rskp_opp
     
     
        
-    # 计算模型参数
+            
     model_params = count_parameters(model)
     memory_params = count_parameters(memory)
     total_params = model_params + memory_params
@@ -166,7 +159,7 @@ def train_rskp_one_fold_opportunity(config, fold: int, exp_name: str = "rskp_opp
         gamma=float(config["training"]["lr_gamma"])
     )
 
-    # RSKP 损失权重
+               
     warmup_epoch = int(rskp_cfg.get("warmup_epoch", 1))
     lambda_a = float(rskp_cfg.get("lambda_a", 0.1))
     lambda_b = float(rskp_cfg.get("lambda_b", 0.2))
@@ -198,7 +191,7 @@ def train_rskp_one_fold_opportunity(config, fold: int, exp_name: str = "rskp_opp
             labels = labels.to(device).float()         # [B,K] multi-hot
             B = sample_30s.shape[0]
 
-            # 提取特征 [B, D, T] -> [B, T, D]
+                                         
             with torch.no_grad():
                 global_feat = pretrained_backbone(sample_30s)  # [B,512,T_global]
             feat_seq = global_feat.permute(0, 2, 1)  # [B, T, D]
@@ -212,14 +205,14 @@ def train_rskp_one_fold_opportunity(config, fold: int, exp_name: str = "rskp_opp
             vid_back_loss = loss_nce(o_out[1], b_labels) + loss_nce(m_out[1], b_labels)
             vid_att_loss = loss_att(o_out[2])
 
-            # warmup 之后启用记忆库与 random walk
+                                         
             if epoch >= warmup_epoch:
                 np_labels = labels.detach().cpu().numpy()
                 idxs = []
                 for b in range(B):
                     pos_cls = np.where(np_labels[b] == 1)[0].tolist()
                     idxs.extend(pos_cls)
-                idxs = list(set(idxs))  # 去重
+                idxs = list(set(idxs))      
 
                 if len(idxs) > 0:
                     cls_mu = memory._return_queue(idxs).detach()  # [1, num_classes, feat_dim]
@@ -231,7 +224,7 @@ def train_rskp_one_fold_opportunity(config, fold: int, exp_name: str = "rskp_opp
                     vid_back_loss = vid_back_loss + 0.5 * loss_nce(r_vid_cw_pred, b_labels)
                     vid_spl_loss = loss_spl(o_out[3], r_frm_pred * 0.2 + m_out[3] * 0.8)
 
-                    # 使用整个批次更新记忆库
+                                 
                     for b in range(B):
                         mu = em_out[1][b]  # [mu_num, feat_dim]
                         mu_pred = em_out[2][b]  # [mu_num, num_classes+1]
@@ -270,12 +263,12 @@ def train_rskp_one_fold_opportunity(config, fold: int, exp_name: str = "rskp_opp
         print(f"[RSKP Fold {fold}] Epoch {epoch+1} | avg_loss={avg_loss:.6f} | lr={lr:.6f}")
         print(f"  Loss breakdown: {loss_recorder}")
 
-        # 在 warmup_epoch 结束时初始化记忆库
+                                  
         if epoch == warmup_epoch:
             print(f"  >>> Initializing memory queue at epoch {epoch+1}...")
             model.eval()
             
-            # 收集所有训练样本的 mu、分数和标签
+                                
             mu_queue = []
             sc_queue = []
             lbl_queue = []
@@ -296,15 +289,15 @@ def train_rskp_one_fold_opportunity(config, fold: int, exp_name: str = "rskp_opp
                     lbl = labels.detach().cpu().numpy()
                     lbl_queue.append(lbl)  # [num_classes]
             
-            # 初始化记忆库
+                    
             memory._init_queue(mu_queue, sc_queue, lbl_queue)
             model.train()
             
-            # 调整 lambda_s
+                         
             lambda_s = 0.5
             print(f"  >>> lambda_s adjusted to {lambda_s}")
             
-            # 重置 best_loss，因为loss计算方式发生了变化
+                                          
             best_loss = float("inf")
             print(f"  >>> Reset best_loss due to loss computation change")
 
@@ -330,11 +323,6 @@ def train_rskp_one_fold_opportunity(config, fold: int, exp_name: str = "rskp_opp
 # ============================================================
 @torch.no_grad()
 def test_rskp_opportunity(config, checkpoint_path, fold: int, test_mode: str = "test_window", device=None):
-    """
-    test_mode:
-      - "test_window": 测试人也按 clip_sec 滑窗
-      - "test_full"  : 整条序列一次性跑
-    """
     if device is None:
         device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
@@ -406,7 +394,7 @@ def test_rskp_opportunity(config, checkpoint_path, fold: int, test_mode: str = "
     model.eval()
     
         
-    # 计算模型参数
+            
     model_params = count_parameters(model)
     print(f"  Model parameters: {model_params:,} ({model_params/1e6:.2f}M)")
 
@@ -421,7 +409,7 @@ def test_rskp_opportunity(config, checkpoint_path, fold: int, test_mode: str = "
     nms_sigma = float(config["testing"]["nms_sigma"])
     top_k = int(config["testing"]["top_k"])
     rskp_cfg = config.get("rskp", {})
-    # 测试时的融合权重
+              
     test_fusion_weight = float(rskp_cfg.get("test_fusion_weight", 0.6))
     test_reallocated_weight = 1.0 - test_fusion_weight
 
@@ -456,11 +444,11 @@ def test_rskp_opportunity(config, checkpoint_path, fold: int, test_mode: str = "
         feat_seq = global_feat.permute(0, 2, 1)  # [1, T, D]
         o_out, m_out, _ = model(feat_seq)
 
-        # RSKP 测试：融合两个分支的预测
+                           
         vid_pred = o_out[0] * test_fusion_weight + m_out[0] * test_reallocated_weight  # [1, C]
         frm_pred = torch.softmax(o_out[3], -1) * test_fusion_weight + torch.softmax(m_out[3], -1) * test_reallocated_weight  # [1, T, C]
         vid_att = o_out[2]  # [1, T]
-        frm_pred = frm_pred * vid_att[..., None]  # 注意力加权
+        frm_pred = frm_pred * vid_att[..., None]         
 
         if device.type == "cuda":
             torch.cuda.synchronize()
@@ -470,7 +458,7 @@ def test_rskp_opportunity(config, checkpoint_path, fold: int, test_mode: str = "
         frm_pred = frm_pred.squeeze(0).cpu()  # [T, C]
         T_seq = frm_pred.shape[0]
 
-        # 将帧级预测映射回原始时间
+                      
         for k in range(num_classes):
             scores = frm_pred[:, k].numpy()
             scores = ndimage.gaussian_filter1d(scores, sigma=2.0)
@@ -478,7 +466,7 @@ def test_rskp_opportunity(config, checkpoint_path, fold: int, test_mode: str = "
             if not above.any():
                 continue
 
-            # 将连续帧合并为片段
+                       
             start_idx = None
             for t, flag in enumerate(above):
                 if flag and start_idx is None:
@@ -550,7 +538,7 @@ def test_rskp_opportunity(config, checkpoint_path, fold: int, test_mode: str = "
     )
     mAPs, avg_mAP, ap_mat = evaluator.evaluate()
 
-    # 保存每个动作的 AP
+                
     idx2name = {int(v): str(k) for k, v in evaluator.activity_index.items()}
     per_action = {}
     for cidx in range(ap_mat.shape[1]):
@@ -632,11 +620,11 @@ def run_loso_rskp_opportunity(config, device=None):
             },
         })
 
-        # 每折落盘一次
+                
         with open(os.path.join(config["result_root"], "loso_report_partial.json"), "w", encoding="utf-8") as f:
             json.dump(all_reports, f, indent=2, ensure_ascii=False)
 
-        # 清理内存
+              
         if device.type == "cuda":
             torch.cuda.empty_cache()
             torch.cuda.synchronize()
@@ -704,9 +692,9 @@ if __name__ == "__main__":
             "top_k": 200,
         },
 
-        # RSKP 配置
+                 
         "rskp": {
-            "out_feat_num": None,  # None 表示自动从 backbone 获取
+            "out_feat_num": None,                          
             "w": 0.2,
             "mu_num": 8,
             "em_iter": 3,
@@ -718,7 +706,7 @@ if __name__ == "__main__":
             "lambda_b": 0.2,
             "lambda_s": 1.0,
             "warmup_epoch": 60,
-            "test_fusion_weight": 0.6,  # 测试时原始特征分支权重
+            "test_fusion_weight": 0.6,               
         }
     }
 

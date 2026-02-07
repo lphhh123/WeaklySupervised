@@ -223,20 +223,20 @@ if __name__ == "__main__":
         "task": "single",
         "model_name": "CNN1D",
 
-        # 数据参数
+              
         "fps": 50,
         "num_sensors": 12,
         "in_channels": 12,
 
 
         "win_sec": 10.0,
-        "win_overlap": 0.5,    # 10s窗口步长=5s（也可以改成0.0 -> 步长10s）
+        "win_overlap": 0.5,                                   
 
-        # 归一化 stats json
+                        
         "stats_dirname": "loso_norm_stats_json",
         "ignore_zeros_in_stats": False,
 
-        # 训练参数
+              
         "batch_size": 32,
         "num_epochs": 60,
         "lr": 1e-3,
@@ -244,7 +244,7 @@ if __name__ == "__main__":
         "seed": 2024,
         "feat_dim": 512,
 
-        # 序列长： False，避免一次性缓存所有 raw
+                                  
         "cache_raw": False,
 
         "val_mode": "test",

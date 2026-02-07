@@ -12,12 +12,6 @@ from torch.utils.data import Dataset
 # 1) LOSO json parsing
 # ============================================================
 def _load_loso_json(json_path: str):
-    """
-    读取 loso_sbj_k.json
-    输出:
-      loso_db[sbj] = {"subset": "Training"/"Validation", "fps": 50, "annos": [(s,e,lid), ...]}
-    其中 s,e 是 frame index（int），区间按 [s, e) 使用。
-    """
     with open(json_path, "r", encoding="utf-8") as f:
         obj = json.load(f)
     db = obj["database"]
@@ -25,7 +19,7 @@ def _load_loso_json(json_path: str):
     parsed = {}
     for sbj, info in db.items():
         subset = info.get("subset", None)
-        fps = int(info.get("fps", 50))  # ★RWHAR 默认 50Hz
+        fps = int(info.get("fps", 50))                  
         annos = []
         for a in info.get("annotations", []):
             seg_f = a.get("segment (frames)", None)
@@ -60,24 +54,11 @@ def _parse_fold_id_from_loso_name(loso_json: str):
 # ============================================================
 def npy_windows_to_raw_frames(
     npy_path: str,
-    num_sensors: int = 21,     # ★RWHAR: 3轴*7设备=21
+    num_sensors: int = 21,                        
     win_samples: int = 50,     # ★RWHAR: 50_samples
     overlap: float = 0.5,      # 50% overlap
     dtype=np.float32,
 ):
-    """
-    RWHAR npy: shape [N, num_sensors*win_samples]，例如 [8632, 1050] = 21*50
-    flatten 顺序为 sensor-major:
-      sensor0(win) + sensor1(win) + ... + sensor20(win)
-
-    overlap=0.5 -> stride = win_samples*(1-0.5)=25 samples
-
-    还原连续 raw：
-      第一个窗口取完整 win_samples，
-      后续窗口只追加“新出现的那部分帧”（窗口后半段 stride 部分）。
-    返回:
-      raw_frames: [T_frames, num_sensors]
-    """
     feat = np.load(npy_path, allow_pickle=False).astype(dtype)  # [N, 1050]
     if feat.ndim != 2:
         raise ValueError(f"expect 2D npy, got {feat.shape} from {npy_path}")
@@ -133,9 +114,6 @@ def _compute_mean_var_across_subjects(
     overlap: float,
     ignore_zeros_in_stats: bool,
 ):
-    """
-    基于还原后的连续 raw 序列（50Hz）统计每通道 mean/var。
-    """
     sum_ = np.zeros((num_sensors,), dtype=np.float64)
     sumsq = np.zeros((num_sensors,), dtype=np.float64)
     count = np.zeros((num_sensors,), dtype=np.float64)
@@ -192,10 +170,6 @@ def ensure_all_loso_stats_json(
     overlap: float = 0.5,
     ignore_zeros_in_stats: bool = False,
 ):
-    """
-    确保每个 fold 的 stats 都存在：
-      raw/loso_norm_stats_json/loso_sbj_k_stats.json
-    """
     for k in folds:
         stats_path = _stats_json_path(dataset_dir, k, stats_dirname)
         if os.path.exists(stats_path):

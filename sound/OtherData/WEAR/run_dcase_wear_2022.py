@@ -17,21 +17,21 @@ from tool import ANETdetection
 from OtherData.utils import _meta_get, set_seed, build_gt_for_anet, dump_config
 
 # ============================================================
-# [修改 1] 导入 WEAR 数据集类
-# 假设文件名遵循命名规范：OtherData/WEAR/dataset_wear_ws.py
+                     
+                                               
 # ============================================================
 try:
     from OtherData.WEAR.dataset_wear_ws import WeaklyWearDataset
 except ImportError:
     print("Error: Could not import 'WeaklyWearDataset'. Please check the path OtherData/WEAR/dataset_wear_ws.py.")
 
-# 引入 DCASE CRNN 模型
+                  
 try:
     from models.DCASE_CRNN import CRNN
 except ImportError:
     print("Warning: Could not import CRNN from models.DCASE_CRNN.")
 
-os.environ["CUDA_VISIBLE_DEVICES"] = "6"  # 根据实际情况调整显卡ID
+os.environ["CUDA_VISIBLE_DEVICES"] = "6"                
 
 
 # ============================================================
@@ -96,13 +96,13 @@ def train_dcase_one_fold_wear(config, fold: int, exp_name: str = "dcase_wear"):
     dataset_dir = config["dataset_dir"]
     fps = int(config.get("fps", 50))
     clip_sec = float(config.get("clip_sec", 60.0))
-    in_channels = int(config.get("in_channels", 12))  # WEAR 是 12
-    num_classes = int(config["num_classes"])  # WEAR 是 18
+    in_channels = int(config.get("in_channels", 12))             
+    num_classes = int(config["num_classes"])             
 
     suffix = f"_{int(clip_sec)}s"
 
-    # CRNN 模型初始化
-    # 如果 config['model_args'] 中包含 cnn_kwargs 则使用，否则为空
+                
+                                                     
     cnn_kwargs = config["model_args"].get("cnn_kwargs", {})
 
     model = CRNN(
@@ -121,11 +121,11 @@ def train_dcase_one_fold_wear(config, fold: int, exp_name: str = "dcase_wear"):
 
     model = model.to(device)
 
-    # [修改 2] 实例化 WEAR Dataset
-    # 假设 WEAR 同样使用 loso_sbj_{fold}.json 格式
+                             
+                                          
     loso_json = f"loso_sbj_{fold}.json"
 
-    train_ds = WeaklyWearDataset(  # <--- 修改类名
+    train_ds = WeaklyWearDataset(             
         dataset_dir=dataset_dir,
         loso_json=loso_json,
         mode="train",
@@ -173,7 +173,7 @@ def train_dcase_one_fold_wear(config, fold: int, exp_name: str = "dcase_wear"):
             sample_clips = sample_clips.to(device)
             labels = labels.to(device).float()
 
-            # 维度适配: (Batch, Time, Channels) -> (Batch, Channels, Time)
+                                                                      
             if sample_clips.shape[1] > sample_clips.shape[2]:
                 inputs = sample_clips.permute(0, 2, 1)
             else:
@@ -222,7 +222,7 @@ def test_dcase_wear(config, checkpoint_path, fold: int, test_mode: str = "test_w
         attention=config["model_args"].get("attention", True),
         n_RNN_cell=config["model_args"].get("n_RNN_cell", 128),
         n_layers_RNN=config["model_args"].get("n_layers_RNN", 2),
-        dropout=config["model_args"].get("dropout", 0.5),  # 保持与Train一致
+        dropout=config["model_args"].get("dropout", 0.5),              
         specaugm_t_l=config["model_args"].get("specaugm_t_l", 5),
         specaugm_f_l=config["model_args"].get("specaugm_f_l", 2),
         cnn_integration=config["model_args"].get("cnn_integration", True),
@@ -238,7 +238,7 @@ def test_dcase_wear(config, checkpoint_path, fold: int, test_mode: str = "test_w
     loso_json = f"loso_sbj_{fold}.json"
     ann_path = os.path.join(dataset_dir, "annotations", loso_json)
 
-    # 简单的容错处理，防止文件未找到
+                     
     if not os.path.exists(ann_path):
         print(f"Error: Annotation file not found at {ann_path}")
         return None, 0.0, 0.5
@@ -279,7 +279,7 @@ def test_dcase_wear(config, checkpoint_path, fold: int, test_mode: str = "test_w
             debug_cnt += 1
 
         x = x.to(device)
-        # 维度适配
+              
         if x.shape[1] > x.shape[2]:
             inputs = x.permute(0, 2, 1)
         else:
@@ -287,7 +287,7 @@ def test_dcase_wear(config, checkpoint_path, fold: int, test_mode: str = "test_w
 
         frame_prob, _ = model(inputs)
 
-        # 插值
+            
         target_len = inputs.shape[-1]
         frame_prob = F.interpolate(frame_prob, size=target_len, mode='linear', align_corners=True)
         frame_prob = frame_prob.permute(0, 2, 1).squeeze(0).cpu().numpy()
@@ -320,7 +320,7 @@ def test_dcase_wear(config, checkpoint_path, fold: int, test_mode: str = "test_w
                 for cls_idx, segs in enumerate(segments_per_class):
                     label_name = id2label.get(cls_idx, f"class_{cls_idx}")
                     for (start_sec, end_sec, score) in segs:
-                        # [核心逻辑] 将相对时间转换为绝对时间
+                                             
                         abs_start = start_sec + (clip_start_frame / fps)
                         abs_end = end_sec + (clip_start_frame / fps)
 
@@ -354,12 +354,12 @@ def test_dcase_wear(config, checkpoint_path, fold: int, test_mode: str = "test_w
         with HiddenPrints():
             mAPs, avg_mAP, _ = evaluator.evaluate()
 
-        # 记录最优
+              
         if avg_mAP > best_avg_mAP:
             best_avg_mAP = avg_mAP
             best_thresh = th
             best_mAPs = mAPs
-            # 保存最佳预测结果
+                      
             best_pred_path = os.path.join(fold_dir, f"best_predictions_{test_mode}{suffix}.json")
             with open(best_pred_path, "w") as f:
                 json.dump(final_results, f, indent=2)
@@ -422,7 +422,7 @@ def run_loso_dcase_wear(config):
 
 if __name__ == "__main__":
     # ============================================================
-    # [修改 4] 配置 WEAR 专属参数
+                         
     # ============================================================
     config = {
         "seed": 2022,
@@ -453,8 +453,8 @@ if __name__ == "__main__":
             "cnn_integration": True,
 
             # ============================================================
-            # [修复] 添加 cnn_kwargs 以防止传感器维度被错误池化
-            # [2, 1] 表示: 时间维度 Pool 2, 传感器维度 Pool 1 (不池化)
+                                              
+                                                        
             # ============================================================
             "cnn_kwargs": {
                 "pooling": [[2, 1], [2, 1], [2, 1], [1, 1], [1, 1], [1, 1], [1, 1]]

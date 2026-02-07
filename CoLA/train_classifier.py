@@ -8,7 +8,7 @@ from torch.nn.parallel import DistributedDataParallel as DDP
 from torch.utils.data.distributed import DistributedSampler
 from sklearn.metrics import average_precision_score
 
-# 引入核心模块
+        
 sys.path.append(os.getcwd())
 from core.model import Actionness_Module
 from core.config_xrfv2 import cfg
@@ -33,11 +33,11 @@ def cleanup_ddp():
         dist.destroy_process_group()
 
 
-# --- [核心] 简单的分类包装器 ---
+                       
 class SimpleClassifier(nn.Module):
     def __init__(self, cfg):
         super().__init__()
-        # 复用你修改过的 Actionness_Module (含 Backbone + Adapter + 1x1 Conv)
+                                                                     
         self.base_model = Actionness_Module(cfg.FEATS_DIM, cfg.NUM_CLASSES, cfg)
 
     def forward(self, x):
@@ -46,9 +46,9 @@ class SimpleClassifier(nn.Module):
         _, cas, _ = self.base_model(x)
         # cas: [B, 2048, NumClasses] (Logits before softmax)
 
-        # [聚合策略] Top-k Pooling (MIL 思想)
-        # 取时序上前 1/8 的高分片段的平均值作为视频得分
-        # 相比 Global Average Pooling，这样能忽略背景噪声
+                                       
+                                   
+                                             
         k = max(1, cas.shape[1] // 8)
         topk_scores, _ = torch.topk(cas, k=k, dim=1)
         video_logits = torch.mean(topk_scores, dim=1)  # [B, NumClasses]
@@ -74,10 +74,10 @@ def validate(model, loader, device):
     all_preds = np.concatenate(all_preds, axis=0)
     all_targets = np.concatenate(all_targets, axis=0)
 
-    # 计算 Video-level mAP (衡量分类能力)
+                                 
     try:
-        # average_precision_score 计算的是 PR 曲线下面积
-        # macro: 算每个类的 AP 然后平均
+                                               
+                              
         val_mAP = average_precision_score(all_targets, all_preds, average='macro')
     except:
         val_mAP = 0.0
@@ -89,11 +89,11 @@ def main():
     rank, local_rank, world_size = setup_ddp()
     device = torch.device(f"cuda:{local_rank}")
 
-    # 1. 配置覆写
-    # 分类任务可以用大一点的学习率
-    cfg.TRAIN_BACKBONE = True  # 必须解冻，我们要微调整个网络
+             
+                    
+    cfg.TRAIN_BACKBONE = True                  
     cfg.BATCH_SIZE = 32
-    LR = 1e-4 * 4  # 适配 4 卡
+    LR = 1e-4 * 4          
     EPOCHS = 40
 
     if rank == 0:
@@ -104,10 +104,10 @@ def main():
 
         if not os.path.exists(cfg.MODEL_PATH): os.makedirs(cfg.MODEL_PATH)
 
-    # 2. 模型构建
+             
     model = SimpleClassifier(cfg).to(device)
 
-    # 确保解冻 (双保险)
+                
     for p in model.parameters():
         p.requires_grad = True
 
@@ -115,26 +115,26 @@ def main():
     if world_size > 1:
         model = DDP(model, device_ids=[local_rank], output_device=local_rank, find_unused_parameters=True)
 
-    # 3. 数据加载
+             
     train_dataset = XRFV2Dataset(mode='train', modal=cfg.MODAL, num_segments=cfg.NUM_SEGMENTS,
                                  class_dict=cfg.CLASS_DICT, seed=cfg.SEED, supervision='weak')
     train_sampler = DistributedSampler(train_dataset, num_replicas=world_size, rank=rank, shuffle=True)
     train_loader = torch.utils.data.DataLoader(train_dataset, batch_size=cfg.BATCH_SIZE,
                                                sampler=train_sampler, num_workers=4, pin_memory=True)
 
-    # 验证集 (只在 Rank 0 跑)
+                       
     if rank == 0:
         test_dataset = XRFV2Dataset(mode='test', modal=cfg.MODAL, num_segments=cfg.NUM_SEGMENTS,
                                     class_dict=cfg.CLASS_DICT, seed=cfg.SEED, supervision='weak')
         test_loader = torch.utils.data.DataLoader(test_dataset, batch_size=1, shuffle=False, num_workers=4)
 
-    # 4. 优化器 & Loss
+                   
     optimizer = torch.optim.Adam(model.parameters(), lr=LR, weight_decay=1e-4)
-    criterion = nn.BCEWithLogitsLoss()  # 多标签分类标准 Loss
+    criterion = nn.BCEWithLogitsLoss()                
 
     best_acc = 0.0
 
-    # 5. 训练循环
+             
     for epoch in range(EPOCHS):
         train_sampler.set_epoch(epoch)
         model.train()
@@ -159,7 +159,7 @@ def main():
             if rank == 0 and steps % 10 == 0:
                 print(f"Epoch [{epoch + 1}/{EPOCHS}] Step [{steps}] Loss: {loss.item():.4f}")
 
-        # 验证
+            
         if rank == 0:
             val_mAP = validate(model, test_loader, device)
             print(
@@ -167,9 +167,9 @@ def main():
 
             if val_mAP > best_acc:
                 best_acc = val_mAP
-                # 保存权重：注意我们只保存 Actionness_Module 部分，方便 CoLA 加载
-                # 如果用了 DDP，是 model.module.base_model
-                # 如果没用 DDP，是 model.base_model
+                                                              
+                                                    
+                                             
                 state_dict = model.module.base_model.state_dict() if world_size > 1 else model.base_model.state_dict()
 
                 save_path = os.path.join(cfg.MODEL_PATH, "classifier_best.pth")

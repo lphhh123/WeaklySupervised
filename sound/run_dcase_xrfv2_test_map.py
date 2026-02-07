@@ -7,7 +7,7 @@ import numpy as np
 from dataset.dataset_xrfv2 import WeaklySupervisedXRFV2DatasetTest
 
 
-# ========================== 推理逻辑核心 (修正版) ==========================
+                                                                    
 class LOSOInferenceEngine:
     def __init__(self, config, device="cuda"):
         self.device = torch.device(device if torch.cuda.is_available() else "cpu")
@@ -23,18 +23,15 @@ class LOSOInferenceEngine:
         return model
 
     def temporal_nms(self, detections, iou_threshold=0.3):
-        """
-        对检测到的片段进行时间轴上的非极大值抑制，合并重叠部分
-        """
         if not detections: return []
 
-        # 按照 label 分组处理
+                       
         final_results = []
         labels = set([d['label'] for d in detections])
 
         for label in labels:
             label_dets = [d for d in detections if d['label'] == label]
-            # 按得分降序排列
+                     
             label_dets = sorted(label_dets, key=lambda x: x['score'], reverse=True)
 
             keep = []
@@ -44,7 +41,7 @@ class LOSOInferenceEngine:
 
                 remaining = []
                 for det in label_dets:
-                    # 计算时间轴 IoU
+                               
                     s1, e1 = curr['segment']
                     s2, e2 = det['segment']
                     inter = max(0, min(e1, e2) - max(s1, s2))
@@ -71,7 +68,7 @@ class LOSOInferenceEngine:
             label_name = id_to_action.get(str(cls_idx), str(cls_idx))
 
             for s, e in zip(starts, ends):
-                # 将帧索引加上偏移量，转换为全局秒数
+                                   
                 abs_s = float(s + offset_frames)
                 abs_e = float(e + offset_frames)
                 score = float(probs[cls_idx, s:e].mean())
@@ -88,7 +85,7 @@ class LOSOInferenceEngine:
         id_to_action = test_ds.id_to_action
 
         with torch.no_grad():
-            # 获取数据集迭代器
+                      
             dataset_gen = test_ds.dataset()
 
             for file_name, data_iter in tqdm(dataset_gen, desc=f"  [{mode}]", leave=False):
@@ -97,13 +94,13 @@ class LOSOInferenceEngine:
                 for clip_dict, info in data_iter:
                     data = clip_dict['imu'].unsqueeze(0).to(self.device)
 
-                    # 打印第一个样本的 shape 以便 debug
+                                             
                     # print(f"DEBUG: {file_name} input shape: {data.shape}")
 
                     strong_out, _ = model(data)
                     pred_np = strong_out.squeeze(0).cpu().numpy()
 
-                    # 提取偏移帧数
+                            
                     offset_frames = 0
                     if isinstance(info, (list, tuple, np.ndarray)):
                         offset_frames = int(info[0])
@@ -118,18 +115,18 @@ class LOSOInferenceEngine:
                     )
                     video_annotations.extend(clip_results)
 
-                # 只有在 window 模式下才需要做 NMS 去重
+                                           
                 if mode == "window":
                     video_annotations = self.temporal_nms(video_annotations)
 
-                # 统一按时间排序输出
+                           
                 video_annotations.sort(key=lambda x: x["segment"][0])
                 results[file_name] = video_annotations
 
         return results
 
 
-# ========================== 主执行逻辑 ==========================
+                                                             
 def run_loso_test():
     base_config = {
         "path": {
@@ -145,7 +142,7 @@ def run_loso_test():
             }
         },
         "training": {"num_classes": 30, "use_airpods": True},
-        "testing": {"window_size": 10, "hop_size": 5}  # 默认值
+        "testing": {"window_size": 10, "hop_size": 5}       
     }
 
     ckpt_root = "/home/yinjiaxi/wstal/WeaklySupervised-master/checkpoints/xrfv2_dcase_loso_2022"
@@ -166,14 +163,14 @@ def run_loso_test():
         save_dir = os.path.join(base_config["path"]["result_path"], sub)
         os.makedirs(save_dir, exist_ok=True)
 
-        # 分别运行 window (10s) 和 full (1000s)
-        # 注意：如果 full 模式仍然和 window 一样，请检查 Dataset 是否有限制最大长度
+                                          
+                                                          
         for mode_name, win_size in [("window", 10), ("full", 1000)]:
             current_cfg = copy.deepcopy(base_config)
             current_cfg["path"]["test_dataset_path"] = os.path.join("/home/lipei/", sub)
             current_cfg["testing"]["window_size"] = win_size
 
-            # 这里的 hop_size 也可以根据需求调整，full 模式下 hop_size 无所谓
+                                                          
             if mode_name == "full":
                 current_cfg["testing"]["hop_size"] = win_size
 

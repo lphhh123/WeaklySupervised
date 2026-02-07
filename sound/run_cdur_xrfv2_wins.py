@@ -10,37 +10,33 @@ from dataset.dataset_xrfv2 import WeaklySupervisedXRFV2DatasetTest
 from models.CDur_model import CDur
 from tool import ANETdetection
 
-# 环境设置
+      
 torch.set_num_threads(8)
 os.environ["CUDA_VISIBLE_DEVICES"] = "7"
 
 
 # ============================================================
-# 1) 工具函数：直接在【帧】上操作，不再涉及 fps 转换秒
+                                
 # ============================================================
 def get_segments_by_frames(probs, threshold=0.15, min_len=10):
-    """
-    probs: [T, C]
-    直接返回窗口内的帧索引 [start_idx, end_idx, score]
-    """
     T, C = probs.shape
     all_segments = [[] for _ in range(C)]
 
-    # 转换为二进制掩码
+              
     mask = probs > threshold  # [T, C]
 
     for c in range(C):
         m = mask[:, c]
         if not np.any(m): continue
 
-        # 寻找连续区间
+                
         diff = np.diff(np.concatenate(([0], m.astype(int), [0])))
         starts = np.where(diff == 1)[0]
         ends = np.where(diff == -1)[0]
 
         for s, e in zip(starts, ends):
             if (e - s) >= min_len:
-                # 分数取该段内最大值或平均值，这里取平均值
+                                      
                 score = np.mean(probs[s:e, c])
                 all_segments[c].append([s, e, float(score)])
     return all_segments
@@ -71,15 +67,15 @@ def soft_nms_functional(dets, sigma=0.5, thresh=0.001):
 
 
 # ============================================================
-# 2) 核心双模式测试函数
+              
 # ============================================================
 @torch.no_grad()
 def test_dual_logic(config, checkpoint_path, test_mode="test_full"):
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     num_classes = config["training"]["num_classes"]
 
-    # --- 找回分数的关键：设置合适的判定阈值 ---
-    # 如果分数低，尝试把 0.15 改成你之前常用的值 (比如 0.1 或 0.2)
+                               
+                                             
     ACT_THRESHOLD = 0.15
     MIN_FRAME_LEN = 15
 
@@ -96,7 +92,7 @@ def test_dual_logic(config, checkpoint_path, test_mode="test_full"):
         video_annotations = []
 
         for clip_dict, seg_range in data_iter:
-            offset = int(seg_range[0])  # 窗口起始帧
+            offset = int(seg_range[0])         
 
             x = clip_dict['imu']
             if x.shape[0] in [30, 36]: x = x.T
@@ -111,7 +107,7 @@ def test_dual_logic(config, checkpoint_path, test_mode="test_full"):
             _, frame_prob = model(x.to(device), upsample=True)
             frame_prob = frame_prob.squeeze(0).cpu().numpy()
 
-            # 关键：直接获取帧索引区间
+                          
             segments = get_segments_by_frames(frame_prob, threshold=ACT_THRESHOLD, min_len=MIN_FRAME_LEN)
 
             for cls_idx, segs in enumerate(segments):
@@ -133,7 +129,7 @@ def test_dual_logic(config, checkpoint_path, test_mode="test_full"):
             for cls_idx in range(num_classes):
                 cls_segs = np.array(raw_predictions[cls_idx])
                 if len(cls_segs) == 0: continue
-                # 执行 NMS 过滤掉滑窗重叠带来的重复框
+                                      
                 keep = soft_nms_functional(cls_segs, sigma=0.5, thresh=0.01)
                 label_name = test_ds.id_to_action.get(str(cls_idx), str(cls_idx))
                 for i in keep:
@@ -145,7 +141,7 @@ def test_dual_logic(config, checkpoint_path, test_mode="test_full"):
 
         results_dict[video_id] = video_annotations
 
-    # 保存文件
+          
     out_name = f"prediction_{test_mode}.json"
     out_path = os.path.join(config["path"]["result_path"], out_name)
     os.makedirs(os.path.dirname(out_path), exist_ok=True)
@@ -153,7 +149,7 @@ def test_dual_logic(config, checkpoint_path, test_mode="test_full"):
     with open(out_path, 'w') as f:
         json.dump({"version": "VERSION 1.3", "results": results_dict}, f, indent=4)
 
-    # 评估
+        
     tious = [0.3, 0.4, 0.5, 0.6, 0.7]
     print(f"\n>>> [{test_mode}] 帧匹配评估中...")
     evaluator = ANETdetection(test_ds.eval_gt, out_path, subset="test", tiou_thresholds=tious, verbose=False,
@@ -179,7 +175,7 @@ if __name__ == "__main__":
     print("模型参数量统计:")
     from models.CDur_model import CDur
 
-    # 根据 config 实例化一个临时模型用于统计
+                             
     temp_model = CDur(inputdim=36, outputdim=config["training"]["num_classes"])
 
     total_params = sum(p.numel() for p in temp_model.parameters())
