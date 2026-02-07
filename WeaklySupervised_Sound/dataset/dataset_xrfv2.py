@@ -1,6 +1,14 @@
-from scipy.interpolate import interp1d
+import json
+import os
+
+import h5py
 import numpy as np
-from models.WSDDN_model import *
+import pandas as pd
+import torch
+from scipy.interpolate import interp1d
+from torch.utils.data import Dataset
+
+from tool import load_label_mapping
 
 
 class WeaklySupervisedXRFV2DatasetTrain(Dataset):
@@ -103,15 +111,6 @@ class WeaklySupervisedXRFV2DatasetTrain(Dataset):
         else:
             sample_30s = imu_feat                          # [30, 2048]
 
-        proposal_boxes = generate_proposal_boxes(
-            T_global=self.T_global,
-            num_proposals=self.num_proposals
-        )
-
-        if self.merge_proposals:
-            dummy_scores = torch.rand(self.num_proposals, 30)  # TODO
-            proposal_boxes = merge_overlapping_proposals(proposal_boxes, dummy_scores)
-
         video_label = self._get_video_level_label(idx)
 
         if self._debug_print:
@@ -123,14 +122,13 @@ class WeaklySupervisedXRFV2DatasetTrain(Dataset):
                 print(f"imu_feat shape           : {imu_feat.shape}")   # [30, 2048]
                 print(f"air_feat shape           : {air_feat.shape}")   # [6, 2048]
             print(f"final sample_30s shape    : {sample_30s.shape}")    # [30 or 36, 2048]
-            print(f"proposal_boxes shape      : {proposal_boxes.shape}")# [num_proposals, 2]
             print(f"video_label shape         : {video_label.shape}")   # [num_classes]
             print("imu_feat mean/std:", imu_feat.mean().item(), imu_feat.std().item())
             print("air_feat mean/std:", air_feat.mean().item(), air_feat.std().item())
             print("End debug")
             self._debug_print = False
 
-        return sample_30s, proposal_boxes, video_label
+        return sample_30s, video_label
 
 class WWADLDatasetTestSingle():
 
@@ -637,12 +635,12 @@ def load_file_list(dataset_path):
 if __name__ == "__main__":
     config = {
         "path": {
-            "train_dataset_path": "/home/lipei/XRFV2/",
-            "test_dataset_path": "/home/lipei/XRFV2/",
-            "dataset_root_path": "/home/lipei/WWADL/",
-            "mapping_path": "/home/lipei/project/WSDDN/label_mapping.json",
-            "checkpoint_path": "/home/lipei/project/WSDDN/checkpoints/",
-            "result_path": "/home/lipei/project/WSDDN/test_results/"
+            "train_dataset_path": "data/xrfv2",
+            "test_dataset_path": "data/xrfv2",
+            "dataset_root_path": "data/xrfv2",
+            "mapping_path": "label_mapping.json",
+            "checkpoint_path": "checkpoints/xrfv2",
+            "result_path": "results/xrfv2"
         },
     }
 
@@ -651,7 +649,7 @@ if __name__ == "__main__":
         mapping_path=config["path"]["mapping_path"],
         use_airpods=False,
     )
-    x, prop, y = ds_train_imu[0]
+    x, y = ds_train_imu[0]
     print("[Train] IMU only sample_30s:", x.shape)
 
     ds_train_imu_air = WeaklySupervisedXRFV2DatasetTrain(
@@ -659,7 +657,7 @@ if __name__ == "__main__":
         mapping_path=config["path"]["mapping_path"],
         use_airpods=True,
     )
-    x2, prop2, y2 = ds_train_imu_air[0]
+    x2, y2 = ds_train_imu_air[0]
     print("[Train] IMU + AirPods sample_30s:", x2.shape)
 
     test_ds = WeaklySupervisedXRFV2DatasetTest(

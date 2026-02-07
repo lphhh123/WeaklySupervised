@@ -1,0 +1,47 @@
+{
+  "name": "wetlab",
+  "paths": {
+    "data_dir": "data/wetlab",
+    "checkpoint_dir": "checkpoints/wetlab",
+    "result_dir": "results/wetlab"
+  },
+  "data": {
+    "fps": 50,
+    "clip_sec": 23.0,
+    "clip_frames": 500,
+    "in_channels": 3,
+    "num_classes": 8,
+    "loso_json": "loso_sbj_0.json",
+    "stats_dirname": "loso_norm_stats_json"
+  },
+  "model": {
+    "dcase": {
+      "params": {
+        "rnn_type": "BGRU",
+        "n_RNN_cell": 128,
+        "n_layers_RNN": 2,
+        "dropout": 0.5,
+        "attention": true,
+        "specaugm_t_l": 5,
+        "specaugm_f_l": 2,
+        "cnn_integration": true,
+        "pooling": [[2, 1], [2, 1], [2, 1], [1, 1], [1, 1], [1, 1], [1, 1]]
+      }
+    },
+    "cdur": {
+      "params": {
+        "temppool": "linear"
+      }
+    }
+  },
+  "training": {
+    "batch_size": 8,
+    "lr": 0.0001,
+    "num_workers": 0,
+    "label_smoothing": 0.1,
+    "max_steps": 2
+  },
+  "testing": {
+    "thresholds": [0.3, 0.4, 0.5, 0.6, 0.7]
+  }
+}

@@ -1,0 +1,48 @@
+{
+  "name": "xrfv2",
+  "paths": {
+    "data_dir": "data/xrfv2",
+    "mapping_path": "label_mapping.json",
+    "checkpoint_dir": "checkpoints/xrfv2",
+    "result_dir": "results/xrfv2"
+  },
+  "data": {
+    "fps": 50,
+    "clip_sec": 30.0,
+    "clip_frames": 2048,
+    "in_channels": 36,
+    "num_classes": 30,
+    "use_airpods": true
+  },
+  "model": {
+    "dcase": {
+      "params": {
+        "rnn_type": "BGRU",
+        "n_RNN_cell": 128,
+        "n_layers_RNN": 2,
+        "dropout": 0.5,
+        "attention": true,
+        "specaugm_t_l": 10,
+        "specaugm_f_l": 2,
+        "cnn_integration": true,
+        "pooling": [[2, 1], [2, 1], [2, 1], [1, 1], [1, 1], [1, 1], [1, 1]]
+      }
+    },
+    "cdur": {
+      "params": {
+        "temppool": "linear"
+      }
+    }
+  },
+  "training": {
+    "batch_size": 4,
+    "lr": 0.0001,
+    "num_workers": 0,
+    "label_smoothing": 0.05,
+    "max_steps": 2
+  },
+  "testing": {
+    "window_size": 20,
+    "hop_size": 10
+  }
+}

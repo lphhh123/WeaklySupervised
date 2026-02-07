@@ -415,7 +415,7 @@ def compute_misalignment_measures(gt, pred, classes, has_null=True):
 # ============================================================
 # Evaluate XRFV2 (full + window)  [GT path fixed]
 # ============================================================
-FIXED_GT_PATH = "/home/lipei/XRFV2/imu_annotations.json"
+FIXED_GT_PATH = "data/xrfv2/imu_annotations.json"
 
 def evaluate_xrfv2(
     pred_dir,
@@ -551,7 +551,7 @@ def main():
     ap.add_argument(
         "--pred_dir",
         type=str,
-        default="/home/yinjiaxi/wstal/WeaklySupervised-master/result/xrfv2_dcase_2024/",
+        default="results/xrfv2",
         help="Directory that contains predictions_test_full.json and predictions_test_window.json"
     )
     ap.add_argument("--tiou", type=str, default="0.3,0.4,0.5,0.6,0.7")
@@ -579,5 +579,5 @@ if __name__ == "__main__":
 
 
 
-# python eval_xrfv2_metrics.py --pred_dir /home/lipei/project/WSDDN/test_results/xrfv2/xxx/
+# python eval_xrfv2_metrics.py --pred_dir results/xrfv2
 # python eval_xrfv2_metrics.py --use_conf_thresh --conf_thresh 0.15
